@@ -10,12 +10,13 @@
   "dependencies": {
     "@clair-obscur-workspace/utils": "workspace:*",
     "@starfederation/datastar-sdk": "catalog:",
-    "hono": "catalog:"
+    "hono": "catalog:",
+    "hono-sessions": "^0.8.0"
   },
   "devDependencies": {
-    "@types/node": "catalog:",
     "@hono/node-server": "catalog:",
     "@hono/vite-dev-server": "catalog:",
+    "@types/node": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"

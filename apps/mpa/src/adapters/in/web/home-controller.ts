@@ -3,30 +3,68 @@ import { html } from 'hono/html';
 
 import { baseLayout } from '@/infrastructure/templates/base-layout';
 import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/web';
+import { ROUTES } from './routes.ts';
+
+let counter = 0;
+const activeStreams = new Set<ServerSentEventGenerator>();
+
+const broadcastCounter = () => {
+  activeStreams.forEach((stream) => {
+    try {
+      stream.patchSignals(`{"counter": ${counter}, "activeStreams": ${activeStreams.size}}`);
+    } catch {
+      activeStreams.delete(stream);
+    }
+  });
+};
 
 export const homeController = {
-  patchHal: function (): Response {
+  getCounter: function (): Response {
+    let currentStream: ServerSentEventGenerator | null = null;
+
     return ServerSentEventGenerator.stream(
       (stream) => {
-        stream.patchElements(`<div id="hal">I'm sorry, Dave. I'm afraid I can't do that.</div>`);
-
-        setTimeout(() => {
-          stream.patchElements(`<div id="hal">Waiting for an order...</div>`);
-        }, 1000);
+        currentStream = stream;
+        activeStreams.add(stream);
+        stream.patchSignals(`{"counter": ${counter}, "activeStreams": ${activeStreams.size}}`);
+        return new Promise((resolve) => {
+          setTimeout(resolve, 10000);
+        });
       },
       {
-        keepalive: true,
+        onAbort: () => {
+          if (currentStream) {
+            activeStreams.delete(currentStream);
+            broadcastCounter();
+          }
+        },
+        onError: () => {
+          if (currentStream) {
+            activeStreams.delete(currentStream);
+            broadcastCounter();
+          }
+        },
       },
     );
   },
 
+  counterReset: function (): Response {
+    counter = 0;
+    broadcastCounter();
+    return ServerSentEventGenerator.stream((stream) => {
+      stream.patchSignals(`{"counter": ${counter}, "activeStreams": ${activeStreams.size}}`);
+    });
+  },
+
   getHomePage: async function (c: Context) {
     const content = html`
-      <main class="home-container">
+      <main class="home-container" data-on-load="@get('${ROUTES.COUNTER.BASE}')">
         <h1>Welcome to Clair-Obscur</h1>
         <p>A hypermedia-first MPA with Hono and Datastar</p>
-          <button data-on-click="@patch('/home/hal')">Open the pod bay doors, HAL.</button>
-          <div id="hal">Waiting for HAL...</div>
+        <section>
+          <button data-on-click="@patch('${ROUTES.COUNTER.RESET}')">Reset shared counter</button>
+          <div>Shared counter is running since <strong data-text="$counter"></strong> seconds</div>
+          <div>Number of active users: <strong data-text="$activeStreams"></strong></div>
         </section>
       </main>
     `;
@@ -39,3 +77,8 @@ export const homeController = {
     return c.html(page);
   },
 };
+
+setInterval(() => {
+  counter++;
+  broadcastCounter();
+}, 1000);
