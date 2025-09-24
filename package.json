@@ -1,0 +1,54 @@
+{
+  "name": "clair-obscur-workspace",
+  "version": "1.0.0",
+  "description": "A mini-multiplayer-collaborative-browser-based game demonstrating DataStar Framework capabilities",
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm --parallel --filter @clair-obscur-workspace/utils --filter @clair-obscur-workspace/mpa dev",
+    "dev:apps:mpa": "pnpm --filter @clair-obscur-workspace/mpa dev",
+    "dev:packages:utils": "pnpm --filter @clair-obscur-workspace/utils dev",
+    "lint": "eslint . --fix",
+    "test": "pnpm --recursive test",
+    "test:apps:mpa": "pnpm --filter @clair-obscur-workspace/mpa test",
+    "test:packages:utils": "pnpm --filter @clair-obscur-workspace/utils test"
+  },
+  "keywords": [],
+  "author": "Loïc TRUCHOT <loic.truchot.pro@gmail.com>",
+  "license": "MIT",
+  "packageManager": "pnpm@10.17.0",
+  "devDependencies": {
+    "@eslint/css": "catalog:",
+    "@eslint/js": "catalog:",
+    "@eslint/json": "catalog:",
+    "@eslint/markdown": "catalog:",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "eslint": "catalog:",
+    "eslint-config-prettier": "catalog:",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-prettier": "catalog:",
+    "globals": "catalog:",
+    "jiti": "catalog:",
+    "jsdom": "catalog:",
+    "prettier": "catalog:",
+    "prettier-plugin-organize-imports": "catalog:",
+    "tslib": "catalog:",
+    "typescript": "catalog:",
+    "typescript-eslint": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": true,
+    "tabWidth": 2,
+    "useTabs": false,
+    "trailingComma": "all",
+    "bracketSpacing": true,
+    "bracketSameLine": true,
+    "printWidth": 140,
+    "plugins": [
+      "prettier-plugin-organize-imports"
+    ]
+  }
+}

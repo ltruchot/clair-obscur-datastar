@@ -1,0 +1,63 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+
+    //===== Output: JavaScript =====
+    "allowImportingTsExtensions": true,
+    "target": "ES2024",
+    "module": "Node16", // sets up "moduleResolution"
+
+    // Emptily imported modules must exist
+    "noUncheckedSideEffectImports": true,
+
+    // Specify explicitly (don’t derive from source file paths):
+    "rootDir": "./src",
+    "outDir": "dist",
+
+    //===== Interoperability: help external tools =====
+    // Helps tools that compile .ts to .js by enforcing
+    // `type` modifiers for type-only imports etc.
+    "verbatimModuleSyntax": true,
+
+    //===== Type checking =====
+    "strict": true, // activates several useful options
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+
+    //===== Output: declarations =====
+    "declaration": true, // .d.ts files
+    // “Go to definition” jumps to TS source etc.:
+    "declarationMap": true, // .d.ts.map files
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
+    "pretty": true,
+    "removeComments": false,
+    "emitDeclarationOnly": true,
+
+    //===== Interoperability: help external tools =====
+    // Helps tools that compile .ts to .d.ts by enforcing
+    // return type annotations for exported functions, etc.
+    "isolatedDeclarations": true,
+
+    //===== Other options =====
+    // Lets us import JSON files:
+    "resolveJsonModule": true,
+    "skipLibCheck": false,
+    "strictNullChecks": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "noEmit": false,
+    "newLine": "lf",
+    "types": ["vite/client", "node"],
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "allowSyntheticDefaultImports": true,
+    "useDefineForClassFields": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", "dist"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

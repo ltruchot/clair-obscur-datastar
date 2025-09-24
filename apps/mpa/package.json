@@ -1,0 +1,23 @@
+{
+  "name": "@clair-obscur-workspace/mpa",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "test": "vitest",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@clair-obscur-workspace/utils": "workspace:*",
+    "@starfederation/datastar-sdk": "catalog:",
+    "hono": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@hono/node-server": "catalog:",
+    "@hono/vite-dev-server": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}
