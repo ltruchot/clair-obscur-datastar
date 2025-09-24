@@ -9,6 +9,18 @@ export default defineConfig({
       entry: 'src/index.ts',
     }),
   ],
+  build: {
+    target: 'node20',
+    outDir: 'dist',
+    lib: {
+      entry: 'src/index.ts',
+      formats: ['es'],
+      fileName: 'index',
+    },
+    rollupOptions: {
+      external: ['hono', '@hono/node-server', '@starfederation/datastar-sdk'],
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
