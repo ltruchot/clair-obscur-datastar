@@ -3,7 +3,7 @@ import { html } from 'hono/html';
 
 import { baseLayout } from '@/infrastructure/templates/base-layout';
 import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/web';
-import { ROUTES } from './routes.ts';
+import { ROUTES } from './routes';
 
 let counter = 0;
 const activeStreams = new Set<ServerSentEventGenerator>();
@@ -18,53 +18,37 @@ const broadcastCounter = () => {
   });
 };
 
+setInterval(() => {
+  counter++;
+  broadcastCounter();
+}, 1000);
+
 export const homeController = {
   getCounter: function (): Response {
-    let currentStream: ServerSentEventGenerator | null = null;
-
     return ServerSentEventGenerator.stream(
       (stream) => {
-        currentStream = stream;
         activeStreams.add(stream);
         stream.patchSignals(`{"counter": ${counter}, "activeStreams": ${activeStreams.size}}`);
-        return new Promise((resolve) => {
-          setTimeout(resolve, 10000);
-        });
       },
       {
-        onAbort: () => {
-          if (currentStream) {
-            activeStreams.delete(currentStream);
-            broadcastCounter();
-          }
-        },
-        onError: () => {
-          if (currentStream) {
-            activeStreams.delete(currentStream);
-            broadcastCounter();
-          }
-        },
+        keepalive: true,
       },
     );
   },
 
-  counterReset: function (): Response {
+  counterReset: function (c: Context): Response {
     counter = 0;
     broadcastCounter();
-    return ServerSentEventGenerator.stream((stream) => {
-      stream.patchSignals(`{"counter": ${counter}, "activeStreams": ${activeStreams.size}}`);
-    });
+    return c.json({ status: 'ok' });
   },
 
   getHomePage: async function (c: Context) {
     const content = html`
-      <main class="home-container" data-on-load="@get('${ROUTES.COUNTER.BASE}')">
-        <h1>Welcome to Clair-Obscur</h1>
-        <p>A hypermedia-first MPA with Hono and Datastar</p>
+      <main data-on-load="@get('${ROUTES.COUNTER.BASE}')">
         <section>
           <button data-on-click="@patch('${ROUTES.COUNTER.RESET}')">Reset shared counter</button>
           <div>Shared counter is running since <strong data-text="$counter"></strong> seconds</div>
-          <div>Number of active users: <strong data-text="$activeStreams"></strong></div>
+          <div>Number of active streams: <strong data-text="$activeStreams"></strong></div>
         </section>
       </main>
     `;
@@ -77,8 +61,3 @@ export const homeController = {
     return c.html(page);
   },
 };
-
-setInterval(() => {
-  counter++;
-  broadcastCounter();
-}, 1000);
