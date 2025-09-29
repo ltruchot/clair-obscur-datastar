@@ -2,8 +2,8 @@ import { DefaultAnimalNameGenerator } from '@clair-obscur-workspace/funny-animal
 import { useSession } from '@hono/session';
 import { config } from 'dotenv';
 import { Hono } from 'hono';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { SessionController } from './adapters/in/web/session-controller';
 import { InMemorySessionRepository } from './adapters/out/infrastructure/in-memory-session-repository';
 import { DefaultSessionService } from './domain/services/session-service';

@@ -12,8 +12,9 @@ export class DefaultAnimalNameGenerator implements AnimalNameGenerator {
   generateUnique(usedNames: Set<string>): AnimalName {
     const totalCombinations = ADJECTIVES.length * ANIMALS.length;
 
+    // If all combinations are exhausted, return first animal name
     if (usedNames.size >= totalCombinations) {
-      throw new Error('All animal name combinations are exhausted');
+      return AnimalNameFactory.create();
     }
 
     for (let attempt = 0; attempt < this.maxAttempts; attempt++) {
@@ -37,7 +38,7 @@ export class DefaultAnimalNameGenerator implements AnimalNameGenerator {
       }
     }
 
-    // Fallback: return firsts animal name if all combinations are exhausted
+    // Fallback: return firsts animal name if something went wrong
     return AnimalNameFactory.create();
   }
 
