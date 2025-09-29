@@ -11,9 +11,9 @@
     "dist"
   ],
   "scripts": {
-    "dev": "pnpm run \"/^dev:.*/\"",
+    "dev": "pnpm --parallel run \"/^dev:.*/\"",
     "dev:watch": "vite build --watch",
-    "dev:watch:types": "tsc --watch",
+    "dev:watch:types": "tsc --watch --preserveWatchOutput",
     "test": "vitest",
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",

@@ -9,9 +9,10 @@
   },
   "dependencies": {
     "@clair-obscur-workspace/utils": "workspace:*",
+    "@hono/session": "^0.2.0",
     "@starfederation/datastar-sdk": "catalog:",
-    "hono": "catalog:",
-    "hono-sessions": "^0.8.0"
+    "dotenv": "catalog:",
+    "hono": "catalog:"
   },
   "devDependencies": {
     "@hono/node-server": "catalog:",

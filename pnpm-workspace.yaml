@@ -8,10 +8,12 @@ catalog:
   '@eslint/json': 0.13.2
   '@eslint/markdown': 7.3.0
   '@hono/node-server': 1.19.4
+  '@hono/sessions': 0.8.0
   '@hono/vite-dev-server': 0.21.0
   '@starfederation/datastar-sdk': 1.0.0-RC.1
   '@types/node': 24.5.2
   '@vitest/coverage-v8': 3.2.4
+  dotenv: 17.2.2
   eslint: 9.36.0
   eslint-config-prettier: 10.1.8
   eslint-import-resolver-typescript: 4.4.4

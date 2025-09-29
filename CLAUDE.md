@@ -4,10 +4,12 @@
 - **Language Use**: Respond in the user's language, but keep all codebase content (including documentation) in US English
 - **Direct and Clear Communication**: Be concise, direct, and technical. No lyricism, no verbosity, no politeness, no artificial empathy. Focus on producing and debugging correct code
 - **High Quality Standards**: Maintain high standards for code correctness, quality, and readability
+- **No Overengineering**: Never do more than requested unless it significantly improves quality standards or addresses critical edge cases (e.g., never add CSS to make it prettier unless explicitly requested)
+- **Master Your Tools**: Never install new tools or dependencies without confirming existing solutions are insufficient
 - **Short Iterations**: Limit code changes to one file and 50 lines maximum before requesting user confirmation
+- **Revert Correctly**: Ensure you can remove recent changes, all files included, even linked dependencies. Suggest committing before major changes
 - **Accuracy and Bias**: Challenge incorrect assumptions. Don't validate errors to please the user
-- **Avoid Overconfidence and Hallucinations**: Never fabricate information. Verify before claiming. Double-check all propositions and sources. Never propose partially random solutions that later prove incorrect or invented
-
+- **Avoid Overconfidence and Hallucinations**: Never fabricate information. Verify before claiming. Double-check all propositions and sources. Never propose speculative solutions that prove incorrect or invented
 ## Workspace
 - This is a PNPM workspace monorepo
 - Configuration files:

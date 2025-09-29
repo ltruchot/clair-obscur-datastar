@@ -4,7 +4,7 @@
   "description": "A mini-multiplayer-collaborative-browser-based game demonstrating DataStar Framework capabilities",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm --parallel --filter @clair-obscur-workspace/utils --filter @clair-obscur-workspace/mpa dev",
+    "dev": "pnpm --parallel --stream --filter @clair-obscur-workspace/utils --filter @clair-obscur-workspace/mpa dev",
     "dev:apps:mpa": "pnpm --filter @clair-obscur-workspace/mpa dev",
     "dev:packages:utils": "pnpm --filter @clair-obscur-workspace/utils dev",
     "build": "pnpm --parallel --filter @clair-obscur-workspace/utils --filter @clair-obscur-workspace/mpa build",
@@ -15,7 +15,6 @@
     "test": "pnpm --recursive test",
     "test:apps:mpa": "pnpm --filter @clair-obscur-workspace/mpa test",
     "test:packages:utils": "pnpm --filter @clair-obscur-workspace/utils test"
-
   },
   "keywords": [],
   "author": "Loïc TRUCHOT <loic.truchot.pro@gmail.com>",
@@ -30,7 +29,7 @@
     "@vitest/coverage-v8": "catalog:",
     "eslint": "catalog:",
     "eslint-config-prettier": "catalog:",
-    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-import-resolver-typescript": "catalog:",
     "eslint-plugin-prettier": "catalog:",
     "globals": "catalog:",
     "jiti": "catalog:",
@@ -55,5 +54,7 @@
     "plugins": [
       "prettier-plugin-organize-imports"
     ]
+  },
+  "dependencies": {
   }
 }
