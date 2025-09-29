@@ -1,20 +1,14 @@
 import { DefaultAnimalNameGenerator } from '@clair-obscur-workspace/funny-animals-generator';
 import { serve } from '@hono/node-server';
+import { serveStatic } from '@hono/node-server/serve-static';
 import { useSession } from '@hono/session';
-import { config } from 'dotenv';
 import { Hono } from 'hono';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SessionController } from './adapters/in/web/session-controller';
+import { authSecret, isDevelopment, port } from './adapters/out/infrastructure/config';
 import { InMemorySessionRepository } from './adapters/out/infrastructure/in-memory-session-repository';
 import { DefaultSessionService } from './domain/services/session-service';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-config({
-  path: path.join(__dirname, '../../../.env'),
-});
 
 interface SessionData {
   id?: string;
@@ -30,10 +24,18 @@ const app = new Hono<{
   };
 }>();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+if (isDevelopment) {
+  app.use('/pro.js', serveStatic({ path: path.join(__dirname, 'datastar-pro/pro.js') }));
+  app.use('/inspector.js', serveStatic({ path: path.join(__dirname, 'datastar-pro/inspector.js') }));
+}
+
 app.use(
   '*',
   useSession({
-    secret: process.env.AUTH_SECRET,
+    secret: authSecret,
   }),
 );
 
@@ -46,7 +48,6 @@ app.get('/', (c) => sessionController.renderSessionPage(c));
 
 app.get('/alive', (c) => sessionController.keepAlive(c));
 
-const port = process.env.PORT ?? 3000;
 serve({
   fetch: app.fetch,
   port: Number(port),

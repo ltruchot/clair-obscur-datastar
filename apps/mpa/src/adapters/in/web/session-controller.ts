@@ -2,6 +2,7 @@ import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/web';
 import type { Context } from 'hono';
 import { html } from 'hono/html';
 import type { SessionService } from '../../../domain/services/session-service.ts';
+import { isDevelopment } from '../../out/infrastructure/config';
 import { HonoSessionAdapter } from '../../out/infrastructure/hono-session-adapter';
 
 export class SessionController {
@@ -13,6 +14,13 @@ export class SessionController {
         <head>
           <title>Clair Obscur</title>
           <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js"></script>
+
+          ${isDevelopment
+            ? html`
+                <script type="module" src="pro.js"></script>
+                <script type="module" src="inspector.js"></script>
+              `
+            : ''}
         </head>
         <body>
           <h1 data-on-interval__duration.1s.leading="@get('/alive')">Active Sessions</h1>
@@ -20,6 +28,8 @@ export class SessionController {
           <hr />
           <div>All animals on this channel:</div>
           <ul id="sessions"></ul>
+
+          ${isDevelopment ? html` <datastar-inspector></datastar-inspector> ` : ''}
         </body>
       </html>`;
 

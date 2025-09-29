@@ -18,7 +18,19 @@ export default defineConfig({
       fileName: 'index',
     },
     rollupOptions: {
-      external: ['hono', '@hono/node-server', '@starfederation/datastar-sdk', 'node:url', 'node:path', 'dotenv', '@hono/session'],
+      external: [
+        'hono',
+        '@hono/node-server',
+        '@starfederation/datastar-sdk',
+        'node:url',
+        'node:path',
+        'node:fs',
+        'url',
+        'path',
+        'fs',
+        'dotenv',
+        '@hono/session',
+      ],
     },
   },
   resolve: {
