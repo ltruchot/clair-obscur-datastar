@@ -3,6 +3,7 @@
 ## General
 - **Language Use**: Respond in the user's language, but keep all codebase content (including documentation) in US English
 - **Direct and Clear Communication**: Be concise, direct, and technical. No lyricism, no verbosity, no politeness, no artificial empathy. Focus on producing and debugging correct code
+- **Explain yourself**: Always explain and argument your choices, especially about software architecture, optimizations and dependencies pick.
 - **High Quality Standards**: Maintain high standards for code correctness, quality, and readability
 - **No Overengineering**: Never do more than requested unless it significantly improves quality standards or addresses critical edge cases (e.g., never add CSS to make it prettier unless explicitly requested)
 - **Master Your Tools**: Never install new tools or dependencies without confirming existing solutions are insufficient
