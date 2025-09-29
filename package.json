@@ -4,17 +4,20 @@
   "description": "A mini-multiplayer-collaborative-browser-based game demonstrating DataStar Framework capabilities",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm --parallel --stream --filter @clair-obscur-workspace/utils --filter @clair-obscur-workspace/mpa dev",
+    "dev": "pnpm --parallel --stream --filter @clair-obscur-workspace/utils --filter @clair-obscur-workspace/funny-animals-generator --filter @clair-obscur-workspace/mpa dev",
     "dev:apps:mpa": "pnpm --filter @clair-obscur-workspace/mpa dev",
     "dev:packages:utils": "pnpm --filter @clair-obscur-workspace/utils dev",
-    "build": "pnpm --parallel --filter @clair-obscur-workspace/utils --filter @clair-obscur-workspace/mpa build",
+    "dev:packages:funny-animals-generator": "pnpm --filter @clair-obscur-workspace/funny-animals-generator dev",
+    "build": "pnpm --parallel --filter @clair-obscur-workspace/utils --filter @clair-obscur-workspace/funny-animals-generator --filter @clair-obscur-workspace/mpa build",
     "build:apps:mpa": "pnpm --filter @clair-obscur-workspace/mpa build",
     "build:packages:utils": "pnpm --filter @clair-obscur-workspace/utils build",
+    "build:packages:funny-animals-generator": "pnpm --filter @clair-obscur-workspace/funny-animals-generator build",
     "serve": "pnpm --filter @clair-obscur-workspace/mpa start",
     "lint": "eslint . --fix",
     "test": "pnpm --recursive test",
     "test:apps:mpa": "pnpm --filter @clair-obscur-workspace/mpa test",
-    "test:packages:utils": "pnpm --filter @clair-obscur-workspace/utils test"
+    "test:packages:utils": "pnpm --filter @clair-obscur-workspace/utils test",
+    "test:packages:funny-animals-generator": "pnpm --filter @clair-obscur-workspace/funny-animals-generator test"
   },
   "keywords": [],
   "author": "Loïc TRUCHOT <loic.truchot.pro@gmail.com>",

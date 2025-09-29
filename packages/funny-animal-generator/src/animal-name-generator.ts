@@ -1,5 +1,5 @@
-import type { AnimalName } from '../entities/animal-name';
-import { ADJECTIVES, AnimalNameFactory, ANIMALS } from '../entities/animal-name';
+import type { AnimalName } from './animal-name.ts';
+import { ADJECTIVES, AnimalNameFactory, ANIMALS } from './animal-name.ts';
 
 export interface AnimalNameGenerator {
   generateUnique(usedNames: Set<string>): AnimalName;
@@ -37,7 +37,8 @@ export class DefaultAnimalNameGenerator implements AnimalNameGenerator {
       }
     }
 
-    throw new Error('Unable to generate unique animal name after exhaustive search');
+    // Fallback: return firsts animal name if all combinations are exhausted
+    return AnimalNameFactory.create();
   }
 
   isAvailable(animalName: AnimalName, usedNames: Set<string>): boolean {

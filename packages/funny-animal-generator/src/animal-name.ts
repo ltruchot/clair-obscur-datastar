@@ -268,10 +268,10 @@ export interface AnimalName {
 }
 
 export const AnimalNameFactory = {
-  create(adjective: Adjective, animal: Animal): AnimalName {
+  create(adjective?: Adjective, animal?: Animal): AnimalName {
     return {
-      adjective,
-      animal,
+      adjective: adjective ?? ADJECTIVES[0],
+      animal: animal ?? ANIMALS[0],
       displayName: `${adjective} ${animal}`,
     };
   },
@@ -282,8 +282,8 @@ export const AnimalNameFactory = {
   },
 
   random(): AnimalName {
-    const adjective = ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)];
-    const animal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
+    const adjective: Adjective | undefined = ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)];
+    const animal: Animal | undefined = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
     return AnimalNameFactory.create(adjective, animal);
   },
 

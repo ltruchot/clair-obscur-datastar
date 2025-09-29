@@ -1,9 +1,9 @@
+import type { AnimalNameGenerator } from '@clair-obscur-workspace/utils/src/animal-name-generator';
 import type { InMemorySessionRepository } from '../../adapters/out/infrastructure/in-memory-session-repository';
 import type { Session } from '../entities/session';
 import { SessionFactory, SessionId as SessionIdFactory } from '../entities/session';
 import type { SessionPersistence } from '../ports/session-persistence';
 import type { SessionRepository } from '../ports/session-repository';
-import type { AnimalNameGenerator } from './animal-name-generator';
 
 export interface SessionService {
   getCurrentSession(persistence: SessionPersistence): Promise<Session>;

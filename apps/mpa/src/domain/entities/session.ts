@@ -1,3 +1,5 @@
+import type { AnimalName } from '@clair-obscur-workspace/funny-animals-generator';
+
 export interface SessionId {
   readonly value: string;
 }
@@ -14,8 +16,6 @@ export const SessionId = {
     return { value };
   },
 };
-
-import type { AnimalName } from './animal-name';
 
 export interface Session {
   readonly id: SessionId;

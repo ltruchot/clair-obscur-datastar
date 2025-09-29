@@ -1,10 +1,19 @@
+import { DefaultAnimalNameGenerator } from '@clair-obscur-workspace/funny-animals-generator';
 import { useSession } from '@hono/session';
-import 'dotenv/config';
+import { config } from 'dotenv';
 import { Hono } from 'hono';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { SessionController } from './adapters/in/web/session-controller';
 import { InMemorySessionRepository } from './adapters/out/infrastructure/in-memory-session-repository';
-import { DefaultAnimalNameGenerator } from './domain/services/animal-name-generator';
 import { DefaultSessionService } from './domain/services/session-service';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+config({
+  path: path.join(__dirname, '../../../.env'),
+});
 
 interface SessionData {
   id?: string;
@@ -23,7 +32,7 @@ const app = new Hono<{
 app.use(
   '*',
   useSession({
-    secret: process.env.SESSION_PASSWORD ?? 'default_32_characters_long_password_1234567890',
+    secret: process.env.AUTH_SECRET,
   }),
 );
 

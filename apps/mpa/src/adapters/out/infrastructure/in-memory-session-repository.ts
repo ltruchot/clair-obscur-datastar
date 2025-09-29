@@ -1,6 +1,9 @@
-import { AnimalNameFactory } from '../../../domain/entities/animal-name';
+import { AnimalNameFactory } from '@clair-obscur-workspace/funny-animals-generator';
+import { dedupeList } from '@clair-obscur-workspace/utils';
 import { SessionFactory, type Session, type SessionId } from '../../../domain/entities/session';
 import type { SessionRepository } from '../../../domain/ports/session-repository';
+
+console.log(dedupeList([1, 2, 2, 3, 4, 4, 5, 5]));
 
 export class InMemorySessionRepository implements SessionRepository {
   private sessions = new Map<string, Session>();
