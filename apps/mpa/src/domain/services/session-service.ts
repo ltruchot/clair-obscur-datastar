@@ -1,4 +1,4 @@
-import type { AnimalNameGenerator } from '@clair-obscur-workspace/utils/src/animal-name-generator';
+import type { AnimalNameGenerator } from '@clair-obscur-workspace/funny-animals-generator';
 import type { InMemorySessionRepository } from '../../adapters/out/infrastructure/in-memory-session-repository';
 import type { Session } from '../entities/session';
 import { SessionFactory, SessionId as SessionIdFactory } from '../entities/session';

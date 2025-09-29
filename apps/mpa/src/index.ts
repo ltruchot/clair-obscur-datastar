@@ -43,9 +43,7 @@ const sessionController = new SessionController(sessionService);
 
 app.get('/', (c) => sessionController.renderSessionPage(c));
 
-app.post('/alive', (c) => sessionController.keepAlive(c));
-
-app.get('/sse', (c) => sessionController.streamActiveSessions(c));
+app.get('/alive', (c) => sessionController.keepAlive(c));
 
 const port = 3000;
 console.log(`Server is running on port ${port}`);
