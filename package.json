@@ -11,7 +11,7 @@
     "dev:apps:mpa": "pnpm --filter @clair-obscur-workspace/mpa dev",
     "dev:packages:utils": "pnpm --filter @clair-obscur-workspace/utils dev",
     "dev:packages:funny-animals-generator": "pnpm --filter @clair-obscur-workspace/funny-animals-generator dev",
-    "build": "pnpm --parallel --filter @clair-obscur-workspace/utils --filter @clair-obscur-workspace/funny-animals-generator --filter @clair-obscur-workspace/mpa build",
+    "build": "pnpm --filter @clair-obscur-workspace/utils --filter @clair-obscur-workspace/funny-animals-generator --filter @clair-obscur-workspace/mpa build",
     "build:apps:mpa": "pnpm --filter @clair-obscur-workspace/mpa build",
     "build:packages:utils": "pnpm --filter @clair-obscur-workspace/utils build",
     "build:packages:funny-animals-generator": "pnpm --filter @clair-obscur-workspace/funny-animals-generator build",

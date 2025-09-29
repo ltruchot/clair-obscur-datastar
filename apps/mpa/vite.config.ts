@@ -18,16 +18,7 @@ export default defineConfig({
       fileName: 'index',
     },
     rollupOptions: {
-      external: [
-        'hono',
-        '@hono/node-server',
-        '@starfederation/datastar-sdk',
-        'node:url',
-        'node:path',
-        'dotenv',
-        '@hono/session',
-        '@clair-obscur-workspace/funny-animals-generator',
-      ],
+      external: ['hono', '@hono/node-server', '@starfederation/datastar-sdk', 'node:url', 'node:path', 'dotenv', '@hono/session'],
     },
   },
   resolve: {
