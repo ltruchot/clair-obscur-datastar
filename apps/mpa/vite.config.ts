@@ -3,12 +3,15 @@ import devServer from '@hono/vite-dev-server';
 import path from 'path';
 import { defineConfig } from 'vite';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     devServer({
       entry: 'src/index.ts',
     }),
   ],
+  define: {
+    __ENV_RELATIVE_PATH__: mode === 'production' ? '"../../../.env"' : '"../../../../../../.env"',
+  },
   build: {
     target: 'node20',
     outDir: 'dist',
@@ -43,4 +46,4 @@ export default defineConfig({
       provider: 'v8',
     },
   },
-});
+}));

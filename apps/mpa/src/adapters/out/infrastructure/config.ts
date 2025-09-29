@@ -5,8 +5,10 @@ import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+declare const __ENV_RELATIVE_PATH__: string;
+
 config({
-  path: path.join(__dirname, '../../../../../../.env'),
+  path: path.join(__dirname, __ENV_RELATIVE_PATH__),
 });
 
 export const stageEnvironment = process.env.STAGE_ENV ?? 'production';
