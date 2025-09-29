@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "A mini-multiplayer-collaborative-browser-based game demonstrating DataStar Framework capabilities",
   "main": "index.js",
+  "engines": {
+    "node": "24.9.0"
+  },
   "scripts": {
     "dev": "pnpm --parallel --stream --filter @clair-obscur-workspace/utils --filter @clair-obscur-workspace/funny-animals-generator --filter @clair-obscur-workspace/mpa dev",
     "dev:apps:mpa": "pnpm --filter @clair-obscur-workspace/mpa dev",
