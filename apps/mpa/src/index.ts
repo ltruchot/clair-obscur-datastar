@@ -27,6 +27,14 @@ const app = new Hono<{
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+app.use(
+  '/web-components/*',
+  serveStatic({
+    root: path.join(__dirname, '../../..', 'packages/web-components/dist'),
+    rewriteRequestPath: (p) => p.replace(/^\/web-components/, ''),
+  }),
+);
+
 if (isDevelopment) {
   app.use('/pro.js', serveStatic({ path: path.join(__dirname, 'datastar-pro/pro.js') }));
   app.use('/inspector.js', serveStatic({ path: path.join(__dirname, 'datastar-pro/inspector.js') }));

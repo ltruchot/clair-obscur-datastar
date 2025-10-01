@@ -7,7 +7,14 @@ import tseslint from 'typescript-eslint';
 
 export default defineConfig([
   {
-    ignores: ['**/node_modules/**', '**/dist/**', '**/coverage/**', '**/build/**', 'eslint.config.mts'],
+    ignores: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/coverage/**',
+      '**/build/**',
+      'eslint.config.mts',
+      '**/datastar-pro/**',
+    ],
   },
 
   {
@@ -39,4 +46,15 @@ export default defineConfig([
   tseslint.configs.stylisticTypeChecked,
   eslintConfigPrettier,
   eslintPluginPrettierRecommended,
+  {
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
+    },
+  },
 ]);

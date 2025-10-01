@@ -1,0 +1,36 @@
+{
+  "name": "@clair-obscur-workspace/web-components",
+  "version": "1.0.0",
+  "description": "Vanilla Web Components library",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./list-element": {
+      "types": "./dist/list-element.d.ts",
+      "import": "./dist/list-element.es.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "pnpm --parallel run \"/^dev:.*/\"",
+    "dev:watch": "vite build --watch",
+    "dev:watch:types": "tsc --watch --preserveWatchOutput",
+    "test": "vitest",
+    "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage",
+    "test:precommit": "vitest --watch=false",
+    "build": "vite build && tsc"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "jsdom": "catalog:",
+    "tslib": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}

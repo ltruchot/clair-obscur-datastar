@@ -14,6 +14,7 @@ export class SessionController {
         <head>
           <title>Clair Obscur</title>
           <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js"></script>
+          <script type="module" src="/web-components/list-element.es.js"></script>
 
           ${isDevelopment
             ? html`
@@ -27,7 +28,7 @@ export class SessionController {
           You are <strong id="personal-session">an unknown animal</strong>
           <hr />
           <div>All animals on this channel:</div>
-          <ul id="sessions"></ul>
+          <list-element id="sessions"></list-element>
 
           ${isDevelopment ? html` <datastar-inspector></datastar-inspector> ` : ''}
         </body>
@@ -42,34 +43,24 @@ export class SessionController {
     try {
       const currentSession = await this.sessionService.getCurrentSession(persistence);
       const activeSessions = await this.sessionService.getActiveSessions();
-      const sessionData = activeSessions.map((session) => ({
+      const sessionItems = activeSessions.map((session) => ({
         id: session.id.value,
-        animalName: session.animalName.displayName,
-        isCurrent: session.id.value === currentSession.id.value,
+        label: `${session.animalName.displayName}${session.id.value === currentSession.id.value ? ' (you)' : ''}`,
       }));
+
       return ServerSentEventGenerator.stream((stream) => {
+        const itemsJson = JSON.stringify(sessionItems).replace(/"/g, '&quot;');
         stream.patchElements(`
           <strong id="personal-session">${currentSession.animalName.displayName}</strong>
-          <ul id="sessions">
-            ${sessionData
-              .map(
-                (session) => `
-                  <li>${session.animalName} ${session.isCurrent ? ' (you)' : ''}</li>
-                `,
-              )
-              .join('')}
-          </ul>
+          <list-element id="sessions" items="${itemsJson}"></list-element>
         `);
       });
     } catch {
       return ServerSentEventGenerator.stream((stream) => {
-        stream.patchElements(
-          `
+        stream.patchElements(`
           <strong id="personal-session">an unknown animal</strong>
-          <ul id="sessions">
-          </ul>
-        `,
-        );
+          <list-element id="sessions" items="[]"></list-element>
+        `);
       });
     }
   }
