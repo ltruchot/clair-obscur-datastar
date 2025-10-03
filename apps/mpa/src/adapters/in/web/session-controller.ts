@@ -9,8 +9,8 @@ export class SessionController {
   constructor(private readonly sessionService: SessionService) {}
 
   async renderSessionPage(c: Context): Promise<Response> {
-    const page = html`<!DOCTYPE html lang="en">
-      <html>
+    const page = html`<!DOCTYPE html>
+      <html lang="en">
         <head>
           <title>Clair Obscur</title>
           <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js"></script>
