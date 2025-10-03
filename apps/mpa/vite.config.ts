@@ -9,12 +9,14 @@ export default defineConfig(({ mode }) => ({
       entry: 'src/index.ts',
     }),
   ],
+  publicDir: 'src/assets',
   define: {
-    __ENV_RELATIVE_PATH__: mode === 'production' ? '"../../../.env"' : '"../../../../../../.env"',
+    __ENV_RELATIVE_PATH__: mode === 'production' ? '"../../../.env"' : '"../../../../.env"',
   },
   build: {
     target: 'node20',
     outDir: 'dist',
+    copyPublicDir: true,
     lib: {
       entry: 'src/index.ts',
       formats: ['es'],

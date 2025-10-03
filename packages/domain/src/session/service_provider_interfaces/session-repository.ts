@@ -1,4 +1,4 @@
-import type { Session, SessionId } from '../entities/session.ts';
+import type { Session, SessionId } from '../session.ts';
 
 export interface SessionRepository {
   findById(id: SessionId): Promise<Session | undefined>;

@@ -1,3 +1,5 @@
+import type { AnimalName } from '@clair-obscur-workspace/domain';
+
 export const ADJECTIVES = [
   // Classic positive
   'Happy',
@@ -261,24 +263,12 @@ export const ANIMALS = [
 export type Adjective = (typeof ADJECTIVES)[number];
 export type Animal = (typeof ANIMALS)[number];
 
-export interface AnimalName {
-  readonly adjective: Adjective;
-  readonly animal: Animal;
-  readonly displayName: string;
-}
-
 export const AnimalNameFactory = {
   create(adjective?: Adjective, animal?: Animal): AnimalName {
     return {
       adjective: adjective ?? ADJECTIVES[0],
       animal: animal ?? ANIMALS[0],
-      displayName: `${adjective} ${animal}`,
     };
-  },
-
-  fromString(displayName: string): AnimalName {
-    const [adjective, animal] = displayName.split(' ') as [Adjective, Animal];
-    return AnimalNameFactory.create(adjective, animal);
   },
 
   random(): AnimalName {

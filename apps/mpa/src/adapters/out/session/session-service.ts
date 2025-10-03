@@ -1,9 +1,14 @@
+import {
+  Maybe,
+  SessionFactory,
+  SessionIdFactory,
+  SessionRepository,
+  type Session,
+  type SessionId,
+  type SessionPersistence,
+} from '@clair-obscur-workspace/domain';
 import type { AnimalNameGenerator } from '@clair-obscur-workspace/funny-animals-generator';
-import type { InMemorySessionRepository } from '../../adapters/out/infrastructure/in-memory-session-repository';
-import type { Session } from '../entities/session';
-import { SessionFactory, SessionId as SessionIdFactory } from '../entities/session';
-import type { SessionPersistence } from '../ports/session-persistence';
-import type { SessionRepository } from '../ports/session-repository';
+import { InMemorySessionRepository } from './in-memory-session-repository';
 
 export interface SessionService {
   getCurrentSession(persistence: SessionPersistence): Promise<Session>;
@@ -21,8 +26,15 @@ export class DefaultSessionService implements SessionService {
     try {
       const sessionData = await persistence.get();
 
-      if (sessionData?.id) {
-        const sessionId = SessionIdFactory.fromString(sessionData.id);
+      if (sessionData?.id && typeof sessionData.id === 'string') {
+        const idString: string = sessionData.id;
+
+        const maybeSessionId = SessionIdFactory.fromString(idString);
+        const sessionId: SessionId = maybeSessionId.getOrElseValue({ value: '' });
+        if (!sessionId.value) {
+          throw new Error('Session ID is required');
+        }
+
         const existingSession = await this.repository.findById(sessionId);
 
         if (existingSession) {
@@ -37,7 +49,17 @@ export class DefaultSessionService implements SessionService {
 
     const usedNames = (this.repository as InMemorySessionRepository).getUsedAnimalNames();
     const animalName = this.animalNameGenerator.generateUnique(usedNames);
-    const newSession = SessionFactory.create(animalName);
+    const maybeNewSession: Maybe<Session> = SessionFactory.create(animalName, crypto.randomUUID());
+
+    const newSession: Session = maybeNewSession.getOrElseValue({
+      id: { value: '' },
+      animalName: { adjective: '', animal: '' },
+      lastSeen: new Date(),
+    });
+    if (!newSession.id.value) {
+      throw new Error('Session ID is required');
+    }
+
     await persistence.update({ id: newSession.id.value });
     await this.repository.save(newSession);
     return newSession;

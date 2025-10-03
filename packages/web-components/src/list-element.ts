@@ -4,8 +4,6 @@ export interface ListItem {
 }
 
 export class ListElement extends HTMLElement {
-  static readonly observedAttributes = ['items'] as const;
-
   private _shadowRoot: ShadowRoot;
   private _items: ListItem[] = [];
 
@@ -31,18 +29,8 @@ export class ListElement extends HTMLElement {
     this.render();
   }
 
-  attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void {
-    if (name === 'items' && newValue) {
-      try {
-        this.items = JSON.parse(newValue) as ListItem[];
-        console.log('items', this.items);
-      } catch {
-        console.error('Invalid JSON for items attribute');
-      }
-    }
-  }
-
   private render(): void {
+    const fragment = document.createDocumentFragment();
     const ul = document.createElement('ul');
     ul.setAttribute('part', 'list');
 
@@ -54,8 +42,8 @@ export class ListElement extends HTMLElement {
       ul.appendChild(li);
     });
 
-    this._shadowRoot.innerHTML = '';
-    this._shadowRoot.appendChild(ul);
+    fragment.appendChild(ul);
+    this._shadowRoot.replaceChildren(fragment);
   }
 }
 

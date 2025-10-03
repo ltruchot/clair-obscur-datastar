@@ -1,19 +1,27 @@
 {
   "name": "clair-obscur-workspace",
-  "version": "1.0.0",
   "description": "A mini-multiplayer-collaborative-browser-based game demonstrating DataStar Framework capabilities",
+  "version": "1.0.0",
   "main": "index.js",
+  "keywords": [],
+  "author": "Loïc TRUCHOT <loic.truchot.pro@gmail.com>",
+  "license": "MIT",
+
   "engines": {
     "node": "22.20.0"
   },
+  "packageManager": "pnpm@10.18.0",
+
   "scripts": {
-    "dev": "pnpm --parallel --stream --filter @clair-obscur-workspace/utils --filter @clair-obscur-workspace/funny-animals-generator --filter @clair-obscur-workspace/web-components --filter @clair-obscur-workspace/mpa dev",
+    "dev": "pnpm --parallel --stream --filter @clair-obscur-workspace/domain --filter @clair-obscur-workspace/utils --filter @clair-obscur-workspace/funny-animals-generator --filter @clair-obscur-workspace/web-components --filter @clair-obscur-workspace/mpa dev",
     "dev:apps:mpa": "pnpm --filter @clair-obscur-workspace/mpa dev",
+    "dev:packages:domain": "pnpm --filter @clair-obscur-workspace/domain dev",
     "dev:packages:utils": "pnpm --filter @clair-obscur-workspace/utils dev",
     "dev:packages:funny-animals-generator": "pnpm --filter @clair-obscur-workspace/funny-animals-generator dev",
     "dev:packages:web-components": "pnpm --filter @clair-obscur-workspace/web-components dev",
     "build": "pnpm --filter @clair-obscur-workspace/utils --filter @clair-obscur-workspace/funny-animals-generator --filter @clair-obscur-workspace/web-components --filter @clair-obscur-workspace/mpa build",
     "build:apps:mpa": "pnpm --filter @clair-obscur-workspace/mpa build",
+    "build:packages:domain": "pnpm --filter @clair-obscur-workspace/domain build",
     "build:packages:utils": "pnpm --filter @clair-obscur-workspace/utils build",
     "build:packages:funny-animals-generator": "pnpm --filter @clair-obscur-workspace/funny-animals-generator build",
     "build:packages:web-components": "pnpm --filter @clair-obscur-workspace/web-components build",
@@ -21,14 +29,12 @@
     "lint": "eslint . --fix",
     "test": "pnpm --recursive test",
     "test:apps:mpa": "pnpm --filter @clair-obscur-workspace/mpa test",
+    "test:packages:domain": "pnpm --filter @clair-obscur-workspace/domain test",
     "test:packages:utils": "pnpm --filter @clair-obscur-workspace/utils test",
     "test:packages:funny-animals-generator": "pnpm --filter @clair-obscur-workspace/funny-animals-generator test",
     "test:packages:web-components": "pnpm --filter @clair-obscur-workspace/web-components test"
   },
-  "keywords": [],
-  "author": "Loïc TRUCHOT <loic.truchot.pro@gmail.com>",
-  "license": "MIT",
-  "packageManager": "pnpm@10.17.0",
+
   "devDependencies": {
     "@eslint/css": "catalog:",
     "@eslint/js": "catalog:",
@@ -51,6 +57,7 @@
     "vite": "catalog:",
     "vitest": "catalog:"
   },
+  
   "prettier": {
     "singleQuote": true,
     "semi": true,
@@ -63,7 +70,5 @@
     "plugins": [
       "prettier-plugin-organize-imports"
     ]
-  },
-  "dependencies": {
   }
 }

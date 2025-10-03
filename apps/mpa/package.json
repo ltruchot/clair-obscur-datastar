@@ -8,6 +8,7 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
+    "@clair-obscur-workspace/domain": "workspace:*",
     "@clair-obscur-workspace/funny-animals-generator": "workspace:*",
     "@clair-obscur-workspace/utils": "workspace:*",
     "@hono/session": "catalog:",

@@ -1,7 +1,7 @@
 {
-  "name": "@clair-obscur-workspace/funny-animals-generator",
+  "name": "@clair-obscur-workspace/domain",
   "version": "1.0.0",
-  "description": "TypeScript funny animal generator",
+  "description": "Clair-Obscur Datastar domain",
   "private": true,
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",
@@ -21,8 +21,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "jsdom": "catalog:",
-    "@clair-obscur-workspace/domain": "workspace:*"
+    "jsdom": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",

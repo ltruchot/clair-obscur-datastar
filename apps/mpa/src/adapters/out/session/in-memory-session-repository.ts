@@ -1,5 +1,4 @@
-import { SessionFactory, type Session, type SessionId } from '@clair-obscur-workspace/domain';
-import type { SessionRepository } from '@clair-obscur-workspace/domain/src/session/service_provider_interfaces/session-repository';
+import { SessionFactory, SessionRepository, type Session, type SessionId } from '@clair-obscur-workspace/domain';
 import { AnimalNameFactory } from '@clair-obscur-workspace/funny-animals-generator';
 
 export class InMemorySessionRepository implements SessionRepository {

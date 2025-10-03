@@ -1,4 +1,4 @@
-import type { AnimalName } from './animal-name.ts';
+import type { AnimalName } from '@clair-obscur-workspace/domain';
 import { ADJECTIVES, AnimalNameFactory, ANIMALS } from './animal-name.ts';
 
 export interface AnimalNameGenerator {

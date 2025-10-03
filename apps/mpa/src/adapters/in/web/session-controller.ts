@@ -1,9 +1,9 @@
+import { HonoSessionAdapter } from '@/adapters/out/session/hono-session-adapter';
+import { SessionService } from '@/adapters/out/session/session-service';
+import { isDevelopment } from '@/infrastructure/config';
 import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/web';
 import type { Context } from 'hono';
 import { html } from 'hono/html';
-import type { SessionService } from '../../../domain/services/session-service.ts';
-import { isDevelopment } from '../../out/infrastructure/config';
-import { HonoSessionAdapter } from '../../out/infrastructure/hono-session-adapter';
 
 export class SessionController {
   constructor(private readonly sessionService: SessionService) {}
@@ -45,21 +45,24 @@ export class SessionController {
       const activeSessions = await this.sessionService.getActiveSessions();
       const sessionItems = activeSessions.map((session) => ({
         id: session.id.value,
-        label: `${session.animalName.displayName}${session.id.value === currentSession.id.value ? ' (you)' : ''}`,
+        label: `${session.animalName.adjective} ${session.animalName.animal}${session.id.value === currentSession.id.value ? ' (you)' : ''}`,
       }));
 
       return ServerSentEventGenerator.stream((stream) => {
-        const itemsJson = JSON.stringify(sessionItems).replace(/"/g, '&quot;');
         stream.patchElements(`
-          <strong id="personal-session">${currentSession.animalName.displayName}</strong>
-          <list-element id="sessions" items="${itemsJson}"></list-element>
+          <strong id="personal-session">${currentSession.animalName.adjective} ${currentSession.animalName.animal}</strong>
+        `);
+        stream.executeScript(`
+          document.getElementById('sessions').items = ${JSON.stringify(sessionItems)};
         `);
       });
     } catch {
       return ServerSentEventGenerator.stream((stream) => {
         stream.patchElements(`
           <strong id="personal-session">an unknown animal</strong>
-          <list-element id="sessions" items="[]"></list-element>
+        `);
+        stream.executeScript(`
+          document.getElementById('sessions')items = [];
         `);
       });
     }
