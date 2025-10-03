@@ -44,7 +44,7 @@ app.use(
   }),
 );
 
-app.use('/favicon.ico', serveStatic({ root: path.join(__dirname, 'assets/favicon.ico') }));
+app.use('/favicon.ico', serveStatic({ root: path.join(__dirname, 'favicon.ico') }));
 
 app.use(
   '*',

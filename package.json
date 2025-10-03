@@ -19,7 +19,7 @@
     "dev:packages:utils": "pnpm --filter @clair-obscur-workspace/utils dev",
     "dev:packages:funny-animals-generator": "pnpm --filter @clair-obscur-workspace/funny-animals-generator dev",
     "dev:packages:web-components": "pnpm --filter @clair-obscur-workspace/web-components dev",
-    "build": "pnpm --filter @clair-obscur-workspace/utils --filter @clair-obscur-workspace/funny-animals-generator --filter @clair-obscur-workspace/web-components --filter @clair-obscur-workspace/mpa build",
+    "build": "pnpm --filter @clair-obscur-workspace/domain --filter @clair-obscur-workspace/utils --filter @clair-obscur-workspace/funny-animals-generator --filter @clair-obscur-workspace/web-components --filter @clair-obscur-workspace/mpa build",
     "build:apps:mpa": "pnpm --filter @clair-obscur-workspace/mpa build",
     "build:packages:domain": "pnpm --filter @clair-obscur-workspace/domain build",
     "build:packages:utils": "pnpm --filter @clair-obscur-workspace/utils build",
