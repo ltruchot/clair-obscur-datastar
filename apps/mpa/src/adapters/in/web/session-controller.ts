@@ -14,6 +14,7 @@ export class SessionController {
     const session: Session = await this.sessionService.getCurrentSession(persistence);
     const animalName = session?.animalName ? session.animalName.adjective + ' ' + session.animalName.animal : 'an unknown animal';
     const color = session?.color ?? '#000000';
+    const sessionItems = await this.extractSessionListItems(session);
 
     const page = html`<!DOCTYPE html>
       <html lang="en">
@@ -33,7 +34,7 @@ export class SessionController {
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         </head>
         <body>
-          <h1 data-on-interval__duration.2s.leading="@get('/alive')">Active Sessions</h1>
+          <h1 data-on-interval__duration.2s="@get('/alive')">Active Sessions</h1>
           You are
           <strong id="personal-session" style="color: ${color}">${animalName}</strong>
 
@@ -44,7 +45,7 @@ export class SessionController {
 
           <hr />
           <div>All animals on this channel:</div>
-          <list-element id="sessions" data-attr-items="$items"></list-element>
+          <list-element id="sessions" data-on-load="$items = ${JSON.stringify(sessionItems)}" data-attr-items="$items"></list-element>
 
           ${isDevelopment ? html` <datastar-inspector></datastar-inspector> ` : ''}
         </body>
@@ -58,7 +59,7 @@ export class SessionController {
     const persistence = new HonoSessionAdapter(c);
     await this.sessionService.setColor(persistence, jsonBody.color_changed);
     const currentSession = await this.sessionService.getCurrentSession(persistence);
-    const sessionItems = await this.mapSessionToListItems(c);
+    const sessionItems = await this.extractSessionListItems(currentSession);
 
     return ServerSentEventGenerator.stream((stream) => {
       stream.patchElements(`
@@ -74,7 +75,7 @@ export class SessionController {
 
     try {
       const currentSession = await this.sessionService.getCurrentSession(persistence);
-      const sessionItems = await this.mapSessionToListItems(c);
+      const sessionItems = await this.extractSessionListItems(currentSession);
 
       return ServerSentEventGenerator.stream((stream) => {
         stream.patchElements(`
@@ -93,9 +94,7 @@ export class SessionController {
     }
   }
 
-  private async mapSessionToListItems(c: Context) {
-    const persistence = new HonoSessionAdapter(c);
-    const currentSession = await this.sessionService.getCurrentSession(persistence);
+  private async extractSessionListItems(currentSession: Session) {
     const activeSessions = await this.sessionService.getActiveSessions();
     const isCurrentSession = (session: Session) => session.id.value === currentSession.id.value;
     return activeSessions.map((session) => ({
