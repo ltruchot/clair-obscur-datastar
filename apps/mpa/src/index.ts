@@ -1,10 +1,7 @@
 import { SessionController } from '@/adapters/in/web/session-controller';
-import { InMemorySessionRepository } from '@/adapters/out/session/in-memory-session-repository';
 import { DefaultSessionService } from '@/adapters/out/session/session-service';
 
 import { authSecret, isDevelopment, port } from '@/infrastructure/config';
-
-import { DefaultAnimalNameGenerator } from '@clair-obscur-workspace/funny-animals-generator';
 
 import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
@@ -13,10 +10,7 @@ import { Hono } from 'hono';
 
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-
-interface SessionData {
-  id?: string;
-}
+import { SessionData } from './infrastructure/session';
 
 const app = new Hono<{
   Variables: {
@@ -34,6 +28,8 @@ const __dirname = path.dirname(__filename);
 if (isDevelopment) {
   app.use('/pro.js', serveStatic({ path: path.join(__dirname, 'assets/datastar-pro/pro.js') }));
   app.use('/inspector.js', serveStatic({ path: path.join(__dirname, 'assets/datastar-pro/inspector.js') }));
+} else {
+  app.use('/datastar.js', serveStatic({ path: path.join(__dirname, 'assets/datastar.js') }));
 }
 
 app.use(
@@ -44,7 +40,7 @@ app.use(
   }),
 );
 
-app.use('/favicon.ico', serveStatic({ root: path.join(__dirname, 'favicon.ico') }));
+app.use('/favicon.ico', serveStatic({ root: path.join(__dirname, 'assets/favicon.ico') }));
 
 app.use(
   '*',
@@ -53,14 +49,14 @@ app.use(
   }),
 );
 
-const sessionRepository = new InMemorySessionRepository();
-const animalNameGenerator = new DefaultAnimalNameGenerator();
-const sessionService = new DefaultSessionService(sessionRepository, animalNameGenerator);
+const sessionService = new DefaultSessionService();
 const sessionController = new SessionController(sessionService);
 
 app.get('/', (c) => sessionController.renderSessionPage(c));
 
 app.get('/alive', (c) => sessionController.keepAlive(c));
+
+app.post('/color', (c) => sessionController.setColor(c));
 
 if (!isDevelopment) {
   const server = serve({

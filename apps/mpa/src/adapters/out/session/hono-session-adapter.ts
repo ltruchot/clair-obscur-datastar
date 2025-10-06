@@ -1,4 +1,5 @@
-import type { SessionData, SessionPersistence } from '@clair-obscur-workspace/domain';
+import { SessionData } from '@/infrastructure/session';
+import type { SessionPersistence } from '@clair-obscur-workspace/domain';
 import type { Context } from 'hono';
 
 export class HonoSessionAdapter implements SessionPersistence {

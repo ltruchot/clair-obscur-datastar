@@ -1,15 +1,27 @@
 export interface ListItem {
   id: string;
   label: string;
+  isCurrentSession: boolean;
+  color: string;
 }
 
 export class ListElement extends HTMLElement {
   private _shadowRoot: ShadowRoot;
   private _items: ListItem[] = [];
 
+  static get observedAttributes(): readonly string[] {
+    return ['items'] as const;
+  }
+
   constructor() {
     super();
     this._shadowRoot = this.attachShadow({ mode: 'open' });
+  }
+
+  attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void {
+    if (name === 'items') {
+      this.items = newValue ? (JSON.parse(newValue) as ListItem[]) : ([] as ListItem[]);
+    }
   }
 
   connectedCallback(): void {
@@ -38,7 +50,12 @@ export class ListElement extends HTMLElement {
       const li = document.createElement('li');
       li.setAttribute('part', 'item');
       li.setAttribute('data-id', item.id);
-      li.textContent = item.label;
+      li.style.color = item.color;
+      if (item.isCurrentSession) {
+        li.innerHTML = `${item.label} (you)`;
+      } else {
+        li.textContent = item.label;
+      }
       ul.appendChild(li);
     });
 

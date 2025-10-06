@@ -14,6 +14,7 @@ export default defineConfig([
       '**/build/**',
       'eslint.config.mts',
       '**/datastar-pro/**',
+      '**/datastar.js',
     ],
   },
 

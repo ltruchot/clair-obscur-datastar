@@ -26,6 +26,11 @@ export class InMemorySessionRepository implements SessionRepository {
     return Promise.resolve();
   }
 
+  update(session: Session): Promise<void> {
+    this.sessions.set(session.id.value, session);
+    return Promise.resolve();
+  }
+
   delete(id: SessionId): Promise<void> {
     const session = this.sessions.get(id.value);
     if (session) {

@@ -18,6 +18,7 @@ export default defineConfig({
     lib: {
       entry: {
         'list-element': resolve(__dirname, 'src/list-element.ts'),
+        'color-picker-element': resolve(__dirname, 'src/color-picker-element.ts'),
       },
       formats: ['es'],
     },

@@ -1,6 +1,7 @@
 import { HonoSessionAdapter } from '@/adapters/out/session/hono-session-adapter';
 import { SessionService } from '@/adapters/out/session/session-service';
 import { isDevelopment } from '@/infrastructure/config';
+import { Session } from '@clair-obscur-workspace/domain';
 import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/web';
 import type { Context } from 'hono';
 import { html } from 'hono/html';
@@ -13,22 +14,28 @@ export class SessionController {
       <html lang="en">
         <head>
           <title>Clair Obscur</title>
-          <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js"></script>
           <script type="module" src="/web-components/list-element.es.js"></script>
+          <script type="module" src="/web-components/color-picker-element.es.js"></script>
 
           ${isDevelopment
             ? html`
                 <script type="module" src="pro.js"></script>
                 <script type="module" src="inspector.js"></script>
               `
-            : ''}
+            : '<script type="module" src="/datastar.js"></script>'}
         </head>
         <body>
           <h1 data-on-interval__duration.1s.leading="@get('/alive')">Active Sessions</h1>
           You are <strong id="personal-session">an unknown animal</strong>
+
+          <color-picker
+            data-signals-color_changed
+            data-on-colorchange="$color_changed = event.detail.value; @post('/color')"></color-picker>
+          <div data-text="$_color_changed"></div>
+
           <hr />
           <div>All animals on this channel:</div>
-          <list-element id="sessions"></list-element>
+          <list-element id="sessions" data-attr-items="$items"></list-element>
 
           ${isDevelopment ? html` <datastar-inspector></datastar-inspector> ` : ''}
         </body>
@@ -37,33 +44,59 @@ export class SessionController {
     return c.html(page);
   }
 
+  async setColor(c: Context) {
+    const jsonBody = await c.req.json();
+    console.log('jsonBody', jsonBody);
+    const persistence = new HonoSessionAdapter(c);
+    await this.sessionService.setColor(persistence, jsonBody.color_changed);
+    const currentSession = await this.sessionService.getCurrentSession(persistence);
+    const activeSessions = await this.sessionService.getActiveSessions();
+    const isCurrentSession = (session: Session) => session.id.value === currentSession.id.value;
+    const sessionItems = activeSessions.map((session) => ({
+      id: session.id.value,
+      label: `${session.animalName.adjective} ${session.animalName.animal}`,
+      color: session.color as string,
+      isCurrentSession: isCurrentSession(session),
+    }));
+
+    return ServerSentEventGenerator.stream((stream) => {
+      stream.patchSignals(JSON.stringify({ items: JSON.stringify(sessionItems) }));
+    });
+
+    return c.json({ message: 'Color set' });
+  }
+
   async keepAlive(c: Context) {
     const persistence = new HonoSessionAdapter(c);
 
     try {
       const currentSession = await this.sessionService.getCurrentSession(persistence);
       const activeSessions = await this.sessionService.getActiveSessions();
+      const isCurrentSession = (session: Session) => session.id.value === currentSession.id.value;
+      console.log(
+        'currentSession.color',
+        activeSessions.map((session) => session.color as string),
+      );
       const sessionItems = activeSessions.map((session) => ({
         id: session.id.value,
-        label: `${session.animalName.adjective} ${session.animalName.animal}${session.id.value === currentSession.id.value ? ' (you)' : ''}`,
+        label: `${session.animalName.adjective} ${session.animalName.animal}`,
+        color: session.color as string,
+        isCurrentSession: isCurrentSession(session),
       }));
 
       return ServerSentEventGenerator.stream((stream) => {
         stream.patchElements(`
           <strong id="personal-session">${currentSession.animalName.adjective} ${currentSession.animalName.animal}</strong>
         `);
-        stream.executeScript(`
-          document.getElementById('sessions').items = ${JSON.stringify(sessionItems)};
-        `);
+
+        stream.patchSignals(JSON.stringify({ items: JSON.stringify(sessionItems) }));
       });
     } catch {
       return ServerSentEventGenerator.stream((stream) => {
         stream.patchElements(`
           <strong id="personal-session">an unknown animal</strong>
         `);
-        stream.executeScript(`
-          document.getElementById('sessions')items = [];
-        `);
+        stream.patchSignals(JSON.stringify({ items: JSON.stringify([]) }));
       });
     }
   }

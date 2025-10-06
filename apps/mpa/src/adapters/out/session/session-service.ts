@@ -2,25 +2,40 @@ import {
   Maybe,
   SessionFactory,
   SessionIdFactory,
-  SessionRepository,
   type Session,
   type SessionId,
   type SessionPersistence,
 } from '@clair-obscur-workspace/domain';
-import type { AnimalNameGenerator } from '@clair-obscur-workspace/funny-animals-generator';
+import { DefaultAnimalNameGenerator, type AnimalNameGenerator } from '@clair-obscur-workspace/funny-animals-generator';
 import { InMemorySessionRepository } from './in-memory-session-repository';
 
 export interface SessionService {
   getCurrentSession(persistence: SessionPersistence): Promise<Session>;
   trackSession(session: Session): Promise<void>;
   getActiveSessions(): Promise<Session[]>;
+  setColor(persistence: SessionPersistence, color: string): Promise<void>;
 }
 
 export class DefaultSessionService implements SessionService {
-  constructor(
-    private readonly repository: SessionRepository,
-    private readonly animalNameGenerator: AnimalNameGenerator,
-  ) {}
+  private readonly repository: InMemorySessionRepository;
+  private readonly animalNameGenerator: AnimalNameGenerator;
+  constructor() {
+    this.repository = new InMemorySessionRepository();
+    this.animalNameGenerator = new DefaultAnimalNameGenerator();
+  }
+
+  async setColor(persistence: SessionPersistence, color: string): Promise<void> {
+    const sessionData = await persistence.get();
+    if (sessionData?.id && typeof sessionData.id === 'string') {
+      const idString: string = sessionData.id;
+      const sessionId: SessionId = SessionIdFactory.fromString(idString).getOrElseValue({ value: '' });
+      const existingSession = await this.repository.findById(sessionId);
+      if (existingSession) {
+        const updatedSession = { ...existingSession, color };
+        await this.repository.update(updatedSession);
+      }
+    }
+  }
 
   async getCurrentSession(persistence: SessionPersistence): Promise<Session> {
     try {
@@ -47,14 +62,15 @@ export class DefaultSessionService implements SessionService {
       persistence.delete();
     }
 
-    const usedNames = (this.repository as InMemorySessionRepository).getUsedAnimalNames();
+    const usedNames = this.repository.getUsedAnimalNames();
     const animalName = this.animalNameGenerator.generateUnique(usedNames);
-    const maybeNewSession: Maybe<Session> = SessionFactory.create(animalName, crypto.randomUUID());
+    const maybeNewSession: Maybe<Session> = SessionFactory.create(animalName, crypto.randomUUID(), '#000000');
 
     const newSession: Session = maybeNewSession.getOrElseValue({
       id: { value: '' },
       animalName: { adjective: '', animal: '' },
       lastSeen: new Date(),
+      color: '',
     });
     if (!newSession.id.value) {
       throw new Error('Session ID is required');

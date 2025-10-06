@@ -4,12 +4,13 @@ import { Maybe } from './../../maybe/Maybe.ts';
 import { SessionIdFactory } from './session-id-factory.ts';
 
 export class SessionFactory {
-  static create(animalName: AnimalName, sessionId: string): Maybe<Session> {
+  static create(animalName: AnimalName, sessionId: string, color: string): Maybe<Session> {
     const now = new Date();
     return SessionIdFactory.fromString(sessionId).map((id) => ({
       id,
       animalName,
       lastSeen: now,
+      color,
     }));
   }
 

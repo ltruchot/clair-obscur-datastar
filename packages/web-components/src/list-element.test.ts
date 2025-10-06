@@ -26,8 +26,8 @@ describe('ListElement', () => {
   it('should render items from property', () => {
     const element = document.createElement('list-element') as ListElement;
     const items: ListItem[] = [
-      { id: '1', label: 'Item 1' },
-      { id: '2', label: 'Item 2' },
+      { id: '1', label: 'Item 1', isCurrentSession: false, color: '#000000' },
+      { id: '2', label: 'Item 2', isCurrentSession: false, color: '#000000' },
     ];
 
     element.items = items;
@@ -46,8 +46,9 @@ describe('ListElement', () => {
   it('should render items from attribute', () => {
     const element = document.createElement('list-element') as ListElement;
     const items: ListItem[] = [
-      { id: '1', label: 'Item 1' },
-      { id: '2', label: 'Item 2' },
+      { id: '1', label: 'Item 1', isCurrentSession: false, color: '#000000' },
+      { id: '2', label: 'Item 2', isCurrentSession: false, color: '#000000' },
+      { id: '3', label: 'Item 3', isCurrentSession: true, color: '#000000' },
     ];
 
     element.setAttribute('items', JSON.stringify(items));
@@ -65,13 +66,13 @@ describe('ListElement', () => {
     const element = document.createElement('list-element') as ListElement;
     document.body.appendChild(element);
 
-    element.items = [{ id: '1', label: 'Item 1' }];
+    element.items = [{ id: '1', label: 'Item 1', isCurrentSession: false, color: '#000000' }];
     let listItems = element.shadowRoot.querySelectorAll('li');
     expect(listItems.length).toBe(1);
 
     element.items = [
-      { id: '1', label: 'Item 1' },
-      { id: '2', label: 'Item 2' },
+      { id: '1', label: 'Item 1', isCurrentSession: false, color: '#000000' },
+      { id: '2', label: 'Item 2', isCurrentSession: false, color: '#000000' },
     ];
     listItems = element.shadowRoot.querySelectorAll('li');
     expect(listItems.length).toBe(2);
@@ -79,7 +80,7 @@ describe('ListElement', () => {
 
   it('should have part attributes for styling', () => {
     const element = document.createElement('list-element') as ListElement;
-    element.items = [{ id: '1', label: 'Item 1' }];
+    element.items = [{ id: '1', label: 'Item 1', isCurrentSession: false, color: '#000000' }];
     document.body.appendChild(element);
 
     const ul = element.shadowRoot.querySelector('ul');
