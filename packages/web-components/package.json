@@ -14,16 +14,13 @@
     "dist"
   ],
   "scripts": {
-    "dev": "pnpm --parallel run \"/^dev:.*/\"",
-    "dev:watch": "vite build --watch",
-    "dev:watch:types": "tsc --watch --preserveWatchOutput",
+    "dev": "vite build --watch",
     "test": "vitest",
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",
     "test:precommit": "vitest --watch=false",
-    "build": "vite build && tsc"
+    "build": "vite build"
   },
-  "dependencies": {},
   "devDependencies": {
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
@@ -31,6 +28,7 @@
     "tslib": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
+    "vite-plugin-dts": "catalog:",
     "vitest": "catalog:"
   }
 }

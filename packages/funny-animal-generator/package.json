@@ -11,9 +11,7 @@
     "dist"
   ],
   "scripts": {
-    "dev": "pnpm --parallel run \"/^dev:.*/\"",
-    "dev:watch": "vite build --watch",
-    "dev:watch:types": "tsc --watch --preserveWatchOutput",
+    "dev": "vite build --watch",
     "test": "vitest",
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",
@@ -21,8 +19,8 @@
     "build": "vite build"
   },
   "dependencies": {
-    "jsdom": "catalog:",
-    "@clair-obscur-workspace/domain": "workspace:*"
+    "@clair-obscur-workspace/domain": "workspace:*",
+    "jsdom": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",
@@ -30,6 +28,7 @@
     "tslib": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
+    "vite-plugin-dts": "catalog:",
     "vitest": "catalog:"
   }
 }

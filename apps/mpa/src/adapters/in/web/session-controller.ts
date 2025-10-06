@@ -1,7 +1,7 @@
 import { HonoSessionAdapter } from '@/adapters/out/session/hono-session-adapter';
 import { SessionService } from '@/adapters/out/session/session-service';
 import { isDevelopment } from '@/infrastructure/config';
-import { Session } from '@clair-obscur-workspace/domain';
+import type { Session } from '@clair-obscur-workspace/domain';
 import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/web';
 import type { Context } from 'hono';
 import { html } from 'hono/html';
@@ -10,6 +10,10 @@ export class SessionController {
   constructor(private readonly sessionService: SessionService) {}
 
   async renderSessionPage(c: Context): Promise<Response> {
+    const persistence = new HonoSessionAdapter(c);
+    const session: Session = await this.sessionService.getCurrentSession(persistence);
+    const animalName = session?.animalName ? session.animalName.adjective + ' ' + session.animalName.animal : 'an unknown animal';
+
     const page = html`<!DOCTYPE html>
       <html lang="en">
         <head>
@@ -28,8 +32,8 @@ export class SessionController {
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         </head>
         <body>
-          <h1 data-on-interval__duration.1s.leading="@get('/alive')">Active Sessions</h1>
-          You are <strong id="personal-session">an unknown animal</strong>
+          <h1 data-on-interval__duration.2s.leading="@get('/alive')">Active Sessions</h1>
+          You are <strong id="personal-session" data-style-color="$color_changed">${animalName}</strong>
 
           <color-picker
             data-signals-color_changed
@@ -49,16 +53,18 @@ export class SessionController {
 
   async setColor(c: Context) {
     const jsonBody = await c.req.json();
-    console.log('jsonBody', jsonBody);
     const persistence = new HonoSessionAdapter(c);
     await this.sessionService.setColor(persistence, jsonBody.color_changed);
+    const currentSession = await this.sessionService.getCurrentSession(persistence);
     const sessionItems = await this.mapSessionToListItems(c);
 
     return ServerSentEventGenerator.stream((stream) => {
+      stream.patchElements(`
+        <strong id="personal-session" style="color:${currentSession.color}">${currentSession.animalName.adjective} ${currentSession.animalName.animal}</strong>
+      `);
+
       stream.patchSignals(JSON.stringify({ items: JSON.stringify(sessionItems) }));
     });
-
-    return c.json({ message: 'Color set' });
   }
 
   async keepAlive(c: Context) {
@@ -70,7 +76,7 @@ export class SessionController {
 
       return ServerSentEventGenerator.stream((stream) => {
         stream.patchElements(`
-          <strong id="personal-session">${currentSession.animalName.adjective} ${currentSession.animalName.animal}</strong>
+          <strong id="personal-session" style="color:${currentSession.color}">${currentSession.animalName.adjective} ${currentSession.animalName.animal}</strong>
         `);
 
         stream.patchSignals(JSON.stringify({ items: JSON.stringify(sessionItems) }));

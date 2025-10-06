@@ -1,3 +1,4 @@
+import dts from 'vite-plugin-dts';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -9,6 +10,7 @@ export default defineConfig({
       reportsDirectory: './coverage', // dossier de sortie
     },
   },
+  plugins: [dts()],
   build: {
     sourcemap: true,
     outDir: './dist',

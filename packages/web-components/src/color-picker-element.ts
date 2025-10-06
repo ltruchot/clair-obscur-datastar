@@ -23,6 +23,11 @@ export class ColorPickerElement extends HTMLElement {
           border-radius: 4px;
           padding: 8px;
           margin: 0;
+          opacity: 0;
+          transition: opacity 0.15s ease-in-out;
+        }
+        [popover]:popover-open {
+          opacity: 1;
         }
         .color-grid {
           display: grid;
@@ -41,7 +46,7 @@ export class ColorPickerElement extends HTMLElement {
           border-color: #999;
         }
       </style>
-      <div id="color-picker-button">🗚</div>
+      <div id="color-picker-button">&#119808;</div>
       <div id="color-picker-popover" popover>
         <div class="color-grid">
           ${this.colors.map((color) => `<button type="submit" class="color-swatch" data-color="${color}" style="background-color: ${color}"></button>`).join('')}
