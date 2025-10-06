@@ -25,12 +25,16 @@ const app = new Hono<{
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-if (isDevelopment) {
-  app.use('/pro.js', serveStatic({ path: path.join(__dirname, 'assets/datastar-pro/pro.js') }));
-  app.use('/inspector.js', serveStatic({ path: path.join(__dirname, 'assets/datastar-pro/inspector.js') }));
-} else {
-  app.use('/datastar.js', serveStatic({ path: path.join(__dirname, 'assets/datastar.js') }));
-}
+/*
+app.use(
+  '*',
+  logger((msg) => {
+    console.log('Request:', decodeURIComponent(msg));
+  }),
+);
+*/
+
+app.use('/assets/*', serveStatic({ root: __dirname }));
 
 app.use(
   '/web-components/*',
@@ -40,23 +44,16 @@ app.use(
   }),
 );
 
-app.use('/favicon.ico', serveStatic({ root: path.join(__dirname, 'assets/favicon.ico') }));
-
-app.use(
-  '*',
-  useSession({
-    secret: authSecret,
-  }),
-);
+const sessionMiddleware = useSession({ secret: authSecret });
 
 const sessionService = new DefaultSessionService();
 const sessionController = new SessionController(sessionService);
 
-app.get('/', (c) => sessionController.renderSessionPage(c));
+app.get('/', sessionMiddleware, (c) => sessionController.renderSessionPage(c));
 
-app.get('/alive', (c) => sessionController.keepAlive(c));
+app.get('/alive', sessionMiddleware, (c) => sessionController.keepAlive(c));
 
-app.post('/color', (c) => sessionController.setColor(c));
+app.post('/color', sessionMiddleware, (c) => sessionController.setColor(c));
 
 if (!isDevelopment) {
   const server = serve({
@@ -66,14 +63,6 @@ if (!isDevelopment) {
 
   server.once('listening', () => {
     console.log(`Server is running on port ${port}`);
-  });
-
-  server.on('error', (err: NodeJS.ErrnoException) => {
-    if (err.code === 'EADDRINUSE') {
-      console.error(`Port ${port} is already in use. Run: lsof -ti :${port} | xargs kill -9`);
-      process.exit(1);
-    }
-    throw err;
   });
 
   const gracefulShutdown = (signal: string) => {

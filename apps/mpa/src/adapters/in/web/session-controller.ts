@@ -19,10 +19,13 @@ export class SessionController {
 
           ${isDevelopment
             ? html`
-                <script type="module" src="pro.js"></script>
-                <script type="module" src="inspector.js"></script>
+                <script type="module" src="/assets/scripts/datastar-pro/datastar-pro.js"></script>
+                <script type="module" src="/assets/scripts/datastar-pro/datastar-inspector.js"></script>
               `
-            : '<script type="module" src="/datastar.js"></script>'}
+            : html`<script type="module" src="/assets/scripts/datastar-community/datastar.js"></script>`}
+
+          <link rel="icon" href="/assets/favicon/favicon.ico" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         </head>
         <body>
           <h1 data-on-interval__duration.1s.leading="@get('/alive')">Active Sessions</h1>
@@ -49,15 +52,7 @@ export class SessionController {
     console.log('jsonBody', jsonBody);
     const persistence = new HonoSessionAdapter(c);
     await this.sessionService.setColor(persistence, jsonBody.color_changed);
-    const currentSession = await this.sessionService.getCurrentSession(persistence);
-    const activeSessions = await this.sessionService.getActiveSessions();
-    const isCurrentSession = (session: Session) => session.id.value === currentSession.id.value;
-    const sessionItems = activeSessions.map((session) => ({
-      id: session.id.value,
-      label: `${session.animalName.adjective} ${session.animalName.animal}`,
-      color: session.color as string,
-      isCurrentSession: isCurrentSession(session),
-    }));
+    const sessionItems = await this.mapSessionToListItems(c);
 
     return ServerSentEventGenerator.stream((stream) => {
       stream.patchSignals(JSON.stringify({ items: JSON.stringify(sessionItems) }));
@@ -71,18 +66,7 @@ export class SessionController {
 
     try {
       const currentSession = await this.sessionService.getCurrentSession(persistence);
-      const activeSessions = await this.sessionService.getActiveSessions();
-      const isCurrentSession = (session: Session) => session.id.value === currentSession.id.value;
-      console.log(
-        'currentSession.color',
-        activeSessions.map((session) => session.color as string),
-      );
-      const sessionItems = activeSessions.map((session) => ({
-        id: session.id.value,
-        label: `${session.animalName.adjective} ${session.animalName.animal}`,
-        color: session.color as string,
-        isCurrentSession: isCurrentSession(session),
-      }));
+      const sessionItems = await this.mapSessionToListItems(c);
 
       return ServerSentEventGenerator.stream((stream) => {
         stream.patchElements(`
@@ -99,5 +83,18 @@ export class SessionController {
         stream.patchSignals(JSON.stringify({ items: JSON.stringify([]) }));
       });
     }
+  }
+
+  private async mapSessionToListItems(c: Context) {
+    const persistence = new HonoSessionAdapter(c);
+    const currentSession = await this.sessionService.getCurrentSession(persistence);
+    const activeSessions = await this.sessionService.getActiveSessions();
+    const isCurrentSession = (session: Session) => session.id.value === currentSession.id.value;
+    return activeSessions.map((session) => ({
+      id: session.id.value,
+      label: `${session.animalName.adjective} ${session.animalName.animal}`,
+      color: session.color,
+      isCurrentSession: isCurrentSession(session),
+    }));
   }
 }
