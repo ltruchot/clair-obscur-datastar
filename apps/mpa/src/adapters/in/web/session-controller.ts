@@ -13,6 +13,7 @@ export class SessionController {
     const persistence = new HonoSessionAdapter(c);
     const session: Session = await this.sessionService.getCurrentSession(persistence);
     const animalName = session?.animalName ? session.animalName.adjective + ' ' + session.animalName.animal : 'an unknown animal';
+    const color = session?.color ?? '#000000';
 
     const page = html`<!DOCTYPE html>
       <html lang="en">
@@ -33,7 +34,8 @@ export class SessionController {
         </head>
         <body>
           <h1 data-on-interval__duration.2s.leading="@get('/alive')">Active Sessions</h1>
-          You are <strong id="personal-session" data-style-color="$color_changed">${animalName}</strong>
+          You are
+          <strong id="personal-session" style="color: ${color}">${animalName}</strong>
 
           <color-picker
             data-signals-color_changed
