@@ -1,5 +1,9 @@
 import { SessionController } from '@/adapters/in/web/session-controller';
-import { DefaultSessionService } from '@/adapters/out/session/session-service';
+import { EventStoreSessionAdapter } from '@/adapters/out/session/event-store-session-adapter';
+import { SessionCommandService } from '@/adapters/out/session/session-command.service';
+import { SessionQueryService } from '@/adapters/out/session/session-query.service';
+import { EventStore } from '@/infrastructure/event-store/event-store.service';
+import { DefaultAnimalNameGenerator } from '@clair-obscur-workspace/funny-animals-generator';
 
 import { authSecret, isDevelopment, port } from '@/infrastructure/config';
 
@@ -46,12 +50,16 @@ app.use(
 
 const sessionMiddleware = useSession({ secret: authSecret });
 
-const sessionService = new DefaultSessionService();
-const sessionController = new SessionController(sessionService);
+const eventStore = new EventStore();
+const sessionAdapter = new EventStoreSessionAdapter(eventStore);
+const animalNameGenerator = new DefaultAnimalNameGenerator();
+const sessionCommandService = new SessionCommandService(sessionAdapter, sessionAdapter, sessionAdapter, animalNameGenerator);
+const sessionQueryService = new SessionQueryService(sessionAdapter);
+const sessionController = new SessionController(sessionCommandService, sessionQueryService, eventStore);
 
 app.get('/', sessionMiddleware, (c) => sessionController.renderSessionPage(c));
 
-app.get('/read-events', sessionMiddleware, (c) => sessionController.readEvents(c));
+app.get('/read-events', sessionMiddleware, (c) => sessionController.readAndSendEvents(c));
 
 app.post('/color', sessionMiddleware, (c) => sessionController.setColor(c));
 

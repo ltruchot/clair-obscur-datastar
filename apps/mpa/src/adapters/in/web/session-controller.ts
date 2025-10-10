@@ -1,17 +1,23 @@
 import { HonoSessionAdapter } from '@/adapters/out/session/hono-session-adapter';
-import { SessionService } from '@/adapters/out/session/session-service';
+import { SessionCommandService } from '@/adapters/out/session/session-command.service';
+import { SessionQueryService } from '@/adapters/out/session/session-query.service';
 import { isDevelopment } from '@/infrastructure/config';
+import type { EventStore } from '@/infrastructure/event-store/event-store.service';
 import type { Session } from '@clair-obscur-workspace/domain';
 import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/web';
 import type { Context } from 'hono';
 import { html } from 'hono/html';
 
 export class SessionController {
-  constructor(private readonly sessionService: SessionService) {}
+  constructor(
+    private readonly commandService: SessionCommandService,
+    private readonly queryService: SessionQueryService,
+    private readonly eventStore: EventStore,
+  ) {}
 
   async renderSessionPage(c: Context): Promise<Response> {
     const persistence = new HonoSessionAdapter(c);
-    const session: Session = await this.sessionService.getCurrentSession(persistence);
+    const session: Session = await this.commandService.getCurrentSession(persistence);
     const animalName = session?.animalName ? session.animalName.adjective + ' ' + session.animalName.animal : 'an unknown animal';
     const color = session?.color ?? '#000000';
     const sessionItems = await this.extractSessionListItems(session);
@@ -55,47 +61,63 @@ export class SessionController {
   }
 
   async setColor(c: Context) {
-    const jsonBody = await c.req.json();
+    const jsonBody: { color_changed: string } = await c.req.json();
     const persistence = new HonoSessionAdapter(c);
-    await this.sessionService.setColor(persistence, jsonBody.color_changed);
-    const currentSession = await this.sessionService.getCurrentSession(persistence);
-    const sessionItems = await this.extractSessionListItems(currentSession);
+    await this.commandService.setColor(persistence, jsonBody.color_changed);
+    console.log('setColor', jsonBody.color_changed);
 
-    return ServerSentEventGenerator.stream((stream) => {
-      stream.patchElements(`
-        <strong id="personal-session" style="color:${currentSession.color}">${currentSession.animalName.adjective} ${currentSession.animalName.animal}</strong>
-      `);
+    return c.json({ success: true });
+  }
 
-      stream.patchSignals(JSON.stringify({ items: JSON.stringify(sessionItems) }));
+  async readAndSendEvents(c: Context): Promise<Response> {
+    return new Promise((resolve) => {
+      const persistence = new HonoSessionAdapter(c);
+      let unsubscribeStore: () => void | undefined;
+
+      try {
+        ServerSentEventGenerator.stream(
+          async (stream: ServerSentEventGenerator) => {
+            const sendUpdate = async () => {
+              const currentSession = await this.commandService.getCurrentSession(persistence);
+              const sessionItems = await this.extractSessionListItems(currentSession);
+              stream.patchElements(
+                `<strong id="personal-session" style="color:${currentSession.color}">${currentSession.animalName.adjective} ${currentSession.animalName.animal}</strong>`,
+              );
+
+              stream.patchSignals(JSON.stringify({ items: JSON.stringify(sessionItems) }));
+            };
+
+            await sendUpdate();
+
+            unsubscribeStore = this.eventStore.subscribe(() => {
+              console.log('subscribtion triggered');
+              void sendUpdate();
+            });
+            return new Promise(() => {
+              console.log('FIXME: Promise never resolved');
+            });
+          },
+          {
+            onAbort: () => {
+              unsubscribeStore?.();
+              resolve(undefined);
+            },
+          },
+        );
+      } catch {
+        resolve(undefined);
+        return ServerSentEventGenerator.stream((stream) => {
+          stream.patchElements(`
+          <strong id="personal-session">an unknown animal</strong>
+        `);
+          stream.patchSignals(JSON.stringify({ items: JSON.stringify([]) }));
+        });
+      }
     });
   }
 
-  async readAndSendEvents(c: Context) {
-    const persistence = new HonoSessionAdapter(c);
-
-    try {
-      const currentSession = await this.sessionService.getCurrentSession(persistence);
-      const sessionItems = await this.extractSessionListItems(currentSession);
-
-      return ServerSentEventGenerator.stream((stream) => {
-        stream.patchElements(`
-          <strong id="personal-session" style="color:${currentSession.color}">${currentSession.animalName.adjective} ${currentSession.animalName.animal}</strong>
-        `);
-
-        stream.patchSignals(JSON.stringify({ items: JSON.stringify(sessionItems) }));
-      });
-    } catch {
-      return ServerSentEventGenerator.stream((stream) => {
-        stream.patchElements(`
-          <strong id="personal-session">an unknown animal</strong>
-        `);
-        stream.patchSignals(JSON.stringify({ items: JSON.stringify([]) }));
-      });
-    }
-  }
-
   private async extractSessionListItems(currentSession: Session) {
-    const activeSessions = await this.sessionService.getActiveSessions();
+    const activeSessions = await this.queryService.getActiveSessions();
     const isCurrentSession = (session: Session) => session.id.value === currentSession.id.value;
     return activeSessions.map((session) => ({
       id: session.id.value,
