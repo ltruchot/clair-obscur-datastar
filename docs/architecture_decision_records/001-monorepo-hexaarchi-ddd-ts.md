@@ -1,10 +1,10 @@
-# Architecture Decision Record ADR-001: Monorepo with Shared Tooling
+# Architecture Decision Record ADR-001: Monorepo For and Hexagonal Architecture With Domain-Driven Design - TypeScript Stack
 
 ## Status
 Accepted
 
 ## Date
-2025-01-24
+2025-09-24
 
 ## Context
 We need to establish a robust foundation for our MVP that addresses the following requirements:
@@ -67,8 +67,8 @@ We will implement a monorepo architecture using the following technology stack a
 The following areas should be addressed in subsequent ADRs:
 
 ### Near-term Decisions
-- **ADR-002: CI/CD Pipeline** - Define continuous integration and deployment strategy (GitHub Actions, GitLab CI, or similar)
-- **ADR-003: API Documentation Standards** - Establish OpenAPI/Swagger specifications for Hono endpoints
+- **CI/CD Pipeline** - Define continuous integration and deployment strategy (GitHub Actions, GitLab CI, or similar)
+- **API Documentation Standards** - Establish OpenAPI/Swagger specifications for Hono endpoints
 
 ### Medium-term Considerations
 - **Build Optimization** - Evaluate Turborepo or Nx cache integration if build times become problematic

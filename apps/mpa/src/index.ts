@@ -51,7 +51,7 @@ const sessionController = new SessionController(sessionService);
 
 app.get('/', sessionMiddleware, (c) => sessionController.renderSessionPage(c));
 
-app.get('/alive', sessionMiddleware, (c) => sessionController.keepAlive(c));
+app.get('/read-events', sessionMiddleware, (c) => sessionController.readEvents(c));
 
 app.post('/color', sessionMiddleware, (c) => sessionController.setColor(c));
 

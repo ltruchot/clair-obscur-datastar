@@ -34,7 +34,7 @@ export class SessionController {
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         </head>
         <body>
-          <h1 data-on-interval__duration.2s="@get('/alive')">Active Sessions</h1>
+          <h1 data-on-load="@get('/read-events')">Active Sessions</h1>
           You are
           <strong id="personal-session" style="color: ${color}">${animalName}</strong>
 
@@ -70,7 +70,7 @@ export class SessionController {
     });
   }
 
-  async keepAlive(c: Context) {
+  async readAndSendEvents(c: Context) {
     const persistence = new HonoSessionAdapter(c);
 
     try {
