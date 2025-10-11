@@ -17,7 +17,14 @@ export class SessionController {
 
   async renderSessionPage(c: Context): Promise<Response> {
     const persistence = new HonoSessionAdapter(c);
-    const session: Session = await this.commandService.getCurrentSession(persistence);
+    let session = await this.queryService.getCurrentSession(persistence);
+
+    if (!session) {
+      session = await this.commandService.initializeNewSession(persistence);
+    } else {
+      session = await this.commandService.updateSessionActivity(session);
+    }
+
     const animalName = session?.animalName ? session.animalName.adjective + ' ' + session.animalName.animal : 'an unknown animal';
     const color = session?.color ?? '#000000';
     const sessionItems = await this.extractSessionListItems(session);
@@ -40,7 +47,7 @@ export class SessionController {
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         </head>
         <body>
-          <h1 data-on-load="@get('/read-events')">Active Sessions</h1>
+          <h1 data-on-load="@get('/subscribe-to-events')">Active Sessions</h1>
           You are
           <strong id="personal-session" style="color: ${color}">${animalName}</strong>
 
@@ -63,57 +70,61 @@ export class SessionController {
   async setColor(c: Context) {
     const jsonBody: { color_changed: string } = await c.req.json();
     const persistence = new HonoSessionAdapter(c);
-    await this.commandService.setColor(persistence, jsonBody.color_changed);
-    console.log('setColor', jsonBody.color_changed);
+    const session = await this.queryService.getCurrentSession(persistence);
+
+    if (session) {
+      await this.commandService.setColor(session, jsonBody.color_changed);
+      console.log('setColor', jsonBody.color_changed);
+    }
 
     return c.json({ success: true });
   }
 
-  async readAndSendEvents(c: Context): Promise<Response> {
-    return new Promise((resolve) => {
-      const persistence = new HonoSessionAdapter(c);
-      let unsubscribeStore: () => void | undefined;
+  broadcastEvents(c: Context): Response {
+    const persistence = new HonoSessionAdapter(c);
 
-      try {
-        ServerSentEventGenerator.stream(
-          async (stream: ServerSentEventGenerator) => {
-            const sendUpdate = async () => {
-              const currentSession = await this.commandService.getCurrentSession(persistence);
-              const sessionItems = await this.extractSessionListItems(currentSession);
-              stream.patchElements(
-                `<strong id="personal-session" style="color:${currentSession.color}">${currentSession.animalName.adjective} ${currentSession.animalName.animal}</strong>`,
-              );
+    let unsubscribeStore: () => void | undefined;
 
-              stream.patchSignals(JSON.stringify({ items: JSON.stringify(sessionItems) }));
-            };
+    try {
+      return ServerSentEventGenerator.stream(
+        async (stream: ServerSentEventGenerator) => {
+          const sendUpdate = async () => {
+            const currentSession = await this.queryService.getCurrentSession(persistence);
+            if (!currentSession) {
+              throw new Error('Current session not found');
+            }
 
-            await sendUpdate();
+            const sessionItems = await this.extractSessionListItems(currentSession);
 
-            unsubscribeStore = this.eventStore.subscribe(() => {
-              console.log('subscribtion triggered');
-              void sendUpdate();
-            });
-            return new Promise(() => {
-              console.log('FIXME: Promise never resolved');
-            });
+            stream.patchElements(
+              `<strong id="personal-session" style="color:${currentSession.color}">${currentSession.animalName.adjective} ${currentSession.animalName.animal}</strong>`,
+            );
+
+            stream.patchSignals(JSON.stringify({ items: JSON.stringify(sessionItems) }));
+          };
+
+          await sendUpdate();
+
+          unsubscribeStore = this.eventStore.subscribe(() => {
+            void sendUpdate();
+          });
+        },
+        {
+          keepalive: true,
+          onAbort: () => {
+            unsubscribeStore?.();
           },
-          {
-            onAbort: () => {
-              unsubscribeStore?.();
-              resolve(undefined);
-            },
-          },
-        );
-      } catch {
-        resolve(undefined);
-        return ServerSentEventGenerator.stream((stream) => {
-          stream.patchElements(`
+        },
+      );
+    } catch {
+      return ServerSentEventGenerator.stream((stream) => {
+        stream.patchElements(`
           <strong id="personal-session">an unknown animal</strong>
         `);
-          stream.patchSignals(JSON.stringify({ items: JSON.stringify([]) }));
-        });
-      }
-    });
+        stream.patchSignals(JSON.stringify({ items: JSON.stringify([]) }));
+        unsubscribeStore?.();
+      });
+    }
   }
 
   private async extractSessionListItems(currentSession: Session) {

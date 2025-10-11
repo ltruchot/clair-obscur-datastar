@@ -11,6 +11,7 @@ import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { useSession } from '@hono/session';
 import { Hono } from 'hono';
+import { createServer } from 'node:http2';
 
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -53,13 +54,13 @@ const sessionMiddleware = useSession({ secret: authSecret });
 const eventStore = new EventStore();
 const sessionAdapter = new EventStoreSessionAdapter(eventStore);
 const animalNameGenerator = new DefaultAnimalNameGenerator();
-const sessionCommandService = new SessionCommandService(sessionAdapter, sessionAdapter, sessionAdapter, animalNameGenerator);
+const sessionCommandService = new SessionCommandService(sessionAdapter, sessionAdapter, animalNameGenerator);
 const sessionQueryService = new SessionQueryService(sessionAdapter);
 const sessionController = new SessionController(sessionCommandService, sessionQueryService, eventStore);
 
 app.get('/', sessionMiddleware, (c) => sessionController.renderSessionPage(c));
 
-app.get('/read-events', sessionMiddleware, (c) => sessionController.readAndSendEvents(c));
+app.get('/subscribe-to-events', sessionMiddleware, (c) => sessionController.broadcastEvents(c));
 
 app.post('/color', sessionMiddleware, (c) => sessionController.setColor(c));
 
@@ -67,6 +68,7 @@ if (!isDevelopment) {
   const server = serve({
     fetch: app.fetch,
     port: Number(port),
+    createServer,
   });
 
   server.once('listening', () => {
