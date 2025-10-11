@@ -55,6 +55,7 @@ export default defineConfig(({ mode }) => ({
         'node:url',
         'node:path',
         'node:fs',
+        'node:http2',
         'url',
         'path',
         'fs',
