@@ -16,3 +16,4 @@ export const authSecret = process.env.AUTH_SECRET;
 export const port = process.env.PORT ?? 3000;
 
 export const isDevelopment = stageEnvironment === 'development';
+export const isProduction = stageEnvironment === 'production';

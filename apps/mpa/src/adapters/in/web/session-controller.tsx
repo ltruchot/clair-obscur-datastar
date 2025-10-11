@@ -31,6 +31,7 @@ export class SessionController {
     const fontFamily = session?.fontFamily ?? 'sans-serif';
     const sessionItems = await this.extractSessionListItems(session);
 
+    c.header('Content-Type', 'text/html; charset=UTF-8');
     return c.html(<SessionPage animalName={animalName} color={color} fontFamily={fontFamily} sessionItems={sessionItems} />);
   }
 

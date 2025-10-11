@@ -8,28 +8,32 @@ type BaseLayoutProps = PropsWithChildren<{
 
 export const BaseLayout: FC<BaseLayoutProps> = ({ title, children }) => {
   return (
-    <html lang="en">
-      <head>
-        <title>{title}</title>
-        <script type="module" src="/web-components/list-element.es.js"></script>
-        <script type="module" src="/web-components/font-picker-element.es.js"></script>
+    <>
+      {raw('<!DOCTYPE html>')}
+      <html lang="en">
+        <head>
+          <meta charSet="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>{title}</title>
+          <link rel="icon" href="/assets/favicon/favicon.ico" />
 
-        {isDevelopment ? (
-          <>
-            <script type="module" src="/assets/scripts/datastar-pro/datastar-pro.js"></script>
-            <script type="module" src="/assets/scripts/datastar-pro/datastar-inspector.js"></script>
-          </>
-        ) : (
-          <script type="module" src="/assets/scripts/datastar-community/datastar.js"></script>
-        )}
+          <script type="module" src="/web-components/list-element.es.js"></script>
+          <script type="module" src="/web-components/font-picker-element.es.js"></script>
 
-        <link rel="icon" href="/assets/favicon/favicon.ico" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      </head>
-      <body>
-        {children}
-        {isDevelopment && raw('<datastar-inspector></datastar-inspector>')}
-      </body>
-    </html>
+          {isDevelopment ? (
+            <>
+              <script type="module" src="/assets/scripts/datastar-pro/datastar-pro.js"></script>
+              <script type="module" src="/assets/scripts/datastar-pro/datastar-inspector.js"></script>
+            </>
+          ) : (
+            <script type="module" src="/assets/scripts/datastar-community/datastar.js"></script>
+          )}
+        </head>
+        <body>
+          {children}
+          {isDevelopment && raw('<datastar-inspector></datastar-inspector>')}
+        </body>
+      </html>
+    </>
   );
 };

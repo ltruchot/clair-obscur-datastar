@@ -5,13 +5,14 @@ import { SessionQueryService } from '@/adapters/out/session/session-query.servic
 import { EventStore } from '@/infrastructure/event-store/event-store.service';
 import { DefaultAnimalNameGenerator } from '@clair-obscur-workspace/funny-animals-generator';
 
-import { authSecret, isDevelopment, port } from '@/infrastructure/config';
+import { authSecret, isDevelopment, isProduction, port } from '@/infrastructure/config';
 
 import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { useSession } from '@hono/session';
 import { Hono } from 'hono';
-import { createServer } from 'node:http2';
+import { readFileSync } from 'node:fs';
+import { createServer as createHttp2Server, createSecureServer } from 'node:http2';
 
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -65,11 +66,24 @@ app.get('/subscribe-to-events', sessionMiddleware, (c) => sessionController.broa
 app.post('/font-change', sessionMiddleware, (c) => sessionController.setFont(c));
 
 if (!isDevelopment) {
-  const server = serve({
-    fetch: app.fetch,
-    port: Number(port),
-    createServer,
-  });
+  const serverConfig = isProduction
+    ? {
+        fetch: app.fetch,
+        port: Number(port),
+        createServer: createHttp2Server,
+      }
+    : {
+        fetch: app.fetch,
+        port: Number(port),
+        createServer: createSecureServer,
+        serverOptions: {
+          key: readFileSync(path.join(__dirname, '../../../certs/localhost-key.pem')),
+          cert: readFileSync(path.join(__dirname, '../../../certs/localhost-cert.pem')),
+          allowHTTP1: true,
+        },
+      };
+
+  const server = serve(serverConfig);
 
   server.once('listening', () => {
     console.log(`Server is running on port ${port}`);
