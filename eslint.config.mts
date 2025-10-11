@@ -19,7 +19,7 @@ export default defineConfig([
   },
 
   {
-    files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
+    files: ['**/*.{js,mjs,cjs,ts,mts,cts,tsx}'],
     plugins: { js },
     extends: ['js/recommended'],
     languageOptions: {

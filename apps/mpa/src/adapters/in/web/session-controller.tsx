@@ -1,13 +1,13 @@
 import { HonoSessionAdapter } from '@/adapters/out/session/hono-session-adapter';
 import { SessionCommandService } from '@/adapters/out/session/session-command.service';
 import { SessionQueryService } from '@/adapters/out/session/session-query.service';
-import { isDevelopment } from '@/infrastructure/config';
 import { closeStream } from '@/infrastructure/datastar-stream';
 import type { EventStore } from '@/infrastructure/event-store/event-store.service';
 import { type Session } from '@clair-obscur-workspace/domain';
 import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/web';
 import type { Context } from 'hono';
-import { html } from 'hono/html';
+import { SESSION_DATASTAR_IDS } from './session-datastar-ids';
+import { SessionPage } from './session-page';
 
 export class SessionController {
   constructor(
@@ -31,42 +31,7 @@ export class SessionController {
     const fontFamily = session?.fontFamily ?? 'sans-serif';
     const sessionItems = await this.extractSessionListItems(session);
 
-    const page = html`<!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <title>Clair Obscur</title>
-          <script type="module" src="/web-components/list-element.es.js"></script>
-          <script type="module" src="/web-components/font-picker-element.es.js"></script>
-
-          ${isDevelopment
-            ? html`
-                <script type="module" src="/assets/scripts/datastar-pro/datastar-pro.js"></script>
-                <script type="module" src="/assets/scripts/datastar-pro/datastar-inspector.js"></script>
-              `
-            : html`<script type="module" src="/assets/scripts/datastar-community/datastar.js"></script>`}
-
-          <link rel="icon" href="/assets/favicon/favicon.ico" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        </head>
-        <body>
-          <h1 data-on-load="@get('/subscribe-to-events')">Active Sessions</h1>
-          You are
-          <strong id="personal-session" style="color: ${color}; font-family: ${fontFamily};">${animalName}</strong>
-
-          <font-picker
-            data-signals-font_changed
-            data-on-fontchange="$font_changed = event.detail.value; @post('/font-change')"></font-picker>
-          <div data-text="$_font_changed"></div>
-
-          <hr />
-          <div>All animals on this channel:</div>
-          <list-element id="sessions" data-on-load="$items = ${JSON.stringify(sessionItems)}" data-attr-items="$items"></list-element>
-
-          ${isDevelopment ? html` <datastar-inspector></datastar-inspector> ` : ''}
-        </body>
-      </html>`;
-
-    return c.html(page);
+    return c.html(<SessionPage animalName={animalName} color={color} fontFamily={fontFamily} sessionItems={sessionItems} />);
   }
 
   async setFont(c: Context) {
@@ -88,7 +53,7 @@ export class SessionController {
       }
     }
 
-    return c.json({ success: true });
+    return c.json({ success: true }, 202);
   }
 
   broadcastEvents(c: Context): Response {
@@ -110,7 +75,7 @@ export class SessionController {
             const sessionItems = await this.extractSessionListItems(currentSession);
 
             stream.patchElements(
-              `<strong id="personal-session" style="color:${currentSession.color}; font-family:${currentSession.fontFamily};">${currentSession.animalName.adjective} ${currentSession.animalName.animal}</strong>`,
+              `<strong id="${SESSION_DATASTAR_IDS.MY_SESSION}" style="color:${currentSession.color}; font-family:${currentSession.fontFamily};">${currentSession.animalName.adjective} ${currentSession.animalName.animal}</strong>`,
             );
 
             stream.patchSignals(JSON.stringify({ items: JSON.stringify(sessionItems) }));
@@ -140,9 +105,11 @@ export class SessionController {
       );
     } catch {
       return ServerSentEventGenerator.stream((stream) => {
-        stream.patchElements(`
+        stream.patchElements(
+          `
           <strong id="personal-session">an unknown animal</strong>
-        `);
+        `,
+        );
         stream.patchSignals(JSON.stringify({ items: JSON.stringify([]) }));
       });
     }
