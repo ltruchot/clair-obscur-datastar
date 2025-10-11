@@ -16,13 +16,14 @@ export class SessionCommandService {
   async initializeNewSession(persistence: SessionPersistence): Promise<Session> {
     const usedNames = this.adapter.getUsedAnimalNames();
     const animalName = this.animalNameGenerator.generateUnique(usedNames);
-    const maybeNewSession: Maybe<Session> = SessionFactory.create(animalName, crypto.randomUUID(), '#000000');
+    const maybeNewSession: Maybe<Session> = SessionFactory.create(crypto.randomUUID(), animalName, '#000000', 'sans-serif');
 
     const newSession: Session = maybeNewSession.getOrElseValue({
       id: { value: '' },
       animalName: { adjective: '', animal: '' },
       lastSeen: new Date(),
       color: '',
+      fontFamily: 'sans-serif',
     });
 
     if (!newSession.id.value) {
@@ -45,6 +46,11 @@ export class SessionCommandService {
 
   async setColor(session: Session, color: string): Promise<void> {
     const updatedSession = { ...session, color };
+    await this.writePort.update(updatedSession);
+  }
+
+  async setFont(session: Session, fontFamily: string): Promise<void> {
+    const updatedSession = { ...session, fontFamily };
     await this.writePort.update(updatedSession);
   }
 }

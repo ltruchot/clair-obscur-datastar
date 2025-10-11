@@ -62,7 +62,7 @@ app.get('/', sessionMiddleware, (c) => sessionController.renderSessionPage(c));
 
 app.get('/subscribe-to-events', sessionMiddleware, (c) => sessionController.broadcastEvents(c));
 
-app.post('/color', sessionMiddleware, (c) => sessionController.setColor(c));
+app.post('/font-change', sessionMiddleware, (c) => sessionController.setFont(c));
 
 if (!isDevelopment) {
   const server = serve({

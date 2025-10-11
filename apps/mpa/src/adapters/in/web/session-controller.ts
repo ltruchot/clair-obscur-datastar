@@ -2,8 +2,9 @@ import { HonoSessionAdapter } from '@/adapters/out/session/hono-session-adapter'
 import { SessionCommandService } from '@/adapters/out/session/session-command.service';
 import { SessionQueryService } from '@/adapters/out/session/session-query.service';
 import { isDevelopment } from '@/infrastructure/config';
+import { closeStream } from '@/infrastructure/datastar-stream';
 import type { EventStore } from '@/infrastructure/event-store/event-store.service';
-import type { Session } from '@clair-obscur-workspace/domain';
+import { type Session } from '@clair-obscur-workspace/domain';
 import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/web';
 import type { Context } from 'hono';
 import { html } from 'hono/html';
@@ -27,6 +28,7 @@ export class SessionController {
 
     const animalName = session?.animalName ? session.animalName.adjective + ' ' + session.animalName.animal : 'an unknown animal';
     const color = session?.color ?? '#000000';
+    const fontFamily = session?.fontFamily ?? 'sans-serif';
     const sessionItems = await this.extractSessionListItems(session);
 
     const page = html`<!DOCTYPE html>
@@ -34,7 +36,7 @@ export class SessionController {
         <head>
           <title>Clair Obscur</title>
           <script type="module" src="/web-components/list-element.es.js"></script>
-          <script type="module" src="/web-components/color-picker-element.es.js"></script>
+          <script type="module" src="/web-components/font-picker-element.es.js"></script>
 
           ${isDevelopment
             ? html`
@@ -49,12 +51,12 @@ export class SessionController {
         <body>
           <h1 data-on-load="@get('/subscribe-to-events')">Active Sessions</h1>
           You are
-          <strong id="personal-session" style="color: ${color}">${animalName}</strong>
+          <strong id="personal-session" style="color: ${color}; font-family: ${fontFamily};">${animalName}</strong>
 
-          <color-picker
-            data-signals-color_changed
-            data-on-colorchange="$color_changed = event.detail.value; @post('/color')"></color-picker>
-          <div data-text="$_color_changed"></div>
+          <font-picker
+            data-signals-font_changed
+            data-on-fontchange="$font_changed = event.detail.value; @post('/font-change')"></font-picker>
+          <div data-text="$_font_changed"></div>
 
           <hr />
           <div>All animals on this channel:</div>
@@ -67,14 +69,23 @@ export class SessionController {
     return c.html(page);
   }
 
-  async setColor(c: Context) {
-    const jsonBody: { color_changed: string } = await c.req.json();
+  async setFont(c: Context) {
+    const jsonBody: { font_changed: string } = await c.req.json();
     const persistence = new HonoSessionAdapter(c);
     const session = await this.queryService.getCurrentSession(persistence);
+    const splitFont = jsonBody.font_changed.split(':');
+    const property = splitFont[0];
+    const value = splitFont[1];
+    if (!property || !value) {
+      return c.json({ success: false, error: 'Invalid font changed' }, 400);
+    }
 
     if (session) {
-      await this.commandService.setColor(session, jsonBody.color_changed);
-      console.log('setColor', jsonBody.color_changed);
+      if (property === 'color') {
+        await this.commandService.setColor(session, value);
+      } else if (property === 'font-family') {
+        await this.commandService.setFont(session, value);
+      }
     }
 
     return c.json({ success: true });
@@ -84,10 +95,12 @@ export class SessionController {
     const persistence = new HonoSessionAdapter(c);
 
     let unsubscribeStore: () => void | undefined;
+    let currentStream: ServerSentEventGenerator | undefined;
 
     try {
       return ServerSentEventGenerator.stream(
         async (stream: ServerSentEventGenerator) => {
+          currentStream = stream;
           const sendUpdate = async () => {
             const currentSession = await this.queryService.getCurrentSession(persistence);
             if (!currentSession) {
@@ -97,7 +110,7 @@ export class SessionController {
             const sessionItems = await this.extractSessionListItems(currentSession);
 
             stream.patchElements(
-              `<strong id="personal-session" style="color:${currentSession.color}">${currentSession.animalName.adjective} ${currentSession.animalName.animal}</strong>`,
+              `<strong id="personal-session" style="color:${currentSession.color}; font-family:${currentSession.fontFamily};">${currentSession.animalName.adjective} ${currentSession.animalName.animal}</strong>`,
             );
 
             stream.patchSignals(JSON.stringify({ items: JSON.stringify(sessionItems) }));
@@ -113,6 +126,15 @@ export class SessionController {
           keepalive: true,
           onAbort: () => {
             unsubscribeStore?.();
+            if (currentStream) {
+              closeStream(currentStream);
+            }
+          },
+          onError: () => {
+            unsubscribeStore?.();
+            if (currentStream) {
+              closeStream(currentStream);
+            }
           },
         },
       );
@@ -122,7 +144,6 @@ export class SessionController {
           <strong id="personal-session">an unknown animal</strong>
         `);
         stream.patchSignals(JSON.stringify({ items: JSON.stringify([]) }));
-        unsubscribeStore?.();
       });
     }
   }
@@ -134,6 +155,7 @@ export class SessionController {
       id: session.id.value,
       label: `${session.animalName.adjective} ${session.animalName.animal}`,
       color: session.color,
+      fontFamily: session.fontFamily,
       isCurrentSession: isCurrentSession(session),
     }));
   }

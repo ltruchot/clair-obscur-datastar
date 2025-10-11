@@ -3,6 +3,7 @@ export interface ListItem {
   label: string;
   isCurrentSession: boolean;
   color: string;
+  fontFamily: string;
 }
 
 export class ListElement extends HTMLElement {
@@ -51,6 +52,7 @@ export class ListElement extends HTMLElement {
       li.setAttribute('part', 'item');
       li.setAttribute('data-id', item.id);
       li.style.color = item.color;
+      li.style.fontFamily = item.fontFamily;
       if (item.isCurrentSession) {
         li.innerHTML = `${item.label} (you)`;
       } else {
