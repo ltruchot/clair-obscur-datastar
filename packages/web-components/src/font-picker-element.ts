@@ -1,23 +1,23 @@
 export class FontPickerElement extends HTMLElement {
   private readonly colors = [
-    '#B08BBF',
-    '#C9A66B',
-    '#8B9B6D',
-    '#D4A5A5',
-    '#6B8BA8',
-    '#C97B7B',
-    '#B8956A',
-    '#8F7A6D',
-    '#A67C8E',
-    '#BB9988',
-    '#88BB99',
-    '#FFBB88',
+    '#0891B2',
+    '#06B6D4',
+    '#14B8A6',
+    '#10B981',
+    '#8B5CF6',
+    '#A855F7',
+    '#EC4899',
+    '#F43F5E',
+    '#F97316',
+    '#EAB308',
+    '#84CC16',
+    '#22C55E',
   ];
   private readonly fontFamilies = [
-    { name: 'T', value: 'serif' },
-    { name: 'S', value: 'sans-serif' },
-    { name: 'M', value: 'monospace' },
-    { name: 'C', value: 'cursive' },
+    { name: 't', value: 'serif' },
+    { name: 's', value: 'sans-serif' },
+    { name: 'm', value: 'monospace' },
+    { name: 'c', value: 'cursive' },
   ];
 
   connectedCallback(): void {
