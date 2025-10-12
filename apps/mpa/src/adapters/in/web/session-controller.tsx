@@ -78,16 +78,16 @@ export class SessionController {
           const sendUpdate = async () => {
             const currentSession = await this.queryService.getCurrentSession(persistence);
             if (!currentSession) {
-              throw new Error('Current session not found in sendUpdate, force close stream');
+              throw new Error('Current session not found');
             }
 
             const sessionItems = await this.extractSessionListItems(currentSession);
 
             stream.patchElements(
-              `<strong 
-                id="${SESSION_DATASTAR_IDS.MY_SESSION}" 
-                data-on-interval__duration.3s="@post('/keep-alive')" 
-                style="color:${currentSession.color}; 
+              `<strong
+                id="${SESSION_DATASTAR_IDS.MY_SESSION}"
+                data-on-interval__duration.10s="@post('/keep-alive')"
+                style="color:${currentSession.color};
                 font-family:${currentSession.fontFamily};">
                   ${currentSession.animalName.adjective} ${currentSession.animalName.animal}
               </strong>`,
@@ -96,14 +96,17 @@ export class SessionController {
             stream.patchSignals(JSON.stringify({ items: JSON.stringify(sessionItems) }));
           };
 
-          await sendUpdate().catch((error) => {
-            console.error('Error in first sendUpdate:', error);
+          const currentSession = await this.queryService.getCurrentSession(persistence);
+          if (!currentSession) {
+            throw new Error('Current session not found for initial setup');
+          }
+
+          await sendUpdate().catch(() => {
             closeStream(stream);
           });
 
-          unsubscribeStore = this.eventStore.subscribe(() => {
-            sendUpdate().catch((error) => {
-              console.error('Error store updated sendUpdate:', error);
+          unsubscribeStore = this.eventStore.subscribe(currentSession.id.value, () => {
+            sendUpdate().catch(() => {
               if (stream) {
                 closeStream(stream);
               }
@@ -113,8 +116,7 @@ export class SessionController {
         },
         {
           keepalive: true,
-          onAbort: (reason) => {
-            console.error('onAbort', reason);
+          onAbort: () => {
             unsubscribeStore?.();
             if (currentStream) {
               closeStream(currentStream);
@@ -128,8 +130,7 @@ export class SessionController {
           },
         },
       );
-    } catch (error) {
-      console.error('Error broadcasting events:', error);
+    } catch {
       return ServerSentEventGenerator.stream((stream) => {
         stream.patchElements(
           `

@@ -66,13 +66,19 @@ type GlobalWithMonitor = Record<symbol, SessionMonitorService | undefined>;
 // Clean up old monitor if present (HMR reload)
 const global = globalThis as unknown as GlobalWithMonitor;
 if (global[MONITOR_SYMBOL]) {
-  console.log('Stopping previous session monitor (HMR reload)');
+  if (isDevelopment) {
+    console.log('Stopping previous session monitor (HMR reload)');
+  }
   global[MONITOR_SYMBOL]?.stop();
 }
 
 const sessionMonitor = new SessionMonitorService(sessionQueryService, sessionCommandService);
 sessionMonitor.start();
 global[MONITOR_SYMBOL] = sessionMonitor;
+
+if (isDevelopment) {
+  console.log('Session monitor started');
+}
 
 app.get('/', sessionMiddleware, (c) => sessionController.renderSessionPage(c));
 
