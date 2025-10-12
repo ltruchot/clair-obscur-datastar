@@ -2,6 +2,7 @@ export interface ListItem {
   id: string;
   label: string;
   isCurrentSession: boolean;
+  isActive: boolean;
   color: string;
   fontFamily: string;
 }
@@ -53,6 +54,12 @@ export class ListElement extends HTMLElement {
       li.setAttribute('data-id', item.id);
       li.style.color = item.color;
       li.style.fontFamily = item.fontFamily;
+
+      if (!item.isActive) {
+        li.style.opacity = '0.4';
+        li.style.textDecoration = 'line-through';
+      }
+
       if (item.isCurrentSession) {
         li.innerHTML = `${item.label} (you)`;
       } else {

@@ -7,7 +7,7 @@ import { type Session } from '@clair-obscur-workspace/domain';
 import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/web';
 import type { Context } from 'hono';
 import { SESSION_DATASTAR_IDS } from './session-datastar-ids';
-import { SessionPage } from './session-page';
+import { getSessionPageHtml } from './session-page';
 
 export class SessionController {
   constructor(
@@ -31,8 +31,7 @@ export class SessionController {
     const fontFamily = session?.fontFamily ?? 'sans-serif';
     const sessionItems = await this.extractSessionListItems(session);
 
-    c.header('Content-Type', 'text/html; charset=UTF-8');
-    return c.html(<SessionPage animalName={animalName} color={color} fontFamily={fontFamily} sessionItems={sessionItems} />);
+    return c.html(getSessionPageHtml(animalName, color, fontFamily, sessionItems));
   }
 
   async setFont(c: Context) {
@@ -43,7 +42,7 @@ export class SessionController {
     const property = splitFont[0];
     const value = splitFont[1];
     if (!property || !value) {
-      return c.json({ success: false, error: 'Invalid font changed' }, 400);
+      return c.json({ success: false, error: 'Invalid font change' }, 400);
     }
 
     if (session) {
@@ -54,6 +53,15 @@ export class SessionController {
       }
     }
 
+    return c.json({ success: true }, 202);
+  }
+
+  async keepAlive(c: Context) {
+    const persistence = new HonoSessionAdapter(c);
+    const session = await this.queryService.getCurrentSession(persistence);
+    if (session) {
+      await this.commandService.updateSessionActivity(session);
+    }
     return c.json({ success: true }, 202);
   }
 
@@ -70,27 +78,43 @@ export class SessionController {
           const sendUpdate = async () => {
             const currentSession = await this.queryService.getCurrentSession(persistence);
             if (!currentSession) {
-              throw new Error('Current session not found');
+              throw new Error('Current session not found in sendUpdate, force close stream');
             }
 
             const sessionItems = await this.extractSessionListItems(currentSession);
 
             stream.patchElements(
-              `<strong id="${SESSION_DATASTAR_IDS.MY_SESSION}" style="color:${currentSession.color}; font-family:${currentSession.fontFamily};">${currentSession.animalName.adjective} ${currentSession.animalName.animal}</strong>`,
+              `<strong 
+                id="${SESSION_DATASTAR_IDS.MY_SESSION}" 
+                data-on-interval__duration.3s="@post('/keep-alive')" 
+                style="color:${currentSession.color}; 
+                font-family:${currentSession.fontFamily};">
+                  ${currentSession.animalName.adjective} ${currentSession.animalName.animal}
+              </strong>`,
             );
 
             stream.patchSignals(JSON.stringify({ items: JSON.stringify(sessionItems) }));
           };
 
-          await sendUpdate();
+          await sendUpdate().catch((error) => {
+            console.error('Error in first sendUpdate:', error);
+            closeStream(stream);
+          });
 
           unsubscribeStore = this.eventStore.subscribe(() => {
-            void sendUpdate();
+            sendUpdate().catch((error) => {
+              console.error('Error store updated sendUpdate:', error);
+              if (stream) {
+                closeStream(stream);
+              }
+              unsubscribeStore?.();
+            });
           });
         },
         {
           keepalive: true,
-          onAbort: () => {
+          onAbort: (reason) => {
+            console.error('onAbort', reason);
             unsubscribeStore?.();
             if (currentStream) {
               closeStream(currentStream);
@@ -104,12 +128,13 @@ export class SessionController {
           },
         },
       );
-    } catch {
+    } catch (error) {
+      console.error('Error broadcasting events:', error);
       return ServerSentEventGenerator.stream((stream) => {
         stream.patchElements(
           `
           <strong id="personal-session">an unknown animal</strong>
-        `,
+         `,
         );
         stream.patchSignals(JSON.stringify({ items: JSON.stringify([]) }));
       });
@@ -125,6 +150,7 @@ export class SessionController {
       color: session.color,
       fontFamily: session.fontFamily,
       isCurrentSession: isCurrentSession(session),
+      isActive: session.isActive ?? true,
     }));
   }
 }

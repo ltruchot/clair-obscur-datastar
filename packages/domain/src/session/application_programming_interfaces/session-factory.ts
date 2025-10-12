@@ -10,6 +10,7 @@ export class SessionFactory {
       id,
       animalName,
       lastSeen: now,
+      isActive: true,
       color,
       fontFamily,
     }));
@@ -19,6 +20,7 @@ export class SessionFactory {
     return {
       ...session,
       lastSeen: new Date(),
+      isActive: true,
     };
   }
 

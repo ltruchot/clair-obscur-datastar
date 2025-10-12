@@ -3,9 +3,10 @@ import { EventStoreSessionAdapter } from '@/adapters/out/session/event-store-ses
 import { SessionCommandService } from '@/adapters/out/session/session-command.service';
 import { SessionQueryService } from '@/adapters/out/session/session-query.service';
 import { EventStore } from '@/infrastructure/event-store/event-store.service';
+import { SessionMonitorService } from '@/infrastructure/session/session-monitor.service';
 import { DefaultAnimalNameGenerator } from '@clair-obscur-workspace/funny-animals-generator';
 
-import { authSecret, isDevelopment, isProduction, port } from '@/infrastructure/config';
+import { authSecret, isDevelopment, port } from '@/infrastructure/config';
 
 import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
@@ -57,34 +58,35 @@ const sessionCommandService = new SessionCommandService(sessionAdapter, sessionA
 const sessionQueryService = new SessionQueryService(sessionAdapter);
 const sessionController = new SessionController(sessionCommandService, sessionQueryService, eventStore);
 
+// Use globalThis to survive HMR reloads in development
+const MONITOR_SYMBOL = Symbol.for('session-monitor');
+
+type GlobalWithMonitor = Record<symbol, SessionMonitorService | undefined>;
+
+// Clean up old monitor if present (HMR reload)
+const global = globalThis as unknown as GlobalWithMonitor;
+if (global[MONITOR_SYMBOL]) {
+  console.log('Stopping previous session monitor (HMR reload)');
+  global[MONITOR_SYMBOL]?.stop();
+}
+
+const sessionMonitor = new SessionMonitorService(sessionQueryService, sessionCommandService);
+sessionMonitor.start();
+global[MONITOR_SYMBOL] = sessionMonitor;
+
 app.get('/', sessionMiddleware, (c) => sessionController.renderSessionPage(c));
 
 app.get('/subscribe-to-events', sessionMiddleware, (c) => sessionController.broadcastEvents(c));
 
+app.post('/keep-alive', sessionMiddleware, (c) => sessionController.keepAlive(c));
+
 app.post('/font-change', sessionMiddleware, (c) => sessionController.setFont(c));
 
 if (!isDevelopment) {
-  console.log('isProduction', isProduction);
-  const serverConfig = isProduction
-    ? {
-        fetch: app.fetch,
-        port: Number(port),
-        /*
-        createServer: createHttp2Server,
-        */
-      }
-    : {
-        fetch: app.fetch,
-        port: Number(port),
-        /*
-        createServer: createSecureServer,
-        serverOptions: {
-          key: readFileSync(path.join(__dirname, '../../../certs/localhost-key.pem')),
-          cert: readFileSync(path.join(__dirname, '../../../certs/localhost-cert.pem')),
-          allowHTTP1: true,
-        },
-        */
-      };
+  const serverConfig = {
+    fetch: app.fetch,
+    port: Number(port),
+  };
 
   const server = serve(serverConfig);
 
@@ -94,6 +96,7 @@ if (!isDevelopment) {
 
   const gracefulShutdown = (signal: string) => {
     console.log(`\nReceived ${signal}, closing server gracefully...`);
+    sessionMonitor.stop();
     server.close(() => {
       console.log('Server closed');
       process.exit(0);

@@ -53,4 +53,15 @@ export class SessionCommandService {
     const updatedSession = { ...session, fontFamily };
     await this.writePort.update(updatedSession);
   }
+
+  async deactivateSession(session: Session): Promise<void> {
+    const deactivatedSession = { ...session, isActive: false };
+    await this.writePort.update(deactivatedSession);
+  }
+
+  async deleteSession(session: Session): Promise<void> {
+    const animalKey = AnimalNameFactory.getKey(session.animalName);
+    this.adapter.removeUsedAnimalName(animalKey);
+    await this.writePort.delete(session.id);
+  }
 }

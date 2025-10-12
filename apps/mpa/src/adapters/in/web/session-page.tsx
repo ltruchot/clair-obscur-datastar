@@ -8,6 +8,7 @@ interface SessionItem {
   color: string;
   fontFamily: string;
   isCurrentSession: boolean;
+  isActive: boolean;
 }
 
 interface SessionPageProps {
@@ -17,16 +18,15 @@ interface SessionPageProps {
   sessionItems: SessionItem[];
 }
 
-export const SessionPage: FC<SessionPageProps> = ({ animalName, color, fontFamily, sessionItems }) => {
+const SessionPage: FC<SessionPageProps> = ({ animalName, color, fontFamily, sessionItems }) => {
   return (
     <BaseLayout title="Clair Obscur Datastar">
       <h1 data-on-load="@get('/subscribe-to-events')">Active Sessions</h1>
-      You are{' '}
+      You are a{' '}
       <strong id={SESSION_DATASTAR_IDS.MY_SESSION} style={`color: ${color}; font-family: ${fontFamily};`}>
         {animalName}
       </strong>
       <font-picker data-signals-font_changed data-on-fontchange="$font_changed = event.detail.value; @post('/font-change')"></font-picker>
-      <div data-text="$_font_changed"></div>
       <hr />
       <div>All animals on this channel:</div>
       <list-element
@@ -35,4 +35,8 @@ export const SessionPage: FC<SessionPageProps> = ({ animalName, color, fontFamil
         data-attr-items="$items"></list-element>
     </BaseLayout>
   );
+};
+
+export const getSessionPageHtml = (animalName: string, color: string, fontFamily: string, sessionItems: SessionItem[]) => {
+  return <SessionPage animalName={animalName} color={color} fontFamily={fontFamily} sessionItems={sessionItems} />;
 };

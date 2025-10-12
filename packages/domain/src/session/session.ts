@@ -8,6 +8,7 @@ export interface Session {
   readonly id: SessionId;
   readonly animalName: AnimalName;
   readonly lastSeen: Date;
+  readonly isActive: boolean;
   readonly color: string;
   readonly fontFamily: string;
 }
