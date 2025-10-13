@@ -1,0 +1,16 @@
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node main.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@starfederation/datastar-sdk": "1.0.0-RC.1"
+  }
+}

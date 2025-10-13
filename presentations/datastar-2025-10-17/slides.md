@@ -37,7 +37,8 @@ layout: intro
 <ol>
 <li>Hypermedia Meaning</li>  
 <li>Hypermedia History</li>  
-<li>Solve the frontend</li>  
+<li>Web sins to purge</li>  
+<li>Why HTMX is not enough</li>  
 </ol>
 </div>
 <img src="./assets/server-can.gif" alt="Server can display html" style="margin: 0 auto; display: block;" />
@@ -62,16 +63,19 @@ src: ./pages/004-why-htmx-is-not-enough.md
 layout: intro
 ---
 
-# Meet DataStar 🚀
+# Meet Datastar 🚀
 Fullstack hypermedia framework
 
 <div style="display: flex; flex-direction: column; align-items: center; width: auto; text-align: left;">
 <ol>
-<li>A pretty seducing stranger</li>  
-<li>Where will the date happen ?</li>  
-<li>Let's touch its body</li>  
+  <li>Meet a seducing stranger</li>  
+  <li>Visit its home</li>  
+  <li>Touch its body</li>  
+  <li>Marry it</li>
 </ol>
 </div>
-<img src="./assets/meet-datastar.gif" alt="Meet DataStar" style="margin: 0 auto; display: block;" />
+<img src="./assets/meet-datastar.gif" alt="Meet Datattar" style="margin: 0 auto; display: block;" />
 
+---
+src: ./pages/005-a-seducing-stranger.md
 ---

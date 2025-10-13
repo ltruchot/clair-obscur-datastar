@@ -19,7 +19,18 @@ export default defineConfig([
   },
 
   {
-    files: ['**/*.{js,mjs,cjs,ts,mts,cts,tsx}'],
+    files: ['**/*.{js,mjs,cjs}'],
+    plugins: { js },
+    extends: ['js/recommended'],
+    languageOptions: {
+      globals: { ...globals.browser, ...globals.node },
+      ecmaVersion: 2022,
+      sourceType: 'module',
+    },
+  },
+
+  {
+    files: ['**/*.{ts,mts,cts,tsx}'],
     plugins: { js },
     extends: ['js/recommended'],
     languageOptions: {

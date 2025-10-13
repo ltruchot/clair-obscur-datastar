@@ -9,7 +9,7 @@ Brings your serendipity since 1989 (a.k.a. browsable documentation)
       <li>2000: Chaotic MPA served by backend (PHP, ASP, Java...)</li>
       <li>2005: <span style="color: #F9D56E;">Golden age of Restful Hypermedia MPA</span><br/>(RoR, Spring, Symfony...) with AJAX and JQuery</li>
     </ul>
-    <strong style="color: lightgreen;">--- web 2.0 disease spread everywhere ---</strong>
+    <strong style="color: lightgreen;">--- web 2.0 sins spread everywhere ---</strong>
   </div>
 
 
@@ -22,7 +22,7 @@ Brings your serendipity since 1989 (a.k.a. browsable documentation)
       <li>2025: September, the Datastar begins to shine in northern sky 🌟:
       <br/>Hypermedia is the future again, 🚀 but with 2025 features, MPA or SPA, via AJAX, via SSE, via Signals</li>
 </ul>
-<strong style="color: lightgray">2030: --- web 2.0 disease finally cured - web 1.1 era begins ---</strong>
+<strong style="color: lightgray">2030: --- web 2.0 sins finally purged by fire - the web 1.1 era begins ---</strong>
 
 
 

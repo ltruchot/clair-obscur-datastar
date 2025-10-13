@@ -1,7 +1,7 @@
 ---
 layout: items
 ---
-### Cure the web
+### Web sins to purge
 
 <div style="display: flex; width: 79%; align-items: flex-end; flex-wrap: wrap; margin: 0 auto;">
 

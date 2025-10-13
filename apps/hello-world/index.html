@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js"></script>
+
+    <title>Hello World</title>
+  </head>
+  <body>
+    <h1>Hello World</h1>
+
+    <input data-on-input="$msg = event.target.value" />
+
+    <p data-text="$msg"></p>
+
+    <button data-on-click="@post('/send-message')">send</button>
+
+    <p id="waiting-for-response"></p>
+  </body>
+</html>
