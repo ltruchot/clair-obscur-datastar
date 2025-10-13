@@ -1,0 +1,1 @@
+https://everydaysuperpowers.dev/articles/why-i-switched-from-htmx-to-datastar/
