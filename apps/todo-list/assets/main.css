@@ -11,3 +11,18 @@
     display: flex; 
     justify-content: space-between
 }
+
+.stats-table {
+    border: 1px solid #ddd; 
+    margin: 10px 0;
+    box-sizing: border-box;
+    td, th {
+        text-align: center;
+        padding: 3px;
+        box-sizing: border-box;
+        font-weight: bold;
+    }
+    td:first-child, th:first-child {
+        border-right: 1px solid #ddd;
+    }
+}

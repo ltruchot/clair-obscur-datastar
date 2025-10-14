@@ -13,11 +13,10 @@
     <title>Todo List</title>
   </head>
   <body data-persist>
-    <!-- Tasty title -->
-    <h1 class="rainbow">Todo List</h1>
-
     <main class="flex-between">
       <section>
+        <h1 class="rainbow">Todo List</h1>
+
         <!-- Forms inputs -->
         <input id="todo" data-bind-todo />
 
@@ -30,10 +29,11 @@
           Add
         </button>
 
-        <button data-on-click="$todos = [];">Clear</button>
+        <button data-on-click="$todos = $todos.filter((todo) => !todo.checked);">Clear Done</button>
+        <button data-on-click="$todos = [];">Clear All</button>
 
         <!-- Todo stats -->
-        <table>
+        <table class="stats-table">
           <tr>
             <th>Todo</th>
             <th>Done</th>
