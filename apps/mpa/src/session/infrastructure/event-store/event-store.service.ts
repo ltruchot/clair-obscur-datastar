@@ -1,7 +1,7 @@
 import type { Session } from '@clair-obscur-workspace/domain';
 import type { StoreEvent, StoreState, StoreSubscriber } from './event-store.types.ts';
 
-type SessionObservableFields = 'color' | 'fontFamily' | 'animalName' | 'isActive';
+type SessionObservableFields = Omit<keyof Session, 'id' | 'lastSeen'>;
 
 export class EventStore {
   private readonly observableFields: SessionObservableFields[] = ['color', 'fontFamily', 'animalName', 'isActive'];

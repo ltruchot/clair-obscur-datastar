@@ -1,5 +1,5 @@
-import type { SessionCommandService } from '@/adapters/out/session/session-command.service';
-import type { SessionQueryService } from '@/adapters/out/session/session-query.service';
+import type { SessionCommandService } from '@/session/adapters/out/session/session-command.service';
+import type { SessionQueryService } from '@/session/adapters/out/session/session-query.service';
 import { SessionFactory } from '@clair-obscur-workspace/domain';
 
 export class SessionMonitorService {

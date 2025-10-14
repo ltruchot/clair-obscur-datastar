@@ -1,6 +1,7 @@
-import { isDevelopment } from '@/infrastructure/config';
 import { raw } from 'hono/html';
 import type { FC, PropsWithChildren } from 'hono/jsx';
+
+import { isDevelopment } from '@/shared/infrastructure/config';
 
 type BaseLayoutProps = PropsWithChildren<{
   title: string;

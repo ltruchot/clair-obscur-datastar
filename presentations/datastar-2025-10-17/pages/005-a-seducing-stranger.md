@@ -2,9 +2,10 @@
 # A seducing stranger
 Forget your first framework love in minutes
 
+<img src="../assets/storage-datastar.png" style="position: absolute; top: 0; right: 0; width: 19vw;" />
 <div style="display: flex; gap: 16px; align-items: flex-start; justify-content: space-between;">
     <div style="width: 50%; text-align: left;">
-    What does it look like ?
+        What does it look like ?
         <ul>
         <li>One-file 10kb frontend JS lib</li>
         <li>Fully declarative, in an HTML compliant syntax</li>
@@ -19,7 +20,7 @@ Forget your first framework love in minutes
         <ul>
             <li>data-* attributes</li>
             <li>Crazy fast HTML Fragment merging</li>
-            <li>Crazy fast Signal management and merging</li>
+            <li>Crazy fast Signals management and merging</li>
             <li>Server-Sent Events management helpers (SSE)</li>
             <li>Plugins sticking to the same principles</li>
             <li><a style="color: blue;" href="https://example.andersmurphy.com/" target="_blank">@see Multiplayer Game of Life</a> by Anders Murphy</li>

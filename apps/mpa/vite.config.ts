@@ -1,4 +1,3 @@
-/// <reference types="vitest/config" />
 import devServer from '@hono/vite-dev-server';
 import { copyFileSync, mkdirSync, readdirSync } from 'node:fs';
 import path from 'path';
@@ -36,7 +35,7 @@ export default defineConfig(({ mode }) => ({
   ],
   publicDir: 'src/assets',
   define: {
-    __ENV_RELATIVE_PATH__: mode === 'production' ? '"../../../.env"' : '"../../../../.env"',
+    __ENV_RELATIVE_PATH__: mode === 'production' ? '"../../../../.env"' : '"../../../../../.env"',
   },
   build: {
     target: 'node20',

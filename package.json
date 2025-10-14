@@ -34,7 +34,8 @@
     "test:packages:domain": "pnpm --filter @clair-obscur-workspace/domain test",
     "test:packages:utils": "pnpm --filter @clair-obscur-workspace/utils test",
     "test:packages:funny-animals-generator": "pnpm --filter @clair-obscur-workspace/funny-animals-generator test",
-    "test:packages:web-components": "pnpm --filter @clair-obscur-workspace/web-components test"
+    "test:packages:web-components": "pnpm --filter @clair-obscur-workspace/web-components test",
+    "reinstall:deep": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name 'pnpm-lock.yaml' -type f -delete && pnpm install"
   },
   "devDependencies": {
     "@eslint/css": "catalog:",
@@ -48,7 +49,6 @@
     "eslint-import-resolver-typescript": "catalog:",
     "eslint-plugin-prettier": "catalog:",
     "globals": "catalog:",
-    "jiti": "catalog:",
     "jsdom": "catalog:",
     "prettier": "catalog:",
     "prettier-plugin-organize-imports": "catalog:",

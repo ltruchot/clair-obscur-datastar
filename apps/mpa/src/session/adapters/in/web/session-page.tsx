@@ -1,4 +1,4 @@
-import { BaseLayout } from '@/infrastructure/web/base-layout';
+import { BaseLayout } from '@/shared/infrastructure/web/base-layout';
 import type { FC } from 'hono/jsx';
 import { SESSION_DATASTAR_IDS } from './session-datastar-ids';
 

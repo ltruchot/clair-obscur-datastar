@@ -18,10 +18,13 @@ export default defineConfig([
     ],
   },
 
+  eslintConfigPrettier,
+  eslintPluginPrettierRecommended,
+
   {
     files: ['**/*.{js,mjs,cjs}'],
     plugins: { js },
-    extends: ['js/recommended'],
+    extends: [js.configs.recommended],
     languageOptions: {
       globals: { ...globals.browser, ...globals.node },
       ecmaVersion: 2022,
@@ -31,8 +34,13 @@ export default defineConfig([
 
   {
     files: ['**/*.{ts,mts,cts,tsx}'],
-    plugins: { js },
-    extends: ['js/recommended'],
+    plugins: { js, tseslint },
+    extends: [
+      js.configs.recommended,
+      tseslint.configs.recommended,
+      tseslint.configs.recommendedTypeChecked,
+      tseslint.configs.stylisticTypeChecked,
+    ],
     languageOptions: {
       globals: { ...globals.browser, ...globals.node },
       parser: tseslint.parser,
@@ -51,14 +59,6 @@ export default defineConfig([
         },
       },
     },
-  },
-
-  tseslint.configs.recommended,
-  tseslint.configs.recommendedTypeChecked,
-  tseslint.configs.stylisticTypeChecked,
-  eslintConfigPrettier,
-  eslintPluginPrettierRecommended,
-  {
     rules: {
       '@typescript-eslint/no-unused-vars': [
         'error',
@@ -68,5 +68,9 @@ export default defineConfig([
         },
       ],
     },
+  },
+
+  {
+    rules: {},
   },
 ]);

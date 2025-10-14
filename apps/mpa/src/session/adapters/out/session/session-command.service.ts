@@ -24,6 +24,7 @@ export class SessionCommandService {
       lastSeen: new Date(),
       color: '',
       fontFamily: 'sans-serif',
+      isActive: true,
     });
 
     if (!newSession.id.value) {

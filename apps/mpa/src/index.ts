@@ -1,21 +1,21 @@
-import { SessionController } from '@/adapters/in/web/session-controller';
-import { EventStoreSessionAdapter } from '@/adapters/out/session/event-store-session-adapter';
-import { SessionCommandService } from '@/adapters/out/session/session-command.service';
-import { SessionQueryService } from '@/adapters/out/session/session-query.service';
-import { EventStore } from '@/infrastructure/event-store/event-store.service';
-import { SessionMonitorService } from '@/infrastructure/session/session-monitor.service';
+import { SessionController } from '@/session/adapters/in/web/session-controller';
+import { EventStoreSessionAdapter } from '@/session/adapters/out/session/event-store-session-adapter';
+import { SessionCommandService } from '@/session/adapters/out/session/session-command.service';
+import { SessionQueryService } from '@/session/adapters/out/session/session-query.service';
+import { EventStore } from '@/session/infrastructure/event-store/event-store.service';
+import { SessionMonitorService } from '@/session/infrastructure/session/session-monitor.service';
 import { DefaultAnimalNameGenerator } from '@clair-obscur-workspace/funny-animals-generator';
 
-import { authSecret, isDevelopment, port } from '@/infrastructure/config';
+import { authSecret, isDevelopment, port } from '@/shared/infrastructure/config';
 
 import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { useSession } from '@hono/session';
 import { Hono } from 'hono';
 
+import { SessionData } from '@/session/infrastructure/session';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SessionData } from './infrastructure/session';
 
 const app = new Hono<{
   Variables: {

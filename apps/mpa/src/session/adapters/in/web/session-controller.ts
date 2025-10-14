@@ -1,8 +1,8 @@
-import { HonoSessionAdapter } from '@/adapters/out/session/hono-session-adapter';
-import { SessionCommandService } from '@/adapters/out/session/session-command.service';
-import { SessionQueryService } from '@/adapters/out/session/session-query.service';
-import { closeStream } from '@/infrastructure/datastar-stream';
-import type { EventStore } from '@/infrastructure/event-store/event-store.service';
+import { HonoSessionAdapter } from '@/session/adapters/out/session/hono-session-adapter';
+import { SessionCommandService } from '@/session/adapters/out/session/session-command.service';
+import { SessionQueryService } from '@/session/adapters/out/session/session-query.service';
+import type { EventStore } from '@/session/infrastructure/event-store/event-store.service';
+import { closeStream } from '@/shared/infrastructure/datastar-stream';
 import { type Session } from '@clair-obscur-workspace/domain';
 import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/web';
 import type { Context } from 'hono';
