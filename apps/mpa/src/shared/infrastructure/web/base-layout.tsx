@@ -18,7 +18,6 @@ export const BaseLayout: FC<BaseLayoutProps> = ({ title, children }) => {
           <title>{title}</title>
           <link rel="icon" href="/assets/favicon/favicon.ico" />
 
-          <script type="module" src="/web-components/list-element.es.js"></script>
           <script type="module" src="/web-components/font-picker-element.es.js"></script>
 
           {isDevelopment ? (

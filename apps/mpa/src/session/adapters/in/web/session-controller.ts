@@ -6,9 +6,8 @@ import { closeStream } from '@/shared/infrastructure/datastar-stream';
 import { type Session } from '@clair-obscur-workspace/domain';
 import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/web';
 import type { Context } from 'hono';
-import { SESSION_DATASTAR_IDS } from './session-datastar-ids';
-import { getSessionPageHtml } from './session-page';
-
+import { getListAllSessionsHTMLComponent, SessionItem } from './components/list-all-sessions';
+import { DSID, getSessionHTMLPage } from './session-page';
 export class SessionController {
   constructor(
     private readonly commandService: SessionCommandService,
@@ -31,7 +30,7 @@ export class SessionController {
     const fontFamily = session?.fontFamily ?? 'sans-serif';
     const sessionItems = await this.extractSessionListItems(session);
 
-    return c.html(getSessionPageHtml(animalName, color, fontFamily, sessionItems));
+    return c.html(getSessionHTMLPage(animalName, color, fontFamily, sessionItems));
   }
 
   async setFont(c: Context) {
@@ -85,7 +84,7 @@ export class SessionController {
 
             stream.patchElements(
               `<strong
-                id="${SESSION_DATASTAR_IDS.MY_SESSION}"
+                id="${DSID.MY_SESSION}"
                 data-on-interval__duration.10s="@post('/keep-alive')"
                 style="color:${currentSession.color};
                 font-family:${currentSession.fontFamily};">
@@ -93,7 +92,7 @@ export class SessionController {
               </strong>`,
             );
 
-            stream.patchSignals(JSON.stringify({ items: JSON.stringify(sessionItems) }));
+            stream.patchElements(getListAllSessionsHTMLComponent(DSID.ALL_SESSIONS, sessionItems));
           };
 
           const currentSession = await this.queryService.getCurrentSession(persistence);
@@ -134,7 +133,7 @@ export class SessionController {
       return ServerSentEventGenerator.stream((stream) => {
         stream.patchElements(
           `
-          <strong id="personal-session">an unknown animal</strong>
+          <strong id="${DSID.MY_SESSION}">an unknown animal</strong>
          `,
         );
         stream.patchSignals(JSON.stringify({ items: JSON.stringify([]) }));
@@ -142,11 +141,12 @@ export class SessionController {
     }
   }
 
-  private async extractSessionListItems(currentSession: Session) {
+  private async extractSessionListItems(currentSession: Session): Promise<SessionItem[]> {
     const activeSessions = await this.queryService.getActiveSessions();
     const isCurrentSession = (session: Session) => session.id.value === currentSession.id.value;
     return activeSessions.map((session) => ({
       id: session.id.value,
+      lastSeen: session.lastSeen,
       label: `${session.animalName.adjective} ${session.animalName.animal}`,
       color: session.color,
       fontFamily: session.fontFamily,

@@ -19,7 +19,6 @@ export default defineConfig({
     emptyOutDir: true,
     lib: {
       entry: {
-        'list-element': resolve(__dirname, 'src/list-element.ts'),
         'font-picker-element': resolve(__dirname, 'src/font-picker-element.ts'),
       },
       formats: ['es'],

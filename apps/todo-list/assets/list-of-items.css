@@ -1,0 +1,13 @@
+list-of-items {
+  display: block;
+}
+
+list-of-items ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+list-of-items li {
+  list-style: none;
+}

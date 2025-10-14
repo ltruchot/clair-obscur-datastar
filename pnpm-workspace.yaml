@@ -10,7 +10,7 @@ catalog:
   '@eslint/markdown': 7.3.0
   '@hono/node-server': 1.19.4
   '@hono/session': 0.2.0
-  '@hono/vite-dev-server': 0.23.0
+  '@hono/vite-dev-server': 0.21.0
   '@starfederation/datastar-sdk': 1.0.0-RC.1
   '@types/node': 24.5.2
   '@vitest/coverage-v8': 3.2.4
@@ -20,14 +20,14 @@ catalog:
   eslint-import-resolver-typescript: 4.4.4
   eslint-plugin-prettier: 5.5.4
   globals: 16.4.0
-  hono: 4.9.12
+  hono: 4.9.8
   jsdom: 27.0.0
   prettier: 3.6.2
   prettier-plugin-organize-imports: 4.3.0
   tslib: 2.8.1
   typescript: 5.9.2
   typescript-eslint: 8.44.1
-  vite: 7.1.9
+  vite: 7.1.7
   vite-plugin-dts: 4.5.4
   vitest: 3.2.4
 

@@ -36,3 +36,5 @@ Thumbs.db
 # Claude Code session data
 .claude/
 certs/
+
+datastar-pro.js
