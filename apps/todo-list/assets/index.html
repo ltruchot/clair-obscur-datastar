@@ -6,13 +6,17 @@
 
     <script type="module" src="/datastar-pro.js"></script>
     <script type="module" src="/list-of-items.js"></script>
+
+    <link rel="stylesheet" href="/main.css" />
     <link rel="stylesheet" href="/list-of-items.css" />
 
     <title>Todo List</title>
   </head>
   <body data-persist>
-    <h1>Todo List</h1>
-    <main style="display: flex; justify-content: space-between">
+    <!-- Tasty title -->
+    <h1 class="rainbow">Todo List</h1>
+
+    <main class="flex-between">
       <section>
         <!-- Forms inputs -->
         <input id="todo" data-bind-todo />
