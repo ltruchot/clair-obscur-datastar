@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js"></script>
+    <script type="module" src="/list-of-items.js"></script>
+
+    <link rel="stylesheet" href="/main.css" />
+    <link rel="stylesheet" href="/list-of-items.css" />
+
+    <title>Todo List</title>
+  </head>
+  <body data-on-load="@get('/subscribe-to-events')">
+    <main class="flex-between">
+      <section>
+        <h1 class="rainbow">Todo List For Big Families</h1>
+
+        <!-- Forms inputs -->
+        <input id="todo" data-bind-todo />
+
+        <button
+          id="add-todo"
+          data-on-click="@post('/add-todo')
+            $todo=''; 
+            focusTo('todo')"
+          data-attr-disabled="$todo.length === 0">
+          Add
+        </button>
+
+        <button data-on-click="$todos = $todos.filter((todo) => !todo.checked);">Clear Done</button>
+        <button data-on-click="$todos = [];">Clear All</button>
+
+        <!-- Todo stats -->
+        <table class="stats-table">
+          <tr>
+            <th>Todo</th>
+            <th>Done</th>
+          </tr>
+          <tr>
+            <td data-text="$todos?.length ? $todos.filter((todo) => !todo.checked).length : 0"></td>
+            <td data-text="$todos?.length ? $todos.filter((todo) => todo.checked).length : 0"></td>
+          </tr>
+        </table>
+
+        <!-- List of todos -->
+        <list-of-items
+          id="todos"
+          data-attr-items="$todos || []"
+          data-on-item-toggle="$todos = $todos.map((todo) => todo.id === event.detail.id ? {...todo, checked: event.detail.checked} : todo);">
+        </list-of-items>
+
+        <br />
+      </section>
+      <!-- Debug todos states -->
+      <pre>
+<code data-text="JSON.stringify($todos, null, 2)"></code>
+      </pre>
+    </main>
+
+    <!-- Convenience functions -->
+    <script>
+      function byId(id) {
+        return document.getElementById(id);
+      }
+
+      function focusTo(id) {
+        byId(id).focus();
+      }
+
+      function randomId() {
+        return Math.random().toString(36).substring(2, 15);
+      }
+
+      document.body.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' && byId('add-todo').disabled === false && byId('todo').matches(':focus')) {
+          byId('add-todo').click();
+        }
+      });
+    </script>
+  </body>
+</html>

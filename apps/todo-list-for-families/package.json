@@ -1,5 +1,5 @@
 {
-  "name": "@clair-obscur-workspace/todo-list",
+  "name": "@clair-obscur-workspace/todo-list-for-families",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,5 +10,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {
+    "@starfederation/datastar-sdk": "1.0.0-RC.1"
+  }
 }

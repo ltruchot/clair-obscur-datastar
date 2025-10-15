@@ -1,0 +1,28 @@
+.rainbow {
+    font-size: 36px;
+    width: fit-content;
+    background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.flex-between {
+    display: flex; 
+    justify-content: space-between
+}
+
+.stats-table {
+    border: 1px solid #ddd; 
+    margin: 10px 0;
+    box-sizing: border-box;
+    td, th {
+        text-align: center;
+        padding: 3px;
+        box-sizing: border-box;
+        font-weight: bold;
+    }
+    td:first-child, th:first-child {
+        border-right: 1px solid #ddd;
+    }
+}
