@@ -35,7 +35,7 @@ export default defineConfig(({ mode }) => ({
   ],
   publicDir: 'src/assets',
   define: {
-    __ENV_RELATIVE_PATH__: mode === 'production' ? '"../../../../.env"' : '"../../../../../.env"',
+    __ENV_RELATIVE_PATH__: mode === 'production' ? '"../../../.env"' : '"../../../../../.env"',
   },
   build: {
     target: 'node20',
