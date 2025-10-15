@@ -27,7 +27,7 @@
     "build:packages:utils": "pnpm --filter @clair-obscur-workspace/utils build",
     "build:packages:funny-animals-generator": "pnpm --filter @clair-obscur-workspace/funny-animals-generator build",
     "build:packages:web-components": "pnpm --filter @clair-obscur-workspace/web-components build",
-    "serve": "pnpm --filter @clair-obscur-workspace/mpa start",
+    "serve": "pnpm --filter @clair-obscur-workspace/mpa serve",
     "serve:todo-list": "pnpm --filter @clair-obscur-workspace/todo-list serve",
     "serve:todo-list-for-families": "pnpm --filter @clair-obscur-workspace/todo-list-for-families serve",
     "lint": "eslint . --fix",
