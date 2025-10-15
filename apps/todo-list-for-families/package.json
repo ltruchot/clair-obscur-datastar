@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "serve": "node main.mjs"
+    "serve": "node main.js"
   },
   "keywords": [],
   "author": "",
