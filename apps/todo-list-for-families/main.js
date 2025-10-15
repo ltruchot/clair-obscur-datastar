@@ -14,11 +14,11 @@ leoProfanity.add(leoProfanity.getDictionary('fr'));
 const todoEventStore = new TodoEventStore();
 const activeStreams = new Set();
 
-let secondsLeft = 120;
+let secondsLeft = 3600;
 setInterval(() => {
   secondsLeft--;
   if (secondsLeft <= -1) {
-    secondsLeft = 120;
+    secondsLeft = 3600;
     todoEventStore.write('todos', []);
 
     for (const stream of activeStreams) {
