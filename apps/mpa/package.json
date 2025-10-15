@@ -5,7 +5,7 @@
     "dev": "vite",
     "test": "vitest",
     "build": "vite build",
-    "start": "node dist/index.js"
+    "serve": "node dist/index.js"
   },
   "dependencies": {
     "@clair-obscur-workspace/domain": "workspace:*",

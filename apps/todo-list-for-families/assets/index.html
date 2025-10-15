@@ -4,7 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js"></script>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js"></script>
     <script type="module" src="/list-of-items.js"></script>
 
     <link rel="stylesheet" href="/main.css" />
@@ -29,8 +31,16 @@
           Add
         </button>
 
-        <button data-on-click="$todos = $todos.filter((todo) => !todo.checked);">Clear Done</button>
-        <button data-on-click="$todos = [];">Clear All</button>
+        <button
+          data-attr-disabled="$todos ? $todos.filter((todo) => todo.checked).length === 0 : true"
+          data-on-click="$shouldClearDoneOnly = true; @post('/clear')">
+          Clear Done
+        </button>
+        <button
+          data-attr-disabled="$todos ?? $todos?.length === 0"
+          data-on-click="$shouldClearDoneOnly = false; @post('/clear')">
+          Clear All
+        </button>
 
         <!-- Todo stats -->
         <table class="stats-table">
@@ -39,8 +49,8 @@
             <th>Done</th>
           </tr>
           <tr>
-            <td data-text="$todos?.length ? $todos.filter((todo) => !todo.checked).length : 0"></td>
-            <td data-text="$todos?.length ? $todos.filter((todo) => todo.checked).length : 0"></td>
+            <td data-text="$todos ? $todos.filter((todo) => !todo.checked).length : 0"></td>
+            <td data-text="$todos ? $todos.filter((todo) => todo.checked).length : 0"></td>
           </tr>
         </table>
 
@@ -48,7 +58,9 @@
         <list-of-items
           id="todos"
           data-attr-items="$todos || []"
-          data-on-item-toggle="$todos = $todos.map((todo) => todo.id === event.detail.id ? {...todo, checked: event.detail.checked} : todo);">
+          data-on-item-toggle="
+            $updatedTodo = { id: event.detail.id,label: event.detail.label, checked: event.detail.checked };
+            @post('/update-todo');">
         </list-of-items>
 
         <br />

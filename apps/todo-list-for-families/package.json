@@ -5,12 +5,13 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node main.mjs"
+    "serve": "node main.mjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@starfederation/datastar-sdk": "1.0.0-RC.1"
+    "@starfederation/datastar-sdk": "1.0.0-RC.1",
+    "xss": "1.0.15"
   }
 }

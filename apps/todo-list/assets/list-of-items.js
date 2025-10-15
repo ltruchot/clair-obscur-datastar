@@ -28,7 +28,7 @@ class ListOfItems extends HTMLElement {
 
       this.dispatchEvent(
         new CustomEvent('item-toggle', {
-          detail: { id: itemId, checked: isChecked },
+          detail: { id: itemId, checked: isChecked, label: listItem.textContent },
           bubbles: true,
           composed: true,
         }),

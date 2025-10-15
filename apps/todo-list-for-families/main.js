@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { join } from 'node:path';
 import { text } from 'node:stream/consumers';
+import xss from 'xss';
 import { TodoEventStore } from './todos-event-store.js';
 
 const todoEventStore = new TodoEventStore();
@@ -25,15 +26,33 @@ createServer(async (req, res) => {
       { keepalive: true },
     );
 
-    // ONE SHOT COMMAND, will trigger query update
+    // ONE SHOT ADD COMMAND, will trigger query update
   } else if (req.url.startsWith('/add-todo')) {
-    const signals = JSON.parse(await text(req));
+    const signals = JSON.parse(xss(await text(req)));
     const todo = signals.todo;
-    todoEventStore.write('todos', [...todoEventStore.read().todos, { label: todo, checked: false, id: randomUUID() }]);
+    todoEventStore.write('todos', [...todoEventStore.read().todos, { id: randomUUID(), label: todo, checked: false }]);
     res.writeHead(202);
     res.end();
 
-    // THATS IT, LOL
+    // ONE SHOT UPDATE COMMAND, will trigger query update
+  } else if (req.url.startsWith('/update-todo')) {
+    const signals = JSON.parse(xss(await text(req)));
+    const updatedTodo = signals.updatedTodo;
+    todoEventStore.write(
+      'todos',
+      todoEventStore.read().todos.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo)),
+    );
+    res.writeHead(202);
+    res.end();
+  } else if (req.url.startsWith('/clear')) {
+    const signals = JSON.parse(await text(req));
+    const shouldClearDoneOnly = signals.shouldClearDoneOnly;
+    todoEventStore.write(
+      'todos',
+      shouldClearDoneOnly ? todoEventStore.read().todos.filter((todo) => !todo.checked) : [],
+    );
+    res.writeHead(202);
+    res.end();
   } else {
     try {
       const url = req.url === '/' ? '/index.html' : req.url;

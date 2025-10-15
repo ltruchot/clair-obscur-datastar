@@ -28,6 +28,8 @@
     "build:packages:funny-animals-generator": "pnpm --filter @clair-obscur-workspace/funny-animals-generator build",
     "build:packages:web-components": "pnpm --filter @clair-obscur-workspace/web-components build",
     "serve": "pnpm --filter @clair-obscur-workspace/mpa start",
+    "serve:todo-list": "pnpm --filter @clair-obscur-workspace/todo-list serve",
+    "serve:todo-list-for-families": "pnpm --filter @clair-obscur-workspace/todo-list-for-families serve",
     "lint": "eslint . --fix",
     "test": "pnpm --recursive test",
     "test:apps:mpa": "pnpm --filter @clair-obscur-workspace/mpa test",
@@ -66,7 +68,7 @@
     "trailingComma": "all",
     "bracketSpacing": true,
     "bracketSameLine": true,
-    "printWidth": 140,
+    "printWidth": 120,
     "plugins": [
       "prettier-plugin-organize-imports"
     ]
