@@ -112,6 +112,10 @@ createServer(async (req, res) => {
         res.setHeader('Content-Type', 'text/css');
       } else if (url.endsWith('.html')) {
         res.setHeader('Content-Type', 'text/html');
+      } else if (url.endsWith('.png')) {
+        res.setHeader('Content-Type', 'image/png');
+      } else if (url.endsWith('.svg')) {
+        res.setHeader('Content-Type', 'image/svg+xml');
       }
       res.end(content);
     } catch {

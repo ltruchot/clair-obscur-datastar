@@ -32,3 +32,25 @@ body {
         border-right: 1px solid #ddd;
     }
 }
+
+.github-icon, .datastar-icon {
+    width: 50px;
+    height: 50px;
+    display: block;
+    position: fixed;
+    z-index: 1000;
+    text-decoration: none;
+    bottom: 10px;
+    img {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.github-icon {
+    right: 10px;
+}
+
+.datastar-icon {
+    right: 60px;
+}
