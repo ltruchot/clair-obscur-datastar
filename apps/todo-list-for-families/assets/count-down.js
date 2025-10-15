@@ -51,8 +51,10 @@ class Countdown extends HTMLElement {
       return;
     }
 
-    this.textContent =
-      this.secondsLeft > 0 ? `This list will auto-destroy in ${this.secondsLeft} seconds` : '💥 BOOM 💥';
+    this.innerHTML =
+      this.secondsLeft > 0
+        ? `This list will auto-destroy in <span style="color: red; font-weight: bold;">${this.secondsLeft}</span> seconds`
+        : '💥 BOOM 💥';
   }
 }
 

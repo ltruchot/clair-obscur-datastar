@@ -47,8 +47,6 @@
         </button>
 
         <!-- Todo stats -->
-        <br />
-        <count-down data-attr-seconds-left="$secondsLeft"></count-down>
         <table class="stats-table">
           <tr>
             <th>Todo</th>
@@ -59,6 +57,7 @@
             <td data-text="$todos ? $todos.filter((todo) => todo.checked).length : 0"></td>
           </tr>
         </table>
+        <count-down data-attr-seconds-left="$secondsLeft"></count-down>
 
         <!-- List of todos -->
         <list-of-items

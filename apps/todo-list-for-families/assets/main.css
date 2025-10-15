@@ -1,5 +1,11 @@
+html,
+body {
+    font-size: 16px;
+}
+
+
 .rainbow {
-    font-size: 36px;
+    font-size: 2rem;
     width: fit-content;
     background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
     -webkit-background-clip: text;
