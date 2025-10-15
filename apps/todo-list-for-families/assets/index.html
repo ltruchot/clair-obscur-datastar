@@ -37,7 +37,7 @@
           Clear Done
         </button>
         <button
-          data-attr-disabled="$todos ?? $todos?.length === 0"
+          data-attr-disabled="$todos ? $todos?.length === 0 : true"
           data-on-click="$shouldClearDoneOnly = false; @post('/clear')">
           Clear All
         </button>

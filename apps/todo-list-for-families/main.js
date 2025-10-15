@@ -60,6 +60,10 @@ createServer(async (req, res) => {
       const content = readFileSync(filePath);
       if (url.endsWith('.js')) {
         res.setHeader('Content-Type', 'text/javascript');
+      } else if (url.endsWith('.css')) {
+        res.setHeader('Content-Type', 'text/css');
+      } else if (url.endsWith('.html')) {
+        res.setHeader('Content-Type', 'text/html');
       }
       res.end(content);
     } catch {

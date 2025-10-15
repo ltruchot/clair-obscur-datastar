@@ -25,12 +25,16 @@
           data-on-click="$todos = [{ id: randomId(), label: $todo, checked: false }, ...$todos]; 
             $todo=''; 
             focusTo('todo')"
-          data-attr-disabled="$todo.length === 0">
+          data-attr-disabled="$todo ? $todo.length === 0 : true">
           Add
         </button>
 
-        <button data-on-click="$todos = $todos.filter((todo) => !todo.checked);">Clear Done</button>
-        <button data-on-click="$todos = [];">Clear All</button>
+        <button
+          data-attr-disabled="$todos ? $todos.filter((todo) => todo.checked).length === 0 : true"
+          data-on-click="$todos = $todos.filter((todo) => !todo.checked);">
+          Clear Done
+        </button>
+        <button data-attr-disabled="$todos ? $todos.length === 0 : true" data-on-click="$todos = [];">Clear All</button>
 
         <!-- Todo stats -->
         <table class="stats-table">
