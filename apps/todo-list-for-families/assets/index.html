@@ -7,10 +7,14 @@
     <script
       type="module"
       src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js"></script>
-    <script type="module" src="/list-of-items.js"></script>
 
     <link rel="stylesheet" href="/main.css" />
+
+    <script type="module" src="/list-of-items.js"></script>
     <link rel="stylesheet" href="/list-of-items.css" />
+
+    <script type="module" src="/count-down.js"></script>
+    <link rel="stylesheet" href="/count-down.css" />
 
     <title>Todo List</title>
   </head>
@@ -20,12 +24,12 @@
         <h1 class="rainbow">Todo List For Big Families</h1>
 
         <!-- Forms inputs -->
-        <input id="todo" data-bind-todo />
+        <input id="todo" maxlength="80" data-bind-todo />
 
         <button
           id="add-todo"
           data-on-click="@post('/add-todo')
-            $todo=''; 
+            $todo='';
             focusTo('todo')"
           data-attr-disabled="$todo.length === 0">
           Add
@@ -43,6 +47,8 @@
         </button>
 
         <!-- Todo stats -->
+        <br />
+        <count-down data-attr-seconds-left="$secondsLeft"></count-down>
         <table class="stats-table">
           <tr>
             <th>Todo</th>
@@ -66,7 +72,7 @@
         <br />
       </section>
       <!-- Debug todos states -->
-      <pre>
+      <pre style="max-width: 50%">
 <code data-text="JSON.stringify($todos, null, 2)"></code>
       </pre>
     </main>

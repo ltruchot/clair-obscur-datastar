@@ -29,5 +29,9 @@ export class TodoEventStore {
 
   subscribe(subscriber) {
     this.#subscribers.add(subscriber);
+
+    return () => {
+      this.#subscribers.delete(subscriber);
+    };
   }
 }

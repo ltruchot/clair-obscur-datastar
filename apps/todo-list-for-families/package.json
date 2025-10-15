@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@starfederation/datastar-sdk": "1.0.0-RC.1",
+    "leo-profanity": "1.8.0",
     "xss": "1.0.15"
   }
 }

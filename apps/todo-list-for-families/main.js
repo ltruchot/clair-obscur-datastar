@@ -1,4 +1,5 @@
 import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/node';
+import leoProfanity from 'leo-profanity';
 import { randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { createServer } from 'node:http';
@@ -7,30 +8,72 @@ import { text } from 'node:stream/consumers';
 import xss from 'xss';
 import { TodoEventStore } from './todos-event-store.js';
 
+leoProfanity.loadDictionary('en');
+leoProfanity.add(leoProfanity.getDictionary('fr'));
+
 const todoEventStore = new TodoEventStore();
+const activeStreams = new Set();
+
+let secondsLeft = 120;
+setInterval(() => {
+  secondsLeft--;
+  if (secondsLeft <= -1) {
+    secondsLeft = 120;
+    todoEventStore.write('todos', []);
+
+    for (const stream of activeStreams) {
+      stream.patchSignals(`{ "secondsLeft": { "value": ${secondsLeft}, "timestamp": "${new Date().toISOString()}" } }`);
+    }
+  }
+}, 1000);
 
 createServer(async (req, res) => {
   // CONTINUOUS QUERY, will be triggered by commands
   if (req.url.startsWith('/subscribe-to-events')) {
+    let currentStream = null;
+    let unsubscribeStore = null;
     ServerSentEventGenerator.stream(
       req,
       res,
       (stream) => {
-        const todos = todoEventStore.read().todos;
-        stream.patchSignals(`{ "todos": ${JSON.stringify(todos)} }`);
+        currentStream = stream;
+        activeStreams.add(currentStream);
 
+        // INITIAL STATE
+        const todos = todoEventStore.read().todos;
+        currentStream.patchSignals(
+          `{ "todos": ${JSON.stringify(todos)}, "secondsLeft": { "value": ${secondsLeft}, "timestamp": "${new Date().toISOString()}" } }`,
+        );
+
+        // SUBSCRIBE TO EVENTS
         todoEventStore.subscribe((state) => {
-          stream.patchSignals(`{ "todos": ${JSON.stringify(state.todos)} }`);
+          currentStream.patchSignals(`{ "todos": ${JSON.stringify(state.todos)} }`);
         });
       },
-      { keepalive: true },
+      {
+        keepalive: true,
+        onClose: () => {
+          if (currentStream) {
+            activeStreams.delete(currentStream);
+          }
+          unsubscribeStore?.();
+        },
+        onError: () => {
+          if (currentStream) {
+            activeStreams.delete(currentStream);
+          }
+          unsubscribeStore?.();
+        },
+      },
     );
 
     // ONE SHOT ADD COMMAND, will trigger query update
   } else if (req.url.startsWith('/add-todo')) {
     const signals = JSON.parse(xss(await text(req)));
     const todo = signals.todo;
-    todoEventStore.write('todos', [...todoEventStore.read().todos, { id: randomUUID(), label: todo, checked: false }]);
+    const validatedTodo = todo.slice(0, 80);
+    const sanitizedTodoItem = { id: randomUUID(), label: leoProfanity.clean(validatedTodo, '*', 1), checked: false };
+    todoEventStore.write('todos', [sanitizedTodoItem, ...todoEventStore.read().todos]);
     res.writeHead(202);
     res.end();
 
@@ -38,9 +81,14 @@ createServer(async (req, res) => {
   } else if (req.url.startsWith('/update-todo')) {
     const signals = JSON.parse(xss(await text(req)));
     const updatedTodo = signals.updatedTodo;
+    const sanitizedUpdatedTodo = {
+      id: updatedTodo.id,
+      label: leoProfanity.clean(updatedTodo.label, '*', 1),
+      checked: updatedTodo.checked,
+    };
     todoEventStore.write(
       'todos',
-      todoEventStore.read().todos.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo)),
+      todoEventStore.read().todos.map((todo) => (todo.id === sanitizedUpdatedTodo.id ? sanitizedUpdatedTodo : todo)),
     );
     res.writeHead(202);
     res.end();

@@ -18,7 +18,7 @@
         <h1 class="rainbow">Todo List</h1>
 
         <!-- Forms inputs -->
-        <input id="todo" data-bind-todo />
+        <input id="todo" maxlength="80" data-bind-todo />
 
         <button
           id="add-todo"
@@ -58,7 +58,7 @@
         <br />
       </section>
       <!-- Debug todos states -->
-      <pre>
+      <pre style="max-width: 50%">
 <code data-text="JSON.stringify($todos, null, 2)"></code>
       </pre>
     </main>
