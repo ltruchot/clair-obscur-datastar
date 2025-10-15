@@ -1,34 +1,46 @@
-import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/node';
-import leoProfanity from 'leo-profanity';
+// Vanilla
 import { randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { join } from 'node:path';
 import { text } from 'node:stream/consumers';
+
+// Datastar
+import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/node';
+
+// Sanitizers libraries
+import leoProfanity from 'leo-profanity';
 import xss from 'xss';
+
+// Local modules
 import { TodoEventStore } from './todos-event-store.js';
 
+// Prepare for heresy
 leoProfanity.loadDictionary('en');
 leoProfanity.add(leoProfanity.getDictionary('fr'));
 
+// Initialize event store
 const todoEventStore = new TodoEventStore();
+
+// Keep track of active streams
 const activeStreams = new Set();
 
+// Every hour, reset the list and the countdown
 let secondsLeft = 3600;
 setInterval(() => {
   secondsLeft--;
   if (secondsLeft <= -1) {
     secondsLeft = 3600;
     todoEventStore.write('todos', []);
-
     for (const stream of activeStreams) {
       stream.patchSignals(`{ "secondsLeft": { "value": ${secondsLeft}, "timestamp": "${new Date().toISOString()}" } }`);
     }
   }
 }, 1000);
 
+// listen for requests
 createServer(async (req, res) => {
-  // CONTINUOUS QUERY, will be triggered by commands
+  // CONTINUOUS QUERY UPDATES, will be triggered by commands
   if (req.url.startsWith('/subscribe-to-events')) {
     let currentStream = null;
     let unsubscribeStore = null;
@@ -39,13 +51,13 @@ createServer(async (req, res) => {
         currentStream = stream;
         activeStreams.add(currentStream);
 
-        // INITIAL STATE
+        // Initial state
         const todos = todoEventStore.read().todos;
         currentStream.patchSignals(
           `{ "todos": ${JSON.stringify(todos)}, "secondsLeft": { "value": ${secondsLeft}, "timestamp": "${new Date().toISOString()}" } }`,
         );
 
-        // SUBSCRIBE TO EVENTS
+        // Subscribe to events
         todoEventStore.subscribe((state) => {
           currentStream.patchSignals(`{ "todos": ${JSON.stringify(state.todos)} }`);
         });
@@ -92,6 +104,8 @@ createServer(async (req, res) => {
     );
     res.writeHead(202);
     res.end();
+
+    // ONE SHOT CLEAR COMMAND, will trigger query update
   } else if (req.url.startsWith('/clear')) {
     const signals = JSON.parse(await text(req));
     const shouldClearDoneOnly = signals.shouldClearDoneOnly;
@@ -101,6 +115,8 @@ createServer(async (req, res) => {
     );
     res.writeHead(202);
     res.end();
+
+    // SERVE STATIC FILES from assets folder
   } else {
     try {
       const url = req.url === '/' ? '/index.html' : req.url;
@@ -118,6 +134,8 @@ createServer(async (req, res) => {
         res.setHeader('Content-Type', 'image/svg+xml');
       }
       res.end(content);
+
+      // EVERYTHING ELSE --> 404
     } catch {
       res.writeHead(404);
       res.end();
