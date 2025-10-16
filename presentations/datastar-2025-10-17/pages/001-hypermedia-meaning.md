@@ -1,10 +1,11 @@
 # Hypermedia Secret Meaning
 Beyond ὑπέρ sequential communication μέσος
 
+<v-click>
 <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom:0;">
   <div style="width: 66%;">
     <ul>
-        <li>Hypermedia is consumable value</li>
+        <li>Hypermedia is consumable resource</li>
         <li>Web is a hypermedia content network</li>
         <li>Browser is a hypermedia render engine</li>
         <li>SEO/Crawlers/A11y... need hypermedia for indexing and display</li>
@@ -14,13 +15,11 @@ Beyond ὑπέρ sequential communication μέσος
     <img src="../assets/hypermedia-always-has-been.png" alt="Hypermedia always has been" style="display: block; margin-left: auto;" />
     </div>
 </div>
+</v-click>
 
+<br />
+<v-click>
 
-
-<div style="float: left; width: 20%;">
-  <img src="../assets/frontend-state.png" alt="Frontend state" style="display: block;" />
-</div>
-<div style="float: right; width: 80%;">
 ```html
 Before web 2.0:  
 <form method="POST" action="/next-step">
@@ -31,4 +30,4 @@ After web 2.0:
   <div ([:-click-:])="preventDefaultAndDoStuffToEmulateSubmit()">Please kill me</div>
 </div>
 ```
-</div>
+</v-click>

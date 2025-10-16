@@ -4,6 +4,7 @@ layout: items
 
 # Why HTMX was not enough
 Are the wounds too deep?
+<v-click>
 <div style="display: flex; gap: 16px; align-items: center; justify-content: space-between;">
   <div style="width: 84%; text-align: left;">
     <h4>HTMX</h4>
@@ -16,21 +17,22 @@ Are the wounds too deep?
   </div>
   <img src="../assets/object-object.jpg" alt="Object nightmare" style="display: block; width: 16%;" />
 </div>
+</v-click>
 
+<v-click>
 <div style="display: flex; gap: 16px; align-items: center; justify-content: space-between;">
-
-<img src="../assets/at-this-point.png" alt="At this point" style="display: block; width: 20%;" />
-<div style="width: 80%; text-align: left;">
-  
-  <h4>But HTMX</h4>
-  <ul>
-    <li>bad for real SPA use cases (calculator?) and collaborative frontend (googlesheets?)</li>
-    <li>does not pursue optimization</li>
-    <li>rarely sufficient alone</li>
-    <li>is done</li>
-  </ul>
+  <img src="../assets/at-this-point.png" alt="At this point" style="display: block; width: 20%;" />
+  <div style="width: 80%; text-align: left;">
+    <h4>But HTMX</h4>
+    <ul>
+      <li>bad for real SPA use cases (calculator?) and collaborative frontend (googlesheets?)</li>
+      <li>does not pursue optimization</li>
+      <li>rarely sufficient alone</li>
+      <li>is done</li>
+    </ul>
+  </div>
 </div>
-</div>
+</v-click>
 
 
 

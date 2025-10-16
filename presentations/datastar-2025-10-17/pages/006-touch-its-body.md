@@ -1,6 +1,7 @@
 # Touch its body
 It does not do much, but you feel everything
 
+<v-click>
 <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom:0;">
   <div style="width: 80%;">
     <ul>
@@ -11,11 +12,12 @@ It does not do much, but you feel everything
     </ul>
   </div>
   <img src="../assets/funerals.png" alt="Funerals" style="display: block; width: 20%; margin-left: auto;" />
-
 </div>
+</v-click>
 
 <br />
 <br />
+<v-click>
 <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom:0;">
     <div style="width: 34%; margin-right: 20px;">
        <img src="../assets/reimplementing.png" alt="Reimplementing" style=" display: block; " />
@@ -29,3 +31,4 @@ It does not do much, but you feel everything
        </ul>
     </div>
 </div>
+</v-click>

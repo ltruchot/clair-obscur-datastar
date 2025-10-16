@@ -34,7 +34,7 @@ class: text-center
 
 The hype-free fullstack hypermedia framework
 
-<img src="./assets/learn-datastar.png" alt="Learning DataStar" style="margin: auto; display: block; width: 18%;" />
+<img src="./assets/learn-datastar.png" alt="Learning Datastar" style="margin: auto; display: block; width: 18%;" />
   
 A new star is born 
 <p style="font-size: 12px; color: #666; text-align: right;padding-10px;">MIT License - October 2025 - Loïc TRUCHOT</p>
@@ -43,8 +43,9 @@ A new star is born
 layout: intro
 ---
 
-# Why DataStar?
+# Why Datastar?
 
+<v-click>
 <div style="display: flex; flex-direction: column; align-items: center; width: auto; text-align: left;">
   <ol>
     <li>Hypermedia Meaning</li>
@@ -53,7 +54,11 @@ layout: intro
     <li>Why HTMX is not enough</li>
   </ol>
 </div>
+</v-click>
+
+<v-click>
 <img src="./assets/server-can.gif" alt="Server can display html" style="margin: 0 auto; display: block;" />
+</v-click>
 
 
 ---
@@ -79,17 +84,19 @@ layout: intro
 # Meet Datastar 🚀
 
 Fullstack hypermedia framework
-
-<div style="display: flex; flex-direction: column; align-items: center; width: auto; text-align: left;">
-<ol>
-  <li>Meet a seductive stranger</li>
-  <li>Touch its body</li>
-  <li>Fall in love</li>
-  <li>Move in together</li>
-</ol>
-</div>
-<img src="./assets/meet-datastar.gif" alt="Meet Datastar" style="margin: 0 auto; display: block;" />
-
+<v-click>
+  <div style="display: flex; flex-direction: column; align-items: center; width: auto; text-align: left;">
+  <ol>
+    <li>Meet a seductive stranger</li>
+    <li>Touch its body</li>
+    <li>Fall in love</li>
+    <li>Move in together</li>
+  </ol>
+  </div>
+</v-click>
+<v-click>
+  <img src="./assets/meet-datastar.gif" alt="Meet Datastar" style="margin: 0 auto; display: block;width: 30%;" />
+</v-click>
 ---
 src: ./pages/005-a-seductive-stranger.md
 ---
@@ -113,6 +120,7 @@ layout: intro
 # Now what?
 Should I jump on the no-hype train?
 
+<v-click>
 <div style="display: flex; flex-direction: column; align-items: center; width: auto; text-align: left;">
 <ol>
   <li>Most hated framework ever</li>
@@ -120,8 +128,10 @@ Should I jump on the no-hype train?
   <li>Sources</li>
 </ol>
 </div>
+</v-click>
+<v-click>
 <img src="./assets/react-phase.gif" alt="React Phase" style="margin: 0 auto; display: block;width: 30%;" />
-
+</v-click>
 
 ---
 src: ./pages/009-most-hated.md
@@ -133,21 +143,26 @@ layout: cover
 
 # Thank you
 
+<v-click>
 <img src="./assets/declarative.gif" alt="Thank you" style="margin-left: auto; display: block;width: 30%;" />
-
+</v-click>
 
 ---
 
 # Sources
+Thanks to the community who helped me to make this presentation better
 
-- **A ton of meme, coming from the community channel**: https://discord.gg/Npdvb6hB
+- **A ton of meme, coming from the community channel**: <a href="https://discord.gg/Npdvb6hB" style="color: blue;" target="_blank">Discord</a>
 
-- **Changelog Podcast**: https://open.spotify.com/episode/75i5QsR1kdYbktLxWwxbUt?si=c8769293513f4f6f
+- **Changelog Podcast**: <a href="https://open.spotify.com/episode/75i5QsR1kdYbktLxWwxbUt?si=c8769293513f4f6f" style="color: blue;" target="_blank">Spotify episode</a>
 
-- **Hx-pod Podcast**: https://open.spotify.com/episode/4KBDl219JNmv3IepyDSetr?si=058c2056e4b545c4
+- **Hx-pod Podcast**: <a href="https://open.spotify.com/episode/4KBDl219JNmv3IepyDSetr?si=058c2056e4b545c4" style="color: blue;" target="_blank">Spotify episode</a>
 
-- **Louis Sunshine playlist**: https://www.youtube.com/watch?v=vLekrUywdRI&list=PLrXlQsHltFEi1ceIoRh9AuHCZe5-kBpd_
+- **Louis Sunshine playlist**: <a href="https://www.youtube.com/watch?v=vLekrUywdRI&list=PLrXlQsHltFEi1ceIoRh9AuHCZe5-kBpd_" style="color: blue;" target="_blank">YouTube playlist</a>
 
-- **Chris May Blog**: https://everydaysuperpowers.dev/articles/why-i-switched-from-htmx-to-datastar/
+- **Chris May Blog**: <a href="https://everydaysuperpowers.dev/articles/why-i-switched-from-htmx-to-datastar/" style="color: blue;" target="_blank">HTMX to Datastar blog post</a>
+
+Want to steal something from this presentation, or even improve it?  
+--> <a href="https://github.com/ltruchot/clair-obscur-datastar/tree/main/presentations/datastar-2025-10-17" style="color: blue;" target="_blank">GitHub repository containing this slidev code</a>  
 
 
