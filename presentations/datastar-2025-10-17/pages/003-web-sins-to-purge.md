@@ -21,17 +21,18 @@ layout: items
   </div>
 
   <div style="width: 33.33%; color: #8f2131;">
-    <img src="../assets/undefined-nightmare.png" style="display: block;margin: 0 auto;"  />
-    🔥 Living in hell 🔥  &nbsp;&nbsp;&nbsp;➡️
+    <img src="../assets/heresy.jpg" style="width: 80%; display: block;margin: 0 auto;" />
+    🔥  Heresy 🔥  &nbsp;&nbsp;&nbsp;➡️
   </div>
 
-  <div style="width: 33.33%; color: ##f0000;">
-    <img src="../assets/heresy.jpg" style="width: 80%;display: block;margin: 0 auto;" />
-     🔥🔥🔥 Heresy 🔥🔥🔥 ➡️
+  <div style="width: 33.33%; color: red">
+    <img src="../assets/undefined-nightmare.png" style="display: block;margin: 0 auto;"  />
+    🔥🔥🔥  Hell 🔥🔥🔥  &nbsp;&nbsp;&nbsp;➡️
   </div>
-  <div style="width: 33.33%; color: blue;">
+
+  <div style="width: 33.33%; color: darkblue;">
     <img src="../assets/remember-html-css.png"  style="width: 90%;display: block;margin: 0 auto;" />
-    Nostalgic sadness
+   ☠️ Nostalgic sadness ☠️
   </div>
 
 </div>

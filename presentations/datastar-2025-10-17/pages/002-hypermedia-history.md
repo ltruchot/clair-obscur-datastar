@@ -2,28 +2,27 @@
 Brings your serendipity since 1989 (a.k.a. browsable documentation)
 
 <div style="display: flex; align-items: center; gap: 16px;">
-  <div style="width: 60%;">
+  <div style="width: 80%;">
   <br />
     <ul style="list-style-type: disc; padding-left: 20px;">
-      <li>1995: Plain HTML files over the wire via HTTP</li>
-      <li>2000: Chaotic MPA served by backend (PHP, ASP, Java...)</li>
-      <li>2005: <span style="color: #F9D56E;">Golden age of Restful Hypermedia MPA</span><br/>(RoR, Spring, Symfony...) with AJAX and JQuery</li>
+      <li>1995: HTML files over the wire via HTTP</li>
+      <li>2000: Chaotic backend MPAs (PHP, ASP, Java...)</li>
+      <li>2005: <span style="color: #B8860B;font-weight: bold;">Golden Age: Restful Hypermedia MPA</span> (RoR, Java, Php...) + JQuery/AJAX</li>
     </ul>
-    <strong style="color: lightgreen;">--- web 2.0 sins spread everywhere ---</strong>
+    <br />
+    <span style="color: red;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--- web 2.0 sins begin to spread ---</span>
   </div>
 
-
-  <img src="../assets/hypermedia-always-has-been.png" alt="Hypermedia history" style="width: 40%; display: block;" />
+  <img src="../assets/immortal-website.png" alt="Hypermedia history" style="width: 20%; display: block;" />
 </div>
+  <br />
 <ul style="list-style-type: disc; padding-left: 20px;">
-      <li>2010: Chaotic SPA, provided by big frontend frameworks (Dojo, AngularJs...)</li>
-      <li>2015: <span style="color: #F9D56E;">Golden age of JSON-based SPA</span> (React, Vue, Angular 2+...) with fake routers and SSR</li>
-      <li>2020: Astro, HTMX: 2005 backend state MPA are back - Next.js/Server Components will come soon</li>
-      <li>2025: September, the Datastar begins to shine in northern sky 🌟:
-      <br/>Hypermedia is the future again, 🚀 but with 2025 features, MPA or SPA, via AJAX, via SSE, via Signals</li>
+  <li>2010: Chaotic frontend-state SPAs (AngularJs...)</li>
+  <li>2015: <span style="color: #FF0000;font-weight: bold;">Heretic Bloody Age of JSON-based SPA</span> (React, Vue, Angular...) with state, fake routers, SSR</li>
+  <li>2020: Astro, Next.js, SvelteKit, HTMX: old-school MPAs try to come back</li>
+  <li>2025: A new star begins to shine in northern sky 🌟: <span style="color: #B8860B;font-weight: bold;">DataStar</span>
+  <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🚀 <span style="font-style: italic;">Hypermedia can purge the web with 2025 features, MPAs or SPAs, via AJAX, via SSE, via Signals</span> </li>
 </ul>
-<strong style="color: lightgray">2030: --- web 2.0 sins finally purged by fire - the web 1.1 era begins ---</strong>
-
 
 
 

@@ -2,33 +2,34 @@
 layout: items
 ---
 
-# Why HTMX is not enough
+# Why HTMX was not enough
 Are the wounds too deep?
 <div style="display: flex; gap: 16px; align-items: center; justify-content: space-between;">
-  <div style="width: 75%; text-align: left;">
+  <div style="width: 84%; text-align: left;">
     <h4>HTMX</h4>
     <ul>
       <li>did a great job to make hypermedia/HATEOAS an important topic/a community</li>
-      <li>did push back the state to the backend</li>
       <li>is lightweight, declarative, easy to understand and use</li>
+      <li>did push back the state to the backend</li>
       <li>is done</li>
     </ul>
   </div>
-  <img src="../assets/at-this-point.png" alt="At this point" style="display: block; width: 25%;" />
+  <img src="../assets/object-object.jpg" alt="Object nightmare" style="display: block; width: 16%;" />
 </div>
 
 <div style="display: flex; gap: 16px; align-items: center; justify-content: space-between;">
-<img src="../assets/frontend-state.png" alt="Frontend state" style="display: block; width: 17%;" />
-<div style="width: 75%; text-align: left;">
+
+<img src="../assets/at-this-point.png" alt="At this point" style="display: block; width: 20%;" />
+<div style="width: 80%; text-align: left;">
+  
   <h4>But HTMX</h4>
   <ul>
-    <li>is bad for SPA use cases (calculator?) and collaborative frontend (googleslides?)</li>
-    <li>is too big for what it does, and almostnever used alone: <strong>Hello AlpineJS</strong></li>
-    <li>is not even HTML compliant</li>
+    <li>bad for SPA real use cases (calculator?) and collaborative frontend (googlesheets?)</li>
+    <li>too big for what it does, rarely used alone: <strong>Hello AlpineJS</strong></li>
+    <li>not HTML compliant</li>
     <li>is done</li>
   </ul>
 </div>
-
 </div>
 
 

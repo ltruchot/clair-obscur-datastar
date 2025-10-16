@@ -2,28 +2,33 @@
 Beyond ὑπέρ sequential communication μέσος
 
 <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom:0;">
-  <div style="width: 69%;">
-    True modern definition: "Informations as a network, relying on each other"
+  <div style="width: 66%;">
     <ul> 
-        <li>Web is a global hypermedia content network</li>
-        <li>Browser is meant to display hypermedia forever</li>
-        <li>Browser is a hypermedia-oriented string render engine</li>
-        <li>Web is meant to share transparent semantic of its hypermedia content,<br /> but finally...</li>
+        <li>Hypermedia is consumable value</li>
+        <li>Web is an hypermedia content network</li>
+        <li>Browser is an hypermedia render engine</li>
+        <li>SEO/Crawlers/A11y tools... needs hypermedia for index and display</li>
     </ul>
   </div>
-  <div style="width: 31%;">
-    <img src="../assets/immortal-website.png" alt="Immortal website" style="display: block; width: 230px; margin-left: auto;" />
+  <div style="width: 34%;">
+    <img src="../assets/hypermedia-always-has-been.png" alt="Hypermedia always has been" style="display: block; margin-left: auto;" />
     </div>
 </div>
+
+
+
+<div style="float: left; width: 20%;">
+  <img src="../assets/frontend-state.png" alt="Frontend state" style="display: block;" />
+</div>
+<div style="float: right; width: 80%;">
 ```html
-Before web 2.0: <button class='btn-primary' type='submit'>I love it</button>
-After web 2.0: <div id="redux-factory-builder-ihateit"></div><script>//do 🤮 stuff to emulate submit</script>
+Before web 2.0:  
+<form method="POST" action="/next-step">
+  <button type='submit'>I love it</button>
+</form>
+After web 2.0:  
+<div class="ng-v-factory-builder-fakeform--_vmd0">
+  <div ([:-click-:])="preventDefaultAndDoStuffToEmulateSubmit()">Please kill me</div>
+</div>
 ```
-
-<ul>
-    <li>A URL is meant to deliver the hypermedia content of an endpoint</li>
-    <li>SEO/Crawlers/A11y tools... must find hypermedia content to index it</li>
-</ul>
-
-
-
+</div>

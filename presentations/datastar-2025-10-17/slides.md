@@ -17,15 +17,27 @@ drawings:
 transition: slide-left
 # enable MDC Syntax: https://sli.dev/features/mdc
 mdc: true
+layout: full
 ---
 
+<div style="width: 100%; height: 100%; background-color: black; background-image: url('./assets/not-a-cult.webp'); background-size: contain; background-repeat: no-repeat; background-position: center; display: flex; flex-direction: column; align-items: center;">
+<h1 style="text-align: center; color: white">This presentation is not about a cult</h1>
+  <span style="margin: auto; display: block; color: black">Definitely not</span>
+</div>
+---
+layout: intro
+class: text-center
+---
+
+
 # Datastar
+
 The hype-free fullstack hypermedia framework
 
-<img src="./assets/learn-datastar.png" alt="Learning DataStar" style="margin: auto; display: block; width: 13vh;" />
+<img src="./assets/learn-datastar.png" alt="Learning DataStar" style="margin: auto; display: block; width: 18%;" />
   
 A new star is born, a new cult can begin  
-<p style="font-size: 12px; color: #666; text-align: right;padding-10px;">MIT License - 2025 - Loïc TRUCHOT</p>
+<p style="font-size: 12px; color: #666; text-align: right;padding-10px;">MIT License - October 2025 - Loïc TRUCHOT</p>
 
 ---
 layout: intro
@@ -34,14 +46,15 @@ layout: intro
 # Why DataStar ?
 
 <div style="display: flex; flex-direction: column; align-items: center; width: auto; text-align: left;">
-<ol>
-<li>Hypermedia Meaning</li>  
-<li>Hypermedia History</li>  
-<li>Web sins to purge</li>  
-<li>Why HTMX is not enough</li>  
-</ol>
+  <ol>
+    <li>Hypermedia Meaning</li>
+    <li>Hypermedia History</li>
+    <li>Web sins to purge</li>
+    <li>Why HTMX is not enough</li>
+  </ol>
 </div>
 <img src="./assets/server-can.gif" alt="Server can display html" style="margin: 0 auto; display: block;" />
+
 
 ---
 src: ./pages/001-hypermedia-meaning.md
@@ -52,7 +65,7 @@ src: ./pages/002-hypermedia-history.md
 ---
 
 ---
-src: ./pages/003-cure-the-web.md
+src: ./pages/003-web-sins-to-purge.md
 ---
 
 ---
@@ -64,18 +77,53 @@ layout: intro
 ---
 
 # Meet Datastar 🚀
+
 Fullstack hypermedia framework
 
 <div style="display: flex; flex-direction: column; align-items: center; width: auto; text-align: left;">
 <ol>
-  <li>Meet a seducing stranger</li>  
-  <li>Visit its home</li>  
-  <li>Touch its body</li>  
-  <li>Marry it</li>
+  <li>Meet a seductive stranger</li>
+  <li>Touch its body</li>
+  <li>Fall in love</li>
+  <li>Move in together</li>
 </ol>
 </div>
 <img src="./assets/meet-datastar.gif" alt="Meet Datattar" style="margin: 0 auto; display: block;" />
 
 ---
-src: ./pages/005-a-seducing-stranger.md
+src: ./pages/005-a-seductive-stranger.md
 ---
+
+---
+src: ./pages/006-touch-its-body.md
+---
+
+---
+src: ./pages/007-fall-in-love.md
+---
+
+---
+src: ./pages/008-move-in-together.md
+---
+
+---
+layout: intro
+---
+
+# Now what?
+Should I jump in the no-hype train?
+
+<div style="display: flex; flex-direction: column; align-items: center; width: auto; text-align: left;">
+<ol>
+  <li>Most hated framework ever</li>
+  <li>Thank you</li>
+  <li>Sources</li>
+</ol>
+</div>
+<img src="./assets/react-phase.gif" alt="React Phase" style="margin: 0 auto; display: block;width: 30%;" />
+
+
+
+
+
+
