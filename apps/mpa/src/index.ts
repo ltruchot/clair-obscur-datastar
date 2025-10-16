@@ -1,4 +1,4 @@
-import { SessionController } from '@/session/adapters/in/web/session-controller';
+import { HomeController } from '@/session/adapters/in/web/home-controller';
 import { EventStoreSessionAdapter } from '@/session/adapters/out/session/event-store-session-adapter';
 import { SessionCommandService } from '@/session/adapters/out/session/session-command.service';
 import { SessionQueryService } from '@/session/adapters/out/session/session-query.service';
@@ -16,7 +16,9 @@ import { Hono } from 'hono';
 import { SessionData } from '@/session/infrastructure/session';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { SessionService } from './session/adapters/out/session/session-service';
 
+// A Hono app with built-in session management
 const app = new Hono<{
   Variables: {
     session: {
@@ -30,15 +32,6 @@ const app = new Hono<{
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-/*
-app.use(
-  '*',
-  logger((msg) => {
-    console.log('Request:', decodeURIComponent(msg));
-  }),
-);
-*/
-
 app.use('/assets/*', serveStatic({ root: __dirname }));
 
 app.use(
@@ -49,14 +42,18 @@ app.use(
   }),
 );
 
+// middlewares
 const sessionMiddleware = useSession({ secret: authSecret });
 
+// instantiate stuff
 const eventStore = new EventStore();
 const sessionAdapter = new EventStoreSessionAdapter(eventStore);
 const animalNameGenerator = new DefaultAnimalNameGenerator();
 const sessionCommandService = new SessionCommandService(sessionAdapter, sessionAdapter, animalNameGenerator);
 const sessionQueryService = new SessionQueryService(sessionAdapter);
-const sessionController = new SessionController(sessionCommandService, sessionQueryService, eventStore);
+const sessionService = new SessionService(sessionQueryService, sessionCommandService);
+
+const homeController = new HomeController(eventStore, sessionCommandService, sessionService);
 
 // Use globalThis to survive HMR reloads in development
 const MONITOR_SYMBOL = Symbol.for('session-monitor');
@@ -80,13 +77,13 @@ if (isDevelopment) {
   console.log('Session monitor started');
 }
 
-app.get('/', sessionMiddleware, (c) => sessionController.renderSessionPage(c));
+app.get('/', sessionMiddleware, (c) => homeController.renderHomePage(c));
 
-app.get('/subscribe-to-events', sessionMiddleware, (c) => sessionController.broadcastEvents(c));
+app.get('/subscribe-to-events', sessionMiddleware, (c) => homeController.broadcastEvents(c));
 
-app.post('/keep-alive', sessionMiddleware, (c) => sessionController.keepAlive(c));
+app.post('/keep-alive', sessionMiddleware, (c) => homeController.keepAlive(c));
 
-app.post('/font-change', sessionMiddleware, (c) => sessionController.setFont(c));
+app.post('/font-change', sessionMiddleware, (c) => homeController.setFont(c));
 
 if (!isDevelopment) {
   const serverConfig = {

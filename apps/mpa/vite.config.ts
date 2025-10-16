@@ -25,6 +25,7 @@ export default defineConfig(({ mode }) => ({
           }
         };
         copyRecursive('src/assets/favicon', 'dist/assets/favicon');
+        copyRecursive('src/assets/styles', 'dist/assets/styles');
         if (mode === 'production') {
           copyRecursive('src/assets/scripts/datastar-community', 'dist/assets/scripts/datastar-community');
         } else {
@@ -48,17 +49,16 @@ export default defineConfig(({ mode }) => ({
     },
     rollupOptions: {
       external: [
-        'hono',
-        '@hono/node-server',
-        '@starfederation/datastar-sdk',
         'node:url',
         'node:path',
         'node:fs',
-        'node:http2',
         'url',
         'path',
         'fs',
         'dotenv',
+        'hono',
+        '@starfederation/datastar-sdk',
+        '@hono/node-server',
         '@hono/session',
       ],
     },
