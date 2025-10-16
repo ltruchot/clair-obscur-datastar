@@ -5,7 +5,8 @@ layout: items
 # Move in together
 Warm an comfty place to build confidence
 
-<div style="display: flex; justify-content: space-between; align-items: start; margin-bottom:0;">
+<p style="font-size: 12px; color: #666; text-align: left; margin:0;">Core team: Delaney (metrics obsessed creator) - Ben (parental figure targeting tomorrow)Johnny (the disrcret young genius)</p>
+<div style="display: flex; justify-content: space-between; align-items: start; margin:0;">
 <ul style="text-align: left; width: 68%;">
     <li><a style="color: blue;" href="https://data-star.dev/" target="_blank">Shiny new website</a> with all docs, examples and links</li>
     <li><a style="color: blue;" href="https://discord.gg/P6vRXCAk" target="_blank">Vivid discord server</a> with 600+ members</li>
@@ -19,7 +20,6 @@ Warm an comfty place to build confidence
 </div>
 
 Bonus:
-
 <a href="https://checkboxes.andersmurphy.com/" target="_blank"><img src="../assets/billioncb.png" alt="Billion checkboxes" style="display: block; width: 30%; margin: auto;" /></a>
 
 

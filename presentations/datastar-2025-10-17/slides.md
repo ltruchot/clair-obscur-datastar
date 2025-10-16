@@ -123,7 +123,29 @@ Should I jump in the no-hype train?
 <img src="./assets/react-phase.gif" alt="React Phase" style="margin: 0 auto; display: block;width: 30%;" />
 
 
+---
+src: ./pages/009-most-hated.md
+---
+
+---
+layout: cover
+---
+
+# Thank you
+
+<img src="./assets/declarative.gif" alt="Thank you" style="margin-left: auto; display: block;width: 30%;" />
 
 
+---
+
+# Sources
+
+- **Changelog Podcast**: https://everydaysuperpowers.dev/articles/why-i-switched-from-htmx-to-datastar/
+
+- **Hx-pod Podcast**: https://open.spotify.com/episode/4KBDl219JNmv3IepyDSetr?si=058c2056e4b545c4
+
+- **Louis Sunshine playlist**: https://www.youtube.com/watch?v=vLekrUywdRI&list=PLrXlQsHltFEi1ceIoRh9AuHCZe5-kBpd_
+
+- **Chris May Blog**: https://everydaysuperpowers.dev/articles/why-i-switched-from-htmx-to-datastar/
 
 
