@@ -3,11 +3,11 @@ Beyond ὑπέρ sequential communication μέσος
 
 <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom:0;">
   <div style="width: 66%;">
-    <ul> 
+    <ul>
         <li>Hypermedia is consumable value</li>
-        <li>Web is an hypermedia content network</li>
-        <li>Browser is an hypermedia render engine</li>
-        <li>SEO/Crawlers/A11y tools... needs hypermedia for index and display</li>
+        <li>Web is a hypermedia content network</li>
+        <li>Browser is a hypermedia render engine</li>
+        <li>SEO/Crawlers/A11y tools... need hypermedia for indexing and display</li>
     </ul>
   </div>
   <div style="width: 34%;">

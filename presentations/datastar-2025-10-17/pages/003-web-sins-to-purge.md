@@ -7,7 +7,7 @@ layout: items
 
   <div style="width: 33.33%;">
     <img src="../assets/old-wisdom.jpg" />
-    Disrespect olders &nbsp;&nbsp;&nbsp;➡️
+    Disrespect elders &nbsp;&nbsp;&nbsp;➡️
   </div>
 
   <div style="width: 33.33%; color: #24090d;">

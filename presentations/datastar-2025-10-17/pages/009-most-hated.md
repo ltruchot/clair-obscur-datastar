@@ -3,7 +3,7 @@
 <div style="display: flex; width: 79%; align-items: flex-end; flex-wrap: wrap; margin: 0 auto;">
 
   <div style="width: 33.33%; display: flex; align-self: stretch; align-items: center; justify-content: center;">
-    Delanay short history ➡️
+    Delaney's short history ➡️
   </div>
 
   <div style="width: 33.33%; color: #24090d;">

@@ -4,7 +4,7 @@ Forget your first framework love in minutes
 <img src="../assets/storage-datastar.png" style="position: absolute; top: 0; right: 0; width: 19%" />
 <div style="display: flex; gap: 16px; align-items: flex-start; justify-content: space-between;">
     <div style="width: 50%; text-align: left;">
-        What does it look like ?
+        What does it look like?
         <ul>
             <li>10kb JS lib</li>
             <li>Fully declarative, HTML compliant</li>
@@ -14,13 +14,13 @@ Forget your first framework love in minutes
         </ul>
     </div>
     <div style="width: 50%; text-align: left;">
-        What does it do for a living ?
+        What does it do for a living?
         <ul>
             <li>data-* attributes</li>
             <li>Server-Sent Events helpers (SSE)</li>
             <li>Fastest HTML Fragment/Signals merging</li>
             <li>Plugins sticking to the same principles</li>
-            <li>Few pro plugins made by greedy devs</li>
+            <li>A few pro plugins made by greedy devs</li>
         </ul>
     </div>
 </div>

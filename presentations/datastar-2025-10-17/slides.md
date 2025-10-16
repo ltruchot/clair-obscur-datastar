@@ -43,7 +43,7 @@ A new star is born, a new cult can begin
 layout: intro
 ---
 
-# Why DataStar ?
+# Why DataStar?
 
 <div style="display: flex; flex-direction: column; align-items: center; width: auto; text-align: left;">
   <ol>
@@ -88,7 +88,7 @@ Fullstack hypermedia framework
   <li>Move in together</li>
 </ol>
 </div>
-<img src="./assets/meet-datastar.gif" alt="Meet Datattar" style="margin: 0 auto; display: block;" />
+<img src="./assets/meet-datastar.gif" alt="Meet Datastar" style="margin: 0 auto; display: block;" />
 
 ---
 src: ./pages/005-a-seductive-stranger.md
@@ -111,7 +111,7 @@ layout: intro
 ---
 
 # Now what?
-Should I jump in the no-hype train?
+Should I jump on the no-hype train?
 
 <div style="display: flex; flex-direction: column; align-items: center; width: auto; text-align: left;">
 <ol>
