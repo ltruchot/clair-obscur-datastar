@@ -272,7 +272,8 @@ export const AnimalNameFactory = {
   },
 
   random(): AnimalName {
-    const adjective: Adjective | undefined = ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)];
+    const adjective: Adjective | undefined =
+      ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)];
     const animal: Animal | undefined = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
     return AnimalNameFactory.create(adjective, animal);
   },

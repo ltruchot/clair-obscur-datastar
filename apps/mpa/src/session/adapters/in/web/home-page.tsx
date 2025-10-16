@@ -16,18 +16,14 @@ interface HomePageProps {
 }
 
 const pageTitle = 'Clair Obscur';
-const crazyStyle =
-  'font-size: 36px; width: fit-content; background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;';
 
 const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionItems }) => {
   return (
     <BaseLayout title={pageTitle}>
-      <h1 data-on-load="@get('/subscribe-to-events')" style={crazyStyle}>
-        {pageTitle}
-      </h1>
       <div class="flex">
         {/* Main game side */}
         <main class="flex-grow">
+          <h1 data-on-load="@get('/subscribe-to-events')">{pageTitle}</h1>
           <h2>Main game</h2>
         </main>
 
@@ -56,6 +52,11 @@ export const getHomeHTMLPage = (
   sessionItems: SessionItem[],
 ): string => {
   return renderToString(
-    <HomePage animalName={animalName} color={color} fontFamily={fontFamily} sessionItems={sessionItems} />,
+    <HomePage
+      animalName={animalName}
+      color={color}
+      fontFamily={fontFamily}
+      sessionItems={sessionItems}
+    />,
   );
 };

@@ -82,7 +82,9 @@ export class FontPickerElement extends HTMLElement {
 
   private attachEventListeners(): void {
     const button = this.querySelector<HTMLElement>('#font-picker-button')!;
-    const popover = this.querySelector<HTMLElement & { showPopover: () => void; hidePopover: () => void }>('#font-picker-popover')!;
+    const popover = this.querySelector<
+      HTMLElement & { showPopover: () => void; hidePopover: () => void }
+    >('#font-picker-popover')!;
     const swatches = this.querySelectorAll('.font-cell-to-pick');
 
     button.addEventListener('click', () => {
@@ -92,10 +94,36 @@ export class FontPickerElement extends HTMLElement {
     popover.addEventListener('toggle', (e) => {
       const toggleEvent = e as { newState?: string };
       if (toggleEvent.newState === 'open') {
-        const buttonRect = button.getBoundingClientRect();
-        popover.style.position = 'fixed';
-        popover.style.top = `${buttonRect.bottom + 4}px`;
-        popover.style.left = `${buttonRect.left}px`;
+        requestAnimationFrame(() => {
+          const buttonRect = button.getBoundingClientRect();
+          const popoverRect = popover.getBoundingClientRect();
+          const viewportWidth = window.innerWidth;
+          const viewportHeight = window.innerHeight;
+          const gap = 4;
+
+          let top = buttonRect.bottom + gap;
+          let left = buttonRect.left;
+
+          if (left + popoverRect.width > viewportWidth) {
+            left = viewportWidth - popoverRect.width - gap;
+          }
+
+          if (top + popoverRect.height > viewportHeight) {
+            top = viewportHeight - popoverRect.height - gap;
+          }
+
+          if (left < 0) {
+            left = gap;
+          }
+
+          if (top < 0) {
+            top = gap;
+          }
+
+          popover.style.position = 'absolute';
+          popover.style.top = `${top}px`;
+          popover.style.left = `${left}px`;
+        });
       }
     });
 
@@ -105,7 +133,9 @@ export class FontPickerElement extends HTMLElement {
         e.stopPropagation();
         const font = (e.target as HTMLElement).dataset['font'];
         if (font) {
-          this.dispatchEvent(new CustomEvent('fontchange', { detail: { value: font }, composed: true }));
+          this.dispatchEvent(
+            new CustomEvent('fontchange', { detail: { value: font }, composed: true }),
+          );
           popover.hidePopover();
         }
       });

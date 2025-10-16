@@ -11,6 +11,12 @@ describe('deduplicate', () => {
   });
 
   it('should deduplicate a string list', () => {
-    expect(dedupeList(['a', 'b', 'c', 'c', 'a', 'd', 'd', 'e', 'e'])).toEqual(['a', 'b', 'c', 'd', 'e']);
+    expect(dedupeList(['a', 'b', 'c', 'c', 'a', 'd', 'd', 'e', 'e'])).toEqual([
+      'a',
+      'b',
+      'c',
+      'd',
+      'e',
+    ]);
   });
 });

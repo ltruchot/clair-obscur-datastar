@@ -31,7 +31,9 @@ async function sendMsgLetterByLetter(req, res, msg, delay = 50) {
         const crazyStyle =
           'font-size: 36px; width: fit-content; background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;';
 
-        stream.patchElements(`<p id="waiting-for-response" style="${crazyStyle}">${partialMsg}</p>`);
+        stream.patchElements(
+          `<p id="waiting-for-response" style="${crazyStyle}">${partialMsg}</p>`,
+        );
 
         if (index >= msg.length) {
           clearInterval(interval);

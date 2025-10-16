@@ -1,5 +1,10 @@
 import type { EventStore } from '@/session/infrastructure/event-store/event-store.service';
-import type { Session, SessionId, SessionReadPort, SessionWritePort } from '@clair-obscur-workspace/domain';
+import type {
+  Session,
+  SessionId,
+  SessionReadPort,
+  SessionWritePort,
+} from '@clair-obscur-workspace/domain';
 
 export class EventStoreSessionAdapter implements SessionReadPort, SessionWritePort {
   private usedAnimalNames = new Set<string>();

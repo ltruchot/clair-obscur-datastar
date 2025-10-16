@@ -27,6 +27,9 @@ export const ListAllSessions: FC<SessionPageProps> = ({ sessionItems, id }) => {
   );
 };
 
-export const getListAllSessionsHTMLComponent = (id: string, sessionItems: SessionItem[]): string => {
+export const getListAllSessionsHTMLComponent = (
+  id: string,
+  sessionItems: SessionItem[],
+): string => {
   return renderToString(<ListAllSessions sessionItems={sessionItems} id={id} />);
 };

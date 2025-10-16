@@ -315,7 +315,10 @@ export class Maybe<A> {
    *
    * const result5 = just({}).assign("foo", (x) => nothing()); // result5 is nothing()
    */
-  public assign<K extends string, B extends object>(k: K, other: Maybe<B> | ((a: A) => Maybe<B>)): Maybe<A & Record<K, B>> {
+  public assign<K extends string, B extends object>(
+    k: K,
+    other: Maybe<B> | ((a: A) => Maybe<B>),
+  ): Maybe<A & Record<K, B>> {
     if (this.state === null) {
       return nothing();
     }

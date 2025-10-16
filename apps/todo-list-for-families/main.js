@@ -33,7 +33,9 @@ setInterval(() => {
     secondsLeft = 3600;
     todoEventStore.write('todos', []);
     for (const stream of activeStreams) {
-      stream.patchSignals(`{ "secondsLeft": { "value": ${secondsLeft}, "timestamp": "${new Date().toISOString()}" } }`);
+      stream.patchSignals(
+        `{ "secondsLeft": { "value": ${secondsLeft}, "timestamp": "${new Date().toISOString()}" } }`,
+      );
     }
   }
 }, 1000);
@@ -84,7 +86,11 @@ createServer(async (req, res) => {
     const signals = JSON.parse(xss(await text(req)));
     const todo = signals.todo;
     const validatedTodo = todo.slice(0, 80);
-    const sanitizedTodoItem = { id: randomUUID(), label: leoProfanity.clean(validatedTodo, '*', 1), checked: false };
+    const sanitizedTodoItem = {
+      id: randomUUID(),
+      label: leoProfanity.clean(validatedTodo, '*', 1),
+      checked: false,
+    };
     todoEventStore.write('todos', [sanitizedTodoItem, ...todoEventStore.read().todos]);
     res.writeHead(202);
     res.end();
@@ -100,7 +106,9 @@ createServer(async (req, res) => {
     };
     todoEventStore.write(
       'todos',
-      todoEventStore.read().todos.map((todo) => (todo.id === sanitizedUpdatedTodo.id ? sanitizedUpdatedTodo : todo)),
+      todoEventStore
+        .read()
+        .todos.map((todo) => (todo.id === sanitizedUpdatedTodo.id ? sanitizedUpdatedTodo : todo)),
     );
     res.writeHead(202);
     res.end();

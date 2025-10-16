@@ -49,7 +49,11 @@ const sessionMiddleware = useSession({ secret: authSecret });
 const eventStore = new EventStore();
 const sessionAdapter = new EventStoreSessionAdapter(eventStore);
 const animalNameGenerator = new DefaultAnimalNameGenerator();
-const sessionCommandService = new SessionCommandService(sessionAdapter, sessionAdapter, animalNameGenerator);
+const sessionCommandService = new SessionCommandService(
+  sessionAdapter,
+  sessionAdapter,
+  animalNameGenerator,
+);
 const sessionQueryService = new SessionQueryService(sessionAdapter);
 const sessionService = new SessionService(sessionQueryService, sessionCommandService);
 

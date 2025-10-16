@@ -4,7 +4,12 @@ import type { StoreEvent, StoreState, StoreSubscriber } from './event-store.type
 type SessionObservableFields = Omit<keyof Session, 'id' | 'lastSeen'>;
 
 export class EventStore {
-  private readonly observableFields: SessionObservableFields[] = ['color', 'fontFamily', 'animalName', 'isActive'];
+  private readonly observableFields: SessionObservableFields[] = [
+    'color',
+    'fontFamily',
+    'animalName',
+    'isActive',
+  ];
 
   private state: StoreState = {
     activeSessions: [],
@@ -70,9 +75,16 @@ export class EventStore {
     return false;
   }
 
-  private hasFieldChanged(current: Session, previous: Session, field: SessionObservableFields): boolean {
+  private hasFieldChanged(
+    current: Session,
+    previous: Session,
+    field: SessionObservableFields,
+  ): boolean {
     if (field === 'animalName') {
-      return current.animalName.adjective !== previous.animalName.adjective || current.animalName.animal !== previous.animalName.animal;
+      return (
+        current.animalName.adjective !== previous.animalName.adjective ||
+        current.animalName.animal !== previous.animalName.animal
+      );
     }
     return current[field] !== previous[field];
   }

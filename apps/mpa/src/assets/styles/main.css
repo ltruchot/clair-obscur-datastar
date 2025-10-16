@@ -1,15 +1,35 @@
-html, body {
-    font-size: 16px;
+html,
+body {
+  font-size: 16px;
+  padding: 0;
+  margin: 0;
 }
 
 .flex {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
-.flex-grow {
-    flex: 1;
+h1 {
+  margin: 0;
+  font-size: 36px;
+  width: fit-content;
+  background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
+main {
+  flex-grow: 1;
+  border-right: 1px solid black;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
 
+aside {
+  padding: 10px;
+  box-sizing: border-box;
+  min-width: 300px;
+}

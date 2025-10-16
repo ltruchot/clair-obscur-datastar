@@ -17,14 +17,16 @@ export const BaseLayout: FC<BaseLayoutProps> = ({ title, children }) => {
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <title>{title}</title>
           <link rel="icon" href="/assets/favicon/favicon.ico" />
-          <link rel="stylesheet" href="/assets/styles/main.css" />
+          <link rel="stylesheet" href="/styles/main.css" />
 
           <script type="module" src="/web-components/font-picker-element.es.js"></script>
 
           {isDevelopment ? (
             <>
               <script type="module" src="/assets/scripts/datastar-pro/datastar-pro.js"></script>
-              <script type="module" src="/assets/scripts/datastar-pro/datastar-inspector.js"></script>
+              <script
+                type="module"
+                src="/assets/scripts/datastar-pro/datastar-inspector.js"></script>
             </>
           ) : (
             <script type="module" src="/assets/scripts/datastar-community/datastar.js"></script>

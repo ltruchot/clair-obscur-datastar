@@ -1,5 +1,14 @@
-import { Maybe, SessionFactory, type Session, type SessionPersistence, type SessionWritePort } from '@clair-obscur-workspace/domain';
-import { AnimalNameFactory, type AnimalNameGenerator } from '@clair-obscur-workspace/funny-animals-generator';
+import {
+  Maybe,
+  SessionFactory,
+  type Session,
+  type SessionPersistence,
+  type SessionWritePort,
+} from '@clair-obscur-workspace/domain';
+import {
+  AnimalNameFactory,
+  type AnimalNameGenerator,
+} from '@clair-obscur-workspace/funny-animals-generator';
 import type { EventStoreSessionAdapter } from './event-store-session-adapter';
 
 export class SessionCommandService {
@@ -7,7 +16,11 @@ export class SessionCommandService {
   private readonly adapter: EventStoreSessionAdapter;
   private readonly animalNameGenerator: AnimalNameGenerator;
 
-  constructor(writePort: SessionWritePort, adapter: EventStoreSessionAdapter, animalNameGenerator: AnimalNameGenerator) {
+  constructor(
+    writePort: SessionWritePort,
+    adapter: EventStoreSessionAdapter,
+    animalNameGenerator: AnimalNameGenerator,
+  ) {
     this.writePort = writePort;
     this.adapter = adapter;
     this.animalNameGenerator = animalNameGenerator;
@@ -16,7 +29,12 @@ export class SessionCommandService {
   async initializeNewSession(persistence: SessionPersistence): Promise<Session> {
     const usedNames = this.adapter.getUsedAnimalNames();
     const animalName = this.animalNameGenerator.generateUnique(usedNames);
-    const maybeNewSession: Maybe<Session> = SessionFactory.create(crypto.randomUUID(), animalName, '#000000', 'sans-serif');
+    const maybeNewSession: Maybe<Session> = SessionFactory.create(
+      crypto.randomUUID(),
+      animalName,
+      '#000000',
+      'sans-serif',
+    );
 
     const newSession: Session = maybeNewSession.getOrElseValue({
       id: { value: '' },

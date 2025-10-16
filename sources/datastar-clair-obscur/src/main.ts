@@ -48,8 +48,8 @@ function createPixelGrid(pixelData: PixelData[]): void {
 
     let backgroundColor = '';
     let textContent = '';
-    let textColor = 'black';
-    let actualColor = pixel.color;
+    const textColor = 'black';
+    const actualColor = pixel.color;
 
     if (pixel.color === 'transparent') {
       backgroundColor = 'lightgray';
