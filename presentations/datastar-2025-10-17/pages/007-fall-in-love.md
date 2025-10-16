@@ -6,8 +6,8 @@ Ready to make big projects together?
     <ul>
         <li>Unlearning is hard, real Fullstack is hard</li>
         <li>DataStar will remain the tiniest part of your project</li>
-        <li>Face new challenges with webcomponents (👀 Rocket)</li>
-        <li>Rethink CSS for a post-tailwind approach (👀 Stellar)</li>
+        <li>Face new challenges with webcomponents (👀 Rocket), CSS (👀 Stellar)</li>
+        <li>Hypermedia send/optimization is different (👀 Brotli)</li>
         <li>Dropping websockets and polling needs a new mindset (👀 CQRS/Event Sourcing)</li>
         <li>You will soon start to think about modern backends like GO</li>
     </ul>

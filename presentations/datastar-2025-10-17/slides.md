@@ -20,7 +20,7 @@ mdc: true
 layout: full
 ---
 
-<div style="width: 100%; height: 100%; background-color: black; background-image: url('./assets/not-a-cult.webp'); background-size: contain; background-repeat: no-repeat; background-position: center; display: flex; flex-direction: column; align-items: center;">
+<div style="width: 100%; height: 100%; background-color: black; background-image: url('/not-a-cult.webp'); background-size: contain; background-repeat: no-repeat; background-position: center; display: flex; flex-direction: column; align-items: center;">
 <h1 style="text-align: center; color: white">This presentation is not about a cult</h1>
   <span style="margin: auto; display: block; color: black">Definitely not</span>
 </div>
@@ -139,6 +139,8 @@ layout: cover
 ---
 
 # Sources
+
+- **A ton of meme, coming from the community channel**: https://discord.gg/Npdvb6hB
 
 - **Changelog Podcast**: https://everydaysuperpowers.dev/articles/why-i-switched-from-htmx-to-datastar/
 
