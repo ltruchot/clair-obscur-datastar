@@ -25,8 +25,8 @@ Are the wounds too deep?
   <h4>But HTMX</h4>
   <ul>
     <li>bad for real SPA use cases (calculator?) and collaborative frontend (googlesheets?)</li>
-    <li>too big for what it does, rarely used alone: <strong>Hello AlpineJS</strong></li>
-    <li>not HTML compliant</li>
+    <li>big for what it does, especially rarely used alone</li>
+    <li>does not pursue optimization</li>
     <li>is done</li>
   </ul>
 </div>

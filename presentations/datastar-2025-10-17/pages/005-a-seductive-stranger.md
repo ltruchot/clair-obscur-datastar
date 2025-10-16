@@ -10,7 +10,7 @@ Forget your first framework love in minutes
             <li>Fully declarative, HTML compliant</li>
             <li>"3-functions-only" SDKs</li>
             <li>No deps, no build steps, no config</li>
-            <li>For evergreen browsers, over HTTP/2+</li>
+            <li>For evergreen browsers, better on HTTP/2+</li>
         </ul>
     </div>
     <div style="width: 50%; text-align: left;">
@@ -28,10 +28,10 @@ Forget your first framework love in minutes
 ```html
   <script type="module" src="path/to/datastar.js"></script>
 
-  <input data-on-input="$msg = event.target.value" />
+  <input data-bind-msg />
   <p data-text="$msg"></p>
   <button data-on-click="@post('/send-msg')">send</button>
   <p id="waiting-for-response"></p>
 ```
-Check out <a style="color: blue;" href="http://localhost:667" target="_blank">this hello world example for real!</a>
+Check out <a style="color: blue;" href="https://github.com/ltruchot/clair-obscur-datastar/tree/main/apps/hello-world" target="_blank">my local hello world example</a>
 </div>

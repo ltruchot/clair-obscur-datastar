@@ -36,7 +36,7 @@ The hype-free fullstack hypermedia framework
 
 <img src="./assets/learn-datastar.png" alt="Learning DataStar" style="margin: auto; display: block; width: 18%;" />
   
-A new star is born, a new cult can begin  
+A new star is born 
 <p style="font-size: 12px; color: #666; text-align: right;padding-10px;">MIT License - October 2025 - Loïc TRUCHOT</p>
 
 ---

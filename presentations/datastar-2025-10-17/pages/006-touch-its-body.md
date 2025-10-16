@@ -5,9 +5,8 @@ It does not do much, but you feel everything
   <div style="width: 80%;">
     <ul>
         <li>Semantic HTML for static content</li>
-        <li>Web Components for reactive components</li>
         <li>State on the backend side</li>
-        <li>SSE for reactive state and real-time multiplayer</li>
+        <li>SSE + Web Components for real-time reactive parts</li>
         <li>Command Query Responsibility Segregation (CQRS) for safe IO, design and perfs</li>
     </ul>
   </div>
@@ -24,9 +23,9 @@ It does not do much, but you feel everything
     <div style="width: 66%;">
        <h3> Can you give me more than a "hello"?</h3>
        <ul>
-        <li>Check out <a style="color: blue;" href="https://github.com/ltruchot/clair-obscur-datastar/tree/main/apps/todo-list" target="_blank">this todo list example for real!</a></li>
-        <li>Check out <a style="color: blue;" href="https://todolist-ed8b.onrender.com/" target="_blank">this collaborative online todo list for families!</a></li>
-        <li>Check out <a style="color: blue;" href="https://example.andersmurphy.com/" target="_blank">Game of life</a> by Anders Murphy</li>
+        <li>Check out <a style="color: blue;" href="https://github.com/ltruchot/clair-obscur-datastar/tree/main/apps/todo-list" target="_blank">my local todo list example</a></li>
+        <li>Check out <a style="color: blue;" href="https://todolist-ed8b.onrender.com/" target="_blank">my collaborative online todo list</a></li>
+        <li>Check out <a style="color: blue;" href="https://example.andersmurphy.com/" target="_blank">Game of life</a>, by Anders Murphy</li>
        </ul>
     </div>
 </div>
