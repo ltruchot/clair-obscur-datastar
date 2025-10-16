@@ -7,7 +7,7 @@ Bringing serendipity since 1989 (a.k.a. browsable documentation)
     <ul style="list-style-type: disc; padding-left: 20px;">
       <li>1995: HTML files over the wire via HTTP</li>
       <li>2000: Chaotic backend MPAs (PHP, ASP, Java...)</li>
-      <li>2005: <span style="color: #B8860B;font-weight: bold;">Golden Age: RESTful Hypermedia MPA</span> (RoR, Java, Php...) + JQuery/AJAX</li>
+      <li>2005: <span style="color: #B8860B;font-weight: bold;">Golden Age: RESTful Hypermedia MPA</span> (RoR, Java, Php, JQuery, AJAX...)</li>
     </ul>
     <br />
     <span style="color: red;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--- web 2.0 sins begin to spread ---</span>

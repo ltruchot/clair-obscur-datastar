@@ -7,7 +7,7 @@ Beyond ὑπέρ sequential communication μέσος
         <li>Hypermedia is consumable value</li>
         <li>Web is a hypermedia content network</li>
         <li>Browser is a hypermedia render engine</li>
-        <li>SEO/Crawlers/A11y tools... need hypermedia for indexing and display</li>
+        <li>SEO/Crawlers/A11y... need hypermedia for indexing and display</li>
     </ul>
   </div>
   <div style="width: 34%;">
