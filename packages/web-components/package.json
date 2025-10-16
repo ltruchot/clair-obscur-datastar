@@ -8,6 +8,10 @@
     "./list-element": {
       "types": "./dist/list-element.d.ts",
       "import": "./dist/list-element.es.js"
+    },
+    "./pixel-grid-element": {
+      "types": "./dist/pixel-grid-element.d.ts",
+      "import": "./dist/pixel-grid-element.es.js"
     }
   },
   "files": [

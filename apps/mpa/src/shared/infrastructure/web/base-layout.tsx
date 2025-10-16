@@ -20,6 +20,7 @@ export const BaseLayout: FC<BaseLayoutProps> = ({ title, children }) => {
           <link rel="stylesheet" href="/styles/main.css" />
 
           <script type="module" src="/web-components/font-picker-element.es.js"></script>
+          <script type="module" src="/web-components/pixel-grid-element.es.js"></script>
 
           {isDevelopment ? (
             <>

@@ -3,6 +3,8 @@ import type { FC } from 'hono/jsx';
 import { renderToString } from 'hono/jsx/dom/server';
 import { ListAllSessions, SessionItem } from './components/list-all-sessions';
 
+import orcaPixelGrid from '../../../../assets/pixel-grids/orca.json';
+
 export const DSID = {
   MY_SESSION: 'my-session',
   ALL_SESSIONS: 'all-sessions',
@@ -15,7 +17,7 @@ interface HomePageProps {
   sessionItems: SessionItem[];
 }
 
-const pageTitle = 'Clair Obscur';
+const pageTitle = 'Clair Obscur Datastar';
 
 const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionItems }) => {
   return (
@@ -24,7 +26,8 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
         {/* Main game side */}
         <main class="flex-grow">
           <h1 data-on-load="@get('/subscribe-to-events')">{pageTitle}</h1>
-          <h2>Main game</h2>
+          <h2>A collaborative minesweeper game inpired by Proverbs</h2>
+          <pixel-grid pixels={JSON.stringify(orcaPixelGrid)}></pixel-grid>
         </main>
 
         {/* Session list side */}
