@@ -25,8 +25,8 @@ Are the wounds too deep?
   <h4>But HTMX</h4>
   <ul>
     <li>bad for real SPA use cases (calculator?) and collaborative frontend (googlesheets?)</li>
-    <li>rarely sufficient alone</li>
     <li>does not pursue optimization</li>
+    <li>rarely sufficient alone</li>
     <li>is done</li>
   </ul>
 </div>

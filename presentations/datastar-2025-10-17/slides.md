@@ -142,7 +142,7 @@ layout: cover
 
 - **A ton of meme, coming from the community channel**: https://discord.gg/Npdvb6hB
 
-- **Changelog Podcast**: https://everydaysuperpowers.dev/articles/why-i-switched-from-htmx-to-datastar/
+- **Changelog Podcast**: https://open.spotify.com/episode/75i5QsR1kdYbktLxWwxbUt?si=c8769293513f4f6f
 
 - **Hx-pod Podcast**: https://open.spotify.com/episode/4KBDl219JNmv3IepyDSetr?si=058c2056e4b545c4
 
