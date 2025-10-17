@@ -75,8 +75,8 @@ export class PixelGridElement extends HTMLElement {
 
     const maxX = Math.max(...this._pixels.map((p) => p.x));
     const maxY = Math.max(...this._pixels.map((p) => p.y));
-    const columns = maxX + 1;
-    const rows = maxY + 1;
+    const columns = maxX + 1 + 3;
+    const rows = maxY + 1 + 1;
 
     const pixelMap = new Map<string, string>();
     this._pixels.forEach((p) => pixelMap.set(`${p.x},${p.y}`, p.color));

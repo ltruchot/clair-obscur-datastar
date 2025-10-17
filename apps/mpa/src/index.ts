@@ -32,7 +32,13 @@ const app = new Hono<{
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use('/assets/*', serveStatic({ root: __dirname }));
+app.use(
+  '/*',
+  serveStatic({
+    root: __dirname + '/assets',
+    rewriteRequestPath: (p) => p.replace(/^\/assets/, ''),
+  }),
+);
 
 app.use(
   '/web-components/*',
