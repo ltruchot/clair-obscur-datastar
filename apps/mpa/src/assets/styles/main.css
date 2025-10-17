@@ -57,6 +57,11 @@ aside {
   color: white;
 }
 
+.gray {
+  background-color: lightgray;
+  color: black;
+}
+
 .victory {
   position: fixed;
   font-size: 100px;
