@@ -67,7 +67,6 @@ export class HomeController {
       const jsonBody: { pixelclick: { x: number; y: number; guess: -1 | 0 | 1 } } =
         await c.req.json();
       const { x, y, guess } = jsonBody.pixelclick;
-      console.log('updatePixel', x, y, guess);
 
       if (typeof x !== 'number' || typeof y !== 'number') {
         return c.json({ success: false, error: 'Invalid coordinates' }, 400);
@@ -117,9 +116,15 @@ export class HomeController {
           };
 
           const sendPixelGridUpdate = () => {
-            console.log('sendPixelGridUpdate');
+            const victory = this.pixelGridQueryService.checkVictory();
+
             const pixelGrid = this.pixelGridQueryService.getPixelGrid();
-            stream.patchSignals(JSON.stringify({ pixelGrid: JSON.stringify(pixelGrid) }));
+            stream.patchSignals(
+              JSON.stringify({
+                pixelGrid: JSON.stringify(pixelGrid),
+                victory,
+              }),
+            );
           };
 
           const currentSession = await this.sessionService.getCurrentSession(c);

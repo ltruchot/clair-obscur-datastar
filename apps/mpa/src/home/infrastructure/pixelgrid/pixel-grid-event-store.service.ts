@@ -14,9 +14,12 @@ export class PixelGridEventStore {
     pixelGrid: {},
   };
 
+  private basePixelData: PixelData = {};
+
   private subscribers = new Map<string, PixelGridStoreSubscriber>();
 
   initialize(basePixelData: PixelData): void {
+    this.basePixelData = basePixelData;
     const pixelGrid: PixelGridData = {};
 
     for (const [key, value] of Object.entries(basePixelData)) {
@@ -28,6 +31,25 @@ export class PixelGridEventStore {
 
     this.state.pixelGrid = pixelGrid;
     this.previousState.pixelGrid = { ...pixelGrid };
+  }
+
+  reset(): void {
+    const pixelGrid: PixelGridData = {};
+
+    for (const [key, value] of Object.entries(this.basePixelData)) {
+      pixelGrid[key as `${number}-${number}`] = {
+        ...value,
+        guess: -1,
+      };
+    }
+
+    this.previousState = {
+      pixelGrid: { ...this.state.pixelGrid },
+    };
+
+    this.state.pixelGrid = pixelGrid;
+
+    this.notifySubscribers();
   }
 
   updatePixel(update: PixelUpdate): void {

@@ -19,6 +19,10 @@ interface HomePageProps {
 const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionItems }) => {
   return (
     <BaseLayout title="Clair Obscur Datastar">
+      <div data-show="$victory">
+        <div className="victory">VICTORY !!!</div>
+      </div>
+
       <div class="flex">
         {/* Session list side */}
         <aside aria-label="Active users">
@@ -67,7 +71,8 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
             data-signals-pixelGrid
             data-on-pixelhover="console.log('pixel hovered', event.detail)"
             data-on-pixelclick="$pixelclick = event.detail; @post('/pixel-click')"
-            data-attr-pixels="$pixelGrid"></pixel-grid>
+            data-attr-pixels="$pixelGrid"
+            data-attr-victory="$victory"></pixel-grid>
         </main>
       </div>
     </BaseLayout>

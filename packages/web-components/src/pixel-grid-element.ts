@@ -91,8 +91,20 @@ export class PixelGridElement extends HTMLElement {
       .pixel-cell:hover {
         opacity: 0.8;
       }
-      .pixel-cell.transparent {
+      .pixel-cell.cell-transparent {
         cursor: default;
+        background-color: #2facc2;
+      }
+      .pixel-cell.cell-unguessed {
+        background-color: lightgray;
+      }
+      .pixel-cell.cell-obscur {
+        background-color: black;
+        color: white;
+      }
+      .pixel-cell.cell-clair {
+        background-color: white;
+        color: black;
       }
     `;
 
@@ -110,20 +122,15 @@ export class PixelGridElement extends HTMLElement {
         const pixel = this._pixels[pixelKey as `${number}-${number}`];
 
         if (!pixel) {
-          cell.style.backgroundColor = '#2facc2';
-          cell.classList.add('transparent');
+          cell.classList.add('cell-transparent');
         } else {
+          cell.textContent = pixel.n.toString();
           if (pixel.guess === -1) {
-            cell.style.backgroundColor = 'lightgray';
-            cell.textContent = pixel.n.toString();
+            cell.classList.add('cell-unguessed');
           } else if (pixel.guess === 0) {
-            cell.style.backgroundColor = 'black';
-            cell.style.color = 'white';
-            cell.textContent = pixel.n.toString();
+            cell.classList.add('cell-obscur');
           } else if (pixel.guess === 1) {
-            cell.style.backgroundColor = 'white';
-            cell.style.color = 'black';
-            cell.textContent = pixel.n.toString();
+            cell.classList.add('cell-clair');
           }
         }
 
@@ -135,7 +142,7 @@ export class PixelGridElement extends HTMLElement {
       event.preventDefault();
       const mouseEvent = event;
       const target = event.target as HTMLElement;
-      if (target.classList.contains('pixel-cell') && !target.classList.contains('transparent')) {
+      if (target.classList.contains('pixel-cell') && !target.classList.contains('cell-transparent')) {
         const x = Number.parseInt(target.dataset['x'] ?? '0', 10);
         const y = Number.parseInt(target.dataset['y'] ?? '0', 10);
 
@@ -160,6 +167,7 @@ export class PixelGridElement extends HTMLElement {
       event.preventDefault();
     });
 
+    /*
     container.addEventListener('mouseover', (event) => {
       const target = event.target as HTMLElement;
       if (target.classList.contains('pixel-cell')) {
@@ -182,6 +190,7 @@ export class PixelGridElement extends HTMLElement {
         }, 50);
       }
     });
+    */
 
     this._shadowRoot.replaceChildren(style, container);
   }

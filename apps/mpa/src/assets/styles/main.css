@@ -58,3 +58,30 @@ aside {
   background-color: black;
   color: white;
 }
+
+.victory {
+  position: fixed;
+  font-size: 100px;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  z-index: 1001;
+  width: fit-content;
+  background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.reset {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  font-size: 50px;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  width: fit-content;
+  background-color: black;
+  color: white;
+  cursor: pointer;
+}

@@ -6,4 +6,8 @@ export class PixelGridCommandService {
   updatePixelGuess(x: number, y: number, guess: -1 | 0 | 1): void {
     this.adapter.updatePixel(x, y, guess);
   }
+
+  resetPixelGrid(): void {
+    this.adapter.reset();
+  }
 }

@@ -11,4 +11,15 @@ export class PixelGridQueryService {
   getPixelGuess(x: number, y: number): -1 | 0 | 1 | undefined {
     return this.adapter.getPixelGuess(x, y);
   }
+
+  checkVictory(): boolean {
+    const pixelGrid = this.adapter.getPixelGrid();
+    for (const [, pixel] of Object.entries(pixelGrid)) {
+      const isCorrect = (pixel.v && pixel.guess === 1) || (!pixel.v && pixel.guess === 0);
+      if (!isCorrect) {
+        return false;
+      }
+    }
+    return true;
+  }
 }

@@ -13,9 +13,15 @@
     "@clair-obscur-workspace/utils": "workspace:*",
     "@hono/session": "catalog:",
     "@starfederation/datastar-sdk": "catalog:",
-    "@tsparticles/engine": "^3.9.1",
     "dotenv": "catalog:",
-    "hono": "catalog:"
+    "hono": "catalog:",
+    "tsparticles-engine": "^2.12.0",
+    "tsparticles-plugin-emitters": "^2.12.0",
+    "tsparticles-updater-roll": "^2.12.0",
+    "tsparticles-updater-rotate": "^2.12.0",
+    "tsparticles-updater-tilt": "^2.12.0",
+    "tsparticles-updater-wobble": "^2.12.0",
+    "web-particles": "^2.9.3"
   },
   "devDependencies": {
     "@hono/node-server": "catalog:",

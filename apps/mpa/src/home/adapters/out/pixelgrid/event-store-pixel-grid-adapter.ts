@@ -20,4 +20,8 @@ export class EventStorePixelGridAdapter {
     const key: `${number}-${number}` = `${x}-${y}`;
     return state.pixelGrid[key]?.guess;
   }
+
+  reset(): void {
+    this.eventStore.reset();
+  }
 }
