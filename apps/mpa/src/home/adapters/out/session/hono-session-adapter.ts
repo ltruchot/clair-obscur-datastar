@@ -1,4 +1,4 @@
-import { SessionData } from '@/session/infrastructure/session';
+import { SessionData } from '@/home/infrastructure/session';
 import type { SessionPersistence } from '@clair-obscur-workspace/domain';
 import type { Context } from 'hono';
 

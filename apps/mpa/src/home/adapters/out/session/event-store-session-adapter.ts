@@ -1,4 +1,4 @@
-import type { EventStore } from '@/session/infrastructure/event-store/event-store.service';
+import { SessionEventStore } from '@/home/infrastructure/session/session-event-store.service';
 import type {
   Session,
   SessionId,
@@ -9,7 +9,7 @@ import type {
 export class EventStoreSessionAdapter implements SessionReadPort, SessionWritePort {
   private usedAnimalNames = new Set<string>();
 
-  constructor(private readonly eventStore: EventStore) {}
+  constructor(private readonly eventStore: SessionEventStore) {}
 
   findById(id: SessionId): Promise<Session | undefined> {
     const state = this.eventStore.read();

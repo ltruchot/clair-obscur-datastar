@@ -15,6 +15,9 @@ body {
 h1 {
   margin: 0;
   font-size: 36px;
+}
+
+.rainbow {
   width: fit-content;
   background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
   -webkit-background-clip: text;
@@ -23,16 +26,16 @@ h1 {
 }
 
 main {
-  border-right: 1px solid black;
+  border-left: 1px solid black;
   min-height: 100vh;
   box-sizing: border-box;
+  flex-grow: 1;
 }
 
 aside {
   padding: 10px;
   box-sizing: border-box;
   min-width: 300px;
-  flex-grow: 1;
 }
 
 .clair {

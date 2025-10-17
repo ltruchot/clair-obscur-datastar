@@ -5,10 +5,10 @@ import { Context } from 'hono';
 import { Session } from '@clair-obscur-workspace/domain';
 
 // local packages
-import { SessionItem } from '@/session/adapters/in/web/components/list-all-sessions';
-import { HonoSessionAdapter } from '@/session/adapters/out/session/hono-session-adapter';
-import { SessionCommandService } from '@/session/adapters/out/session/session-command.service';
-import { SessionQueryService } from '@/session/adapters/out/session/session-query.service';
+import { SessionItem } from '@/home/adapters/in/web/components/list-all-sessions';
+import { HonoSessionAdapter } from '@/home/adapters/out/session/hono-session-adapter';
+import { SessionCommandService } from '@/home/adapters/out/session/session-command.service';
+import { SessionQueryService } from '@/home/adapters/out/session/session-query.service';
 
 export class SessionService {
   constructor(
@@ -60,11 +60,10 @@ export class SessionService {
     }));
   }
 
-  async setFont(c: Context): Promise<{ error?: string }> {
-    const jsonBody: { font_changed: string } = await c.req.json();
+  async setFont(c: Context, font_changed: string): Promise<{ error?: string }> {
     const persistence = new HonoSessionAdapter(c);
     const session = await this.queryService.getCurrentSession(persistence);
-    const splitFont = jsonBody.font_changed.split(':');
+    const splitFont = font_changed.split(':');
     const property = splitFont[0];
     const value = splitFont[1];
     if (!property || !value) {

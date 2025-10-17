@@ -1,18 +1,22 @@
-export interface PixelData {
-  x: number;
-  y: number;
-  color: string;
-  clairNeighbors?: number;
-}
+export type PixelData = Record<
+  `${number}-${number}`,
+  { n: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; guess: -1 | 0 | 1 }
+>;
 
 export interface PixelGridChangeEvent {
+  x: number;
+  y: number;
+  guess: -1 | 0 | 1;
+}
+
+export interface PixelGridHoverEvent {
   x: number;
   y: number;
 }
 
 export class PixelGridElement extends HTMLElement {
   private _shadowRoot: ShadowRoot;
-  private _pixels: PixelData[] = [];
+  private _pixels: PixelData = {};
   private _hoverDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 
   static get observedAttributes(): readonly string[] {
@@ -26,7 +30,7 @@ export class PixelGridElement extends HTMLElement {
 
   attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void {
     if (name === 'pixels') {
-      this.pixels = newValue ? (JSON.parse(newValue) as PixelData[]) : ([] as PixelData[]);
+      this.pixels = newValue ? (JSON.parse(newValue) as PixelData) : {};
     }
   }
 
@@ -38,48 +42,31 @@ export class PixelGridElement extends HTMLElement {
     return this._shadowRoot;
   }
 
-  get pixels(): PixelData[] {
+  get pixels(): PixelData {
     return this._pixels;
   }
 
-  set pixels(value: PixelData[]) {
+  set pixels(value: PixelData) {
     this._pixels = value;
     this.render();
   }
 
-  private getNeighborCount(x: number, y: number): number {
-    const pixelMap = new Map<string, string>();
-    this._pixels.forEach((p) => pixelMap.set(`${p.x},${p.y}`, p.color));
-
-    let whiteCount = 0;
-    for (let dy = -1; dy <= 1; dy++) {
-      for (let dx = -1; dx <= 1; dx++) {
-        const nx = x + dx;
-        const ny = y + dy;
-        const neighborColor = pixelMap.get(`${nx},${ny}`);
-
-        if (neighborColor === 'white') {
-          whiteCount++;
-        }
-      }
-    }
-
-    return whiteCount;
-  }
-
   private render(): void {
-    if (this._pixels.length === 0) {
+    const pixelKeys = Object.keys(this._pixels);
+    if (pixelKeys.length === 0) {
       this._shadowRoot.replaceChildren();
       return;
     }
 
-    const maxX = Math.max(...this._pixels.map((p) => p.x));
-    const maxY = Math.max(...this._pixels.map((p) => p.y));
+    const coordinates = pixelKeys.map((key): { x: number; y: number } => {
+      const [x, y]: [number, number] = key.split('-').map(Number) as [number, number];
+      return { x, y };
+    });
+
+    const maxX = Math.max(...coordinates.map((c) => c.x));
+    const maxY = Math.max(...coordinates.map((c) => c.y));
     const columns = maxX + 1 + 3;
     const rows = maxY + 1 + 1;
-
-    const pixelMap = new Map<string, string>();
-    this._pixels.forEach((p) => pixelMap.set(`${p.x},${p.y}`, p.color));
 
     const style = document.createElement('style');
     style.textContent = `
@@ -104,6 +91,9 @@ export class PixelGridElement extends HTMLElement {
       .pixel-cell:hover {
         opacity: 0.8;
       }
+      .pixel-cell.transparent {
+        cursor: default;
+      }
     `;
 
     const container = document.createElement('div');
@@ -116,41 +106,58 @@ export class PixelGridElement extends HTMLElement {
         cell.dataset['x'] = x.toString();
         cell.dataset['y'] = y.toString();
 
-        const pixel = this._pixels.find((p) => p.x === x && p.y === y);
-        const color = pixel?.color ?? 'transparent';
-        const neighborCount = pixel?.clairNeighbors ?? this.getNeighborCount(x, y);
+        const pixelKey = `${x}-${y}`;
+        const pixel = this._pixels[pixelKey as `${number}-${number}`];
 
-        if (color === 'transparent') {
+        if (!pixel) {
           cell.style.backgroundColor = '#2facc2';
-        } else if (color === 'black') {
-          cell.style.backgroundColor = 'lightgray';
-          cell.style.color = 'black';
-          cell.textContent = neighborCount.toString();
-        } else if (color === 'white') {
-          cell.style.backgroundColor = 'lightgray';
-          cell.style.color = 'black';
-          cell.textContent = neighborCount.toString();
+          cell.classList.add('transparent');
         } else {
-          cell.style.backgroundColor = color;
+          if (pixel.guess === -1) {
+            cell.style.backgroundColor = 'lightgray';
+            cell.textContent = pixel.n.toString();
+          } else if (pixel.guess === 0) {
+            cell.style.backgroundColor = 'black';
+            cell.style.color = 'white';
+            cell.textContent = pixel.n.toString();
+          } else if (pixel.guess === 1) {
+            cell.style.backgroundColor = 'white';
+            cell.style.color = 'black';
+            cell.textContent = pixel.n.toString();
+          }
         }
 
         container.appendChild(cell);
       }
     }
 
-    container.addEventListener('click', (event) => {
+    container.addEventListener('mousedown', (event) => {
+      event.preventDefault();
+      const mouseEvent = event;
       const target = event.target as HTMLElement;
-      if (target.classList.contains('pixel-cell')) {
+      if (target.classList.contains('pixel-cell') && !target.classList.contains('transparent')) {
         const x = Number.parseInt(target.dataset['x'] ?? '0', 10);
         const y = Number.parseInt(target.dataset['y'] ?? '0', 10);
+
+        let guess: -1 | 0 | 1 = -1;
+        if (mouseEvent.button === 0) {
+          guess = 0;
+        } else if (mouseEvent.button === 2) {
+          guess = 1;
+        }
+
         this.dispatchEvent(
-          new CustomEvent<PixelGridChangeEvent>('change', {
-            detail: { x, y },
+          new CustomEvent<PixelGridChangeEvent>('pixelclick', {
+            detail: { x, y, guess },
             composed: true,
             bubbles: true,
           }),
         );
       }
+    });
+
+    container.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
     });
 
     container.addEventListener('mouseover', (event) => {
@@ -165,7 +172,7 @@ export class PixelGridElement extends HTMLElement {
 
         this._hoverDebounceTimer = setTimeout(() => {
           this.dispatchEvent(
-            new CustomEvent<PixelGridChangeEvent>('pixelhover', {
+            new CustomEvent<PixelGridHoverEvent>('pixelhover', {
               detail: { x, y },
               composed: true,
               bubbles: true,

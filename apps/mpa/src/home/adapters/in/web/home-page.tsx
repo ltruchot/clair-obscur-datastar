@@ -1,12 +1,12 @@
 import { BaseLayout } from '@/shared/infrastructure/web/base-layout';
 import type { FC } from 'hono/jsx';
 import { renderToString } from 'hono/jsx/dom/server';
-import { PixelData } from '../models/pixels';
 import { ListAllSessions, SessionItem } from './components/list-all-sessions';
 
 export const DSID = {
   MY_SESSION: 'my-session',
   ALL_SESSIONS: 'all-sessions',
+  PIXEL_GRID: 'pixel-grid',
 } as const;
 
 interface HomePageProps {
@@ -14,24 +14,32 @@ interface HomePageProps {
   color: string;
   fontFamily: string;
   sessionItems: SessionItem[];
-  pixelGridState: PixelData[];
 }
 
-const pageTitle = 'Clair Obscur Datastar';
-
-const HomePage: FC<HomePageProps> = ({
-  animalName,
-  color,
-  fontFamily,
-  sessionItems,
-  pixelGridState,
-}) => {
+const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionItems }) => {
   return (
-    <BaseLayout title={pageTitle}>
+    <BaseLayout title="Clair Obscur Datastar">
       <div class="flex">
+        {/* Session list side */}
+        <aside aria-label="Active users">
+          You are a{' '}
+          <strong id={DSID.MY_SESSION} style={`color: ${color}; font-family: ${fontFamily};`}>
+            {animalName}
+          </strong>
+          <font-picker
+            data-signals-font_changed
+            data-on-fontchange="$font_changed = event.detail.value; @post('/font-change')"></font-picker>
+          <hr />
+          <div>All animals on this channel:</div>
+          <ListAllSessions id={DSID.ALL_SESSIONS} sessionItems={sessionItems} />
+        </aside>
+
         {/* Main game side */}
         <main class="flex-grow">
-          <h1 data-on-load="@get('/subscribe-to-events')">{pageTitle}</h1>
+          <h1 data-on-load="@get('/subscribe-to-events')">
+            <span class="clair">Clair&nbsp;</span>
+            <span class="obscur">&nbsp;Obscur</span>:<span class="rainbow"> Datastar</span>
+          </h1>
           <h2>
             A collaborative minesweeper game inspired by{' '}
             <a href="https://store.steampowered.com/app/3083300/Proverbs/" target="_blank">
@@ -54,23 +62,13 @@ const HomePage: FC<HomePageProps> = ({
             <br />
           </p>
           <pixel-grid
+            id={DSID.PIXEL_GRID}
+            data-signals-pixelclick
+            data-signals-pixelGrid
             data-on-pixelhover="console.log('pixel hovered', event.detail)"
-            pixels={JSON.stringify(pixelGridState)}></pixel-grid>
+            data-on-pixelclick="$pixelclick = event.detail; @post('/pixel-click')"
+            data-attr-pixels="$pixelGrid"></pixel-grid>
         </main>
-
-        {/* Session list side */}
-        <aside aria-label="Active users">
-          You are a{' '}
-          <strong id={DSID.MY_SESSION} style={`color: ${color}; font-family: ${fontFamily};`}>
-            {animalName}
-          </strong>
-          <font-picker
-            data-signals-font_changed
-            data-on-fontchange="$font_changed = event.detail.value; @post('/font-change')"></font-picker>
-          <hr />
-          <div>All animals on this channel:</div>
-          <ListAllSessions id={DSID.ALL_SESSIONS} sessionItems={sessionItems} />
-        </aside>
       </div>
     </BaseLayout>
   );
@@ -81,7 +79,6 @@ export const getHomeHTMLPage = (
   color: string,
   fontFamily: string,
   sessionItems: SessionItem[],
-  pixelGridState: PixelData[],
 ): string => {
   return renderToString(
     <HomePage
@@ -89,7 +86,6 @@ export const getHomeHTMLPage = (
       color={color}
       fontFamily={fontFamily}
       sessionItems={sessionItems}
-      pixelGridState={pixelGridState}
     />,
   );
 };

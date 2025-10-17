@@ -1,11 +1,15 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 
+type NeighborCount = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+
 interface PixelData {
   x: number;
   y: number;
   color: string;
-  clairNeighbors?: number;
+  clairNeighbors: NeighborCount;
 }
+
+export type PixelDataEnriched = Record<`${number}-${number}`, { v: boolean; n: NeighborCount }>;
 
 function getNeighborCount(pixelData: PixelData[], x: number, y: number): number {
   const pixelMap = new Map<string, string>();
@@ -38,9 +42,18 @@ function addNeighborCounts(inputPath: string, outputPath: string): void {
       clairNeighbors: getNeighborCount(pixelData, pixel.x, pixel.y),
     }));
 
-  writeFileSync(outputPath, JSON.stringify(enrichedData, null, 2), 'utf-8');
+  const mappedData = enrichedData.reduce<PixelDataEnriched>((acc, pixel) => {
+    const key: `${number}-${number}` = `${pixel.x}-${pixel.y}`;
+    const value = pixel.color === 'white';
+
+    acc[key] = { v: value, n: pixel.clairNeighbors as NeighborCount };
+    return acc;
+  }, {});
+
+  writeFileSync(outputPath, JSON.stringify(mappedData, null, 2), 'utf-8');
   console.log(`✓ Enriched ${enrichedData.length} pixels with neighbor counts`);
   console.log(`✓ Stripped ${pixelData.length - enrichedData.length} transparent pixels`);
+  console.log(`✓ Mapped to ${Object.keys(mappedData).length} coordinate entries`);
   console.log(`✓ Output written to ${outputPath}`);
 }
 

@@ -1,22 +1,34 @@
-import { HomeController } from '@/session/adapters/in/web/home-controller';
-import { EventStoreSessionAdapter } from '@/session/adapters/out/session/event-store-session-adapter';
-import { SessionCommandService } from '@/session/adapters/out/session/session-command.service';
-import { SessionQueryService } from '@/session/adapters/out/session/session-query.service';
-import { EventStore } from '@/session/infrastructure/event-store/event-store.service';
-import { SessionMonitorService } from '@/session/infrastructure/session/session-monitor.service';
-import { DefaultAnimalNameGenerator } from '@clair-obscur-workspace/funny-animals-generator';
+// node
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import { authSecret, isDevelopment, port } from '@/shared/infrastructure/config';
-
+// npm
 import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { useSession } from '@hono/session';
 import { Hono } from 'hono';
 
-import { SessionData } from '@/session/infrastructure/session';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { SessionService } from './session/adapters/out/session/session-service';
+// external
+import { DefaultAnimalNameGenerator } from '@clair-obscur-workspace/funny-animals-generator';
+
+// local
+import orcaPixelGrid from '@/assets/pixel-grids/orca-enriched.json';
+import { PixelData } from '@/home/adapters/in/models/pixels';
+import { HomeController } from '@/home/adapters/in/web/home-controller';
+import { EventStorePixelGridAdapter } from '@/home/adapters/out/pixelgrid/event-store-pixel-grid-adapter';
+import { PixelGridCommandService } from '@/home/adapters/out/pixelgrid/pixelgrid-command.service';
+import { PixelGridQueryService } from '@/home/adapters/out/pixelgrid/pixelgrid-query.service';
+import { EventStoreSessionAdapter } from '@/home/adapters/out/session/event-store-session-adapter';
+import { SessionCommandService } from '@/home/adapters/out/session/session-command.service';
+import { SessionQueryService } from '@/home/adapters/out/session/session-query.service';
+import { SessionService } from '@/home/adapters/out/session/session-service';
+
+import { PixelGridEventStore } from '@/home/infrastructure/pixelgrid/pixel-grid-event-store.service';
+import { SessionData } from '@/home/infrastructure/session';
+import { SessionEventStore } from '@/home/infrastructure/session/session-event-store.service';
+import { SessionMonitorService } from '@/home/infrastructure/session/session-monitor.service';
+
+import { authSecret, isDevelopment, port } from '@/shared/infrastructure/config';
 
 // A Hono app with built-in session management
 const app = new Hono<{
@@ -52,8 +64,8 @@ app.use(
 const sessionMiddleware = useSession({ secret: authSecret });
 
 // instantiate stuff
-const eventStore = new EventStore();
-const sessionAdapter = new EventStoreSessionAdapter(eventStore);
+const sessionEventStore = new SessionEventStore();
+const sessionAdapter = new EventStoreSessionAdapter(sessionEventStore);
 const animalNameGenerator = new DefaultAnimalNameGenerator();
 const sessionCommandService = new SessionCommandService(
   sessionAdapter,
@@ -63,7 +75,20 @@ const sessionCommandService = new SessionCommandService(
 const sessionQueryService = new SessionQueryService(sessionAdapter);
 const sessionService = new SessionService(sessionQueryService, sessionCommandService);
 
-const homeController = new HomeController(eventStore, sessionCommandService, sessionService);
+const pixelGridEventStore = new PixelGridEventStore();
+pixelGridEventStore.initialize(orcaPixelGrid as PixelData);
+const pixelGridAdapter = new EventStorePixelGridAdapter(pixelGridEventStore);
+const pixelGridQueryService = new PixelGridQueryService(pixelGridAdapter);
+const pixelGridCommandService = new PixelGridCommandService(pixelGridAdapter);
+
+const homeController = new HomeController(
+  sessionEventStore,
+  sessionCommandService,
+  sessionService,
+  pixelGridEventStore,
+  pixelGridQueryService,
+  pixelGridCommandService,
+);
 
 // Use globalThis to survive HMR reloads in development
 const MONITOR_SYMBOL = Symbol.for('session-monitor');
@@ -94,6 +119,8 @@ app.get('/subscribe-to-events', sessionMiddleware, (c) => homeController.broadca
 app.post('/keep-alive', sessionMiddleware, (c) => homeController.keepAlive(c));
 
 app.post('/font-change', sessionMiddleware, (c) => homeController.setFont(c));
+
+app.post('/pixel-click', sessionMiddleware, (c) => homeController.updatePixel(c));
 
 if (!isDevelopment) {
   const serverConfig = {
