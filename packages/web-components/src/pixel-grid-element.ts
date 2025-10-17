@@ -2,6 +2,7 @@ export interface PixelData {
   x: number;
   y: number;
   color: string;
+  clairNeighbors?: number;
 }
 
 export interface PixelGridChangeEvent {
@@ -12,6 +13,7 @@ export interface PixelGridChangeEvent {
 export class PixelGridElement extends HTMLElement {
   private _shadowRoot: ShadowRoot;
   private _pixels: PixelData[] = [];
+  private _hoverDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 
   static get observedAttributes(): readonly string[] {
     return ['pixels'] as const;
@@ -45,6 +47,26 @@ export class PixelGridElement extends HTMLElement {
     this.render();
   }
 
+  private getNeighborCount(x: number, y: number): number {
+    const pixelMap = new Map<string, string>();
+    this._pixels.forEach((p) => pixelMap.set(`${p.x},${p.y}`, p.color));
+
+    let whiteCount = 0;
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        const nx = x + dx;
+        const ny = y + dy;
+        const neighborColor = pixelMap.get(`${nx},${ny}`);
+
+        if (neighborColor === 'white') {
+          whiteCount++;
+        }
+      }
+    }
+
+    return whiteCount;
+  }
+
   private render(): void {
     if (this._pixels.length === 0) {
       this._shadowRoot.replaceChildren();
@@ -70,9 +92,14 @@ export class PixelGridElement extends HTMLElement {
       .pixel-cell {
         width: 20px;
         height: 20px;
-        border: 1px solid #ddd;
+        border: 1px solid lightgray;
         box-sizing: border-box;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: bold;
       }
       .pixel-cell:hover {
         opacity: 0.8;
@@ -86,32 +113,68 @@ export class PixelGridElement extends HTMLElement {
       for (let x = 0; x < columns; x++) {
         const cell = document.createElement('div');
         cell.className = 'pixel-cell';
+        cell.dataset['x'] = x.toString();
+        cell.dataset['y'] = y.toString();
 
-        const color = pixelMap.get(`${x},${y}`) ?? 'transparent';
+        const pixel = this._pixels.find((p) => p.x === x && p.y === y);
+        const color = pixel?.color ?? 'transparent';
+        const neighborCount = pixel?.clairNeighbors ?? this.getNeighborCount(x, y);
 
         if (color === 'transparent') {
-          cell.style.backgroundColor = 'lightgray';
+          cell.style.backgroundColor = '#2facc2';
         } else if (color === 'black') {
-          cell.style.backgroundColor = 'gray';
+          cell.style.backgroundColor = 'lightgray';
+          cell.style.color = 'black';
+          cell.textContent = neighborCount.toString();
         } else if (color === 'white') {
-          cell.style.backgroundColor = 'white';
+          cell.style.backgroundColor = 'lightgray';
+          cell.style.color = 'black';
+          cell.textContent = neighborCount.toString();
         } else {
           cell.style.backgroundColor = color;
         }
 
-        cell.addEventListener('click', () => {
+        container.appendChild(cell);
+      }
+    }
+
+    container.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      if (target.classList.contains('pixel-cell')) {
+        const x = Number.parseInt(target.dataset['x'] ?? '0', 10);
+        const y = Number.parseInt(target.dataset['y'] ?? '0', 10);
+        this.dispatchEvent(
+          new CustomEvent<PixelGridChangeEvent>('change', {
+            detail: { x, y },
+            composed: true,
+            bubbles: true,
+          }),
+        );
+      }
+    });
+
+    container.addEventListener('mouseover', (event) => {
+      const target = event.target as HTMLElement;
+      if (target.classList.contains('pixel-cell')) {
+        const x = Number.parseInt(target.dataset['x'] ?? '0', 10);
+        const y = Number.parseInt(target.dataset['y'] ?? '0', 10);
+
+        if (this._hoverDebounceTimer) {
+          clearTimeout(this._hoverDebounceTimer);
+        }
+
+        this._hoverDebounceTimer = setTimeout(() => {
           this.dispatchEvent(
-            new CustomEvent<PixelGridChangeEvent>('change', {
+            new CustomEvent<PixelGridChangeEvent>('pixelhover', {
               detail: { x, y },
               composed: true,
               bubbles: true,
             }),
           );
-        });
-
-        container.appendChild(cell);
+          this._hoverDebounceTimer = null;
+        }, 50);
       }
-    }
+    });
 
     this._shadowRoot.replaceChildren(style, container);
   }

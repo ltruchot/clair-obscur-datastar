@@ -1,9 +1,8 @@
 import { BaseLayout } from '@/shared/infrastructure/web/base-layout';
 import type { FC } from 'hono/jsx';
 import { renderToString } from 'hono/jsx/dom/server';
+import { PixelData } from '../models/pixels';
 import { ListAllSessions, SessionItem } from './components/list-all-sessions';
-
-import orcaPixelGrid from '../../../../assets/pixel-grids/orca.json';
 
 export const DSID = {
   MY_SESSION: 'my-session',
@@ -15,19 +14,48 @@ interface HomePageProps {
   color: string;
   fontFamily: string;
   sessionItems: SessionItem[];
+  pixelGridState: PixelData[];
 }
 
 const pageTitle = 'Clair Obscur Datastar';
 
-const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionItems }) => {
+const HomePage: FC<HomePageProps> = ({
+  animalName,
+  color,
+  fontFamily,
+  sessionItems,
+  pixelGridState,
+}) => {
   return (
     <BaseLayout title={pageTitle}>
       <div class="flex">
         {/* Main game side */}
         <main class="flex-grow">
           <h1 data-on-load="@get('/subscribe-to-events')">{pageTitle}</h1>
-          <h2>A collaborative minesweeper game inpired by Proverbs</h2>
-          <pixel-grid pixels={JSON.stringify(orcaPixelGrid)}></pixel-grid>
+          <h2>
+            A collaborative minesweeper game inspired by{' '}
+            <a href="https://store.steampowered.com/app/3083300/Proverbs/" target="_blank">
+              Proverbs
+            </a>
+          </h2>
+          <p>
+            <strong>Numbers</strong> indicate how many{' '}
+            <strong class="clair">clair pixels (white)</strong> surround the current pixel,
+            including itself. (e.g. a 9 indicate that <span class="clair">9 clair</span> pixels
+            surround the current pixel)
+            <br />
+            <span class="obscur">
+              Left click to paint a pixel in <strong>obscur</strong> (black)
+            </span>{' '}
+            -{' '}
+            <span class="clair">
+              Right click to paint a pixel in <strong>clair</strong> (white)
+            </span>
+            <br />
+          </p>
+          <pixel-grid
+            data-on-pixelhover="console.log('pixel hovered', event.detail)"
+            pixels={JSON.stringify(pixelGridState)}></pixel-grid>
         </main>
 
         {/* Session list side */}
@@ -53,6 +81,7 @@ export const getHomeHTMLPage = (
   color: string,
   fontFamily: string,
   sessionItems: SessionItem[],
+  pixelGridState: PixelData[],
 ): string => {
   return renderToString(
     <HomePage
@@ -60,6 +89,7 @@ export const getHomeHTMLPage = (
       color={color}
       fontFamily={fontFamily}
       sessionItems={sessionItems}
+      pixelGridState={pixelGridState}
     />,
   );
 };

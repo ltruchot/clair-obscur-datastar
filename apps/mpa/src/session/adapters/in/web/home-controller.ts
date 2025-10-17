@@ -1,3 +1,4 @@
+import orcaPixelGrid from '@/assets/pixel-grids/orca-enriched.json';
 import { SessionCommandService } from '@/session/adapters/out/session/session-command.service';
 import type { EventStore } from '@/session/infrastructure/event-store/event-store.service';
 import { closeStream } from '@/shared/infrastructure/datastar-stream';
@@ -25,7 +26,7 @@ export class HomeController {
     const { animalName, color, fontFamily } = this.sessionService.extractSessionData(session);
     const sessionItems = await this.sessionService.extractSessionListItems(session);
 
-    return c.html(getHomeHTMLPage(animalName, color, fontFamily, sessionItems));
+    return c.html(getHomeHTMLPage(animalName, color, fontFamily, sessionItems, orcaPixelGrid));
   }
 
   /**

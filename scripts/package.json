@@ -1,0 +1,12 @@
+{
+  "name": "@clair-obscur-workspace/scripts",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "add-neighbors": "tsx add-neighbor-count.ts"
+  },
+  "devDependencies": {
+    "tsx": "catalog:"
+  }
+}

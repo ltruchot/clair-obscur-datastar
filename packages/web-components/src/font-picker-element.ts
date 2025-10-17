@@ -30,7 +30,7 @@ export class FontPickerElement extends HTMLElement {
       <style>
         #font-picker-button {
           background: white;
-          border: 1px solid #ddd;
+          border: 1px solid black;
           cursor: pointer;
           font-size: 0.8rem;
           padding: 0 2px;
