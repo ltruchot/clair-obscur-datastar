@@ -13,10 +13,9 @@ export const GameIntroduction = () => {
       </h2>
       <section aria-label="Game rules">
         <p>
-          <strong>Numbers</strong> indicate how many
-          <strong class="clair">clair pixels</strong> surround the current pixel, including itself.
-          (e.g. a <strong class="gray">9</strong> indicates that{' '}
-          <strong class="clair">9 clair pixels</strong> surround the current pixel)
+          <strong>Numbers</strong> indicate how many <strong class="clair">clair pixels</strong>{' '}
+          surround the current pixel, including itself. (e.g. a <strong class="gray">9</strong>{' '}
+          indicates that <strong class="clair">9 clair pixels</strong> surround the current pixel)
         </p>
         <div class="flex gap-10">
           <p class="obscur">
