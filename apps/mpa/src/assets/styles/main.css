@@ -6,15 +6,26 @@ body {
   background-color: lightgray;
 }
 
+h1 {
+  margin: 0;
+  font-size: 36px;
+}
+
+p {
+  margin: 0;
+  margin-bottom: 5px;
+}
+
 .flex {
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
 }
 
-h1 {
-  margin: 0;
-  font-size: 36px;
+.flex-around {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 }
 
 .rainbow {

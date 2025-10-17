@@ -13,6 +13,7 @@
     "@clair-obscur-workspace/utils": "workspace:*",
     "@hono/session": "catalog:",
     "@starfederation/datastar-sdk": "catalog:",
+    "@tsparticles/engine": "^3.9.1",
     "dotenv": "catalog:",
     "hono": "catalog:"
   },

@@ -51,16 +51,16 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
             <strong class="clair">clair pixels (white)</strong> surround the current pixel,
             including itself. (e.g. a 9 indicate that <span class="clair">9 clair</span> pixels
             surround the current pixel)
-            <br />
-            <span class="obscur">
-              Left click to paint a pixel in <strong>obscur</strong> (black)
-            </span>{' '}
-            -{' '}
-            <span class="clair">
-              Right click to paint a pixel in <strong>clair</strong> (white)
-            </span>
-            <br />
           </p>
+          <div class="flex-around">
+            <p class="obscur">
+              [LEFT CLICK] to paint a pixel in <strong>obscur</strong> (black)
+            </p>
+            <p class="clair">
+              [RIGHT CLICK] to paint a pixel in <strong>clair</strong> (white)
+            </p>
+          </div>
+
           <pixel-grid
             id={DSID.PIXEL_GRID}
             data-signals-pixelclick
