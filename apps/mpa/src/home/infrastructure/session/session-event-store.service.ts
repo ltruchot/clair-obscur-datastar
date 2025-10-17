@@ -25,7 +25,7 @@ export class SessionEventStore {
     const event: StoreEvent<K> = {
       key,
       value,
-      timestamp: new Date(),
+      timestamp: new Date().getTime(),
     };
 
     this.previousState = { ...this.state };
@@ -86,7 +86,7 @@ export class SessionEventStore {
         current.animalName.animal !== previous.animalName.animal
       );
     }
-    return current[field] !== previous[field];
+    return current[field as keyof Session] !== previous[field as keyof Session];
   }
 
   private notifySubscribers(): void {

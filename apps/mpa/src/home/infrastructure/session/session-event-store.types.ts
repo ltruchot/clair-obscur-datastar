@@ -7,7 +7,7 @@ export interface StoreState {
 export interface StoreEvent<K extends keyof StoreState = keyof StoreState> {
   key: K;
   value: StoreState[K];
-  timestamp: Date;
+  timestamp: number;
 }
 
 export type StoreSubscriber = (state: StoreState) => void;

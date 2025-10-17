@@ -1,7 +1,8 @@
-import type { PixelData, PixelGridData } from '@/home/adapters/in/models/pixels';
+import type { PixelChange, PixelData, PixelGridData } from '@/home/adapters/in/models/pixels';
 import type {
   PixelGridStoreState,
   PixelGridStoreSubscriber,
+  PixelLastChangeSubscriber,
   PixelUpdate,
 } from './pixel-grid-event-store.types';
 
@@ -17,6 +18,8 @@ export class PixelGridEventStore {
   private basePixelData: PixelData = {};
 
   private subscribers = new Map<string, PixelGridStoreSubscriber>();
+
+  private lastChangeSubscribers = new Map<string, PixelLastChangeSubscriber>();
 
   initialize(basePixelData: PixelData): void {
     this.basePixelData = basePixelData;
@@ -35,7 +38,6 @@ export class PixelGridEventStore {
 
   reset(): void {
     const pixelGrid: PixelGridData = {};
-
     for (const [key, value] of Object.entries(this.basePixelData)) {
       pixelGrid[key as `${number}-${number}`] = {
         ...value,
@@ -69,7 +71,11 @@ export class PixelGridEventStore {
       guess: update.guess,
     };
 
-    this.notifySubscribers();
+    this.notifyLastChangeSubscribers({
+      x: update.x,
+      y: update.y,
+      guess: update.guess,
+    });
   }
 
   read(): Readonly<PixelGridStoreState> {
@@ -86,8 +92,32 @@ export class PixelGridEventStore {
     };
   }
 
-  getSubscriberCount(): number {
-    return this.subscribers.size;
+  subscribeLastChange(sessionId: string, subscriber: PixelLastChangeSubscriber): () => void {
+    this.lastChangeSubscribers.set(sessionId, subscriber);
+
+    return () => {
+      this.lastChangeSubscribers.delete(sessionId);
+    };
+  }
+
+  private notifyLastChangeSubscribers(lastChange: Omit<PixelChange, 'timestamp'>): void {
+    if (!this.hasRelevantLastChangeChanges(lastChange)) {
+      return;
+    }
+
+    this.lastChangeSubscribers.forEach((subscriber) =>
+      subscriber({ ...lastChange, timestamp: new Date().getTime() }),
+    );
+  }
+
+  private hasRelevantLastChangeChanges(lastChange: Omit<PixelChange, 'timestamp'>): boolean {
+    const { x, y, guess } = lastChange;
+    const previousState = this.previousState.pixelGrid[`${x}-${y}`];
+
+    if (guess !== previousState.guess) {
+      return true;
+    }
+    return false;
   }
 
   private hasRelevantChanges(): boolean {

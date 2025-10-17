@@ -3,6 +3,13 @@ export type PixelData = Record<
   { n: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; guess: -1 | 0 | 1 }
 >;
 
+export interface PixelChange {
+  x: number;
+  y: number;
+  guess: -1 | 0 | 1;
+  timestamp: number;
+}
+
 export interface PixelGridChangeEvent {
   x: number;
   y: number;
@@ -17,10 +24,12 @@ export interface PixelGridHoverEvent {
 export class PixelGridElement extends HTMLElement {
   private _shadowRoot: ShadowRoot;
   private _pixels: PixelData = {};
-  // private _hoverDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+  private _container: HTMLDivElement | null = null;
+  private _cellMap = new Map<string, HTMLDivElement>();
+  private _lastDimensions: { columns: number; rows: number } | null = null;
 
   static get observedAttributes(): readonly string[] {
-    return ['pixels'] as const;
+    return ['pixels', 'last-change'] as const;
   }
 
   constructor() {
@@ -29,8 +38,13 @@ export class PixelGridElement extends HTMLElement {
   }
 
   attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void {
+    console.log('attributeChangedCallback', name, newValue);
     if (name === 'pixels') {
       this.pixels = newValue ? (JSON.parse(newValue) as PixelData) : {};
+    } else if (name === 'last-change' && newValue) {
+      console.log('last-change', newValue);
+      const change = JSON.parse(newValue) as PixelChange;
+      this._applyPixelChange(change);
     }
   }
 
@@ -48,26 +62,76 @@ export class PixelGridElement extends HTMLElement {
 
   set pixels(value: PixelData) {
     this._pixels = value;
-    this.render();
+    if (!this._container) {
+      this.render();
+    }
   }
 
   private render(): void {
     const pixelKeys = Object.keys(this._pixels);
     if (pixelKeys.length === 0) {
       this._shadowRoot.replaceChildren();
+      this._container = null;
+      this._cellMap.clear();
+      this._lastDimensions = null;
       return;
     }
 
-    const coordinates = pixelKeys.map((key): { x: number; y: number } => {
-      const [x, y]: [number, number] = key.split('-').map(Number) as [number, number];
-      return { x, y };
-    });
-
-    const maxX = Math.max(...coordinates.map((c) => c.x));
-    const maxY = Math.max(...coordinates.map((c) => c.y));
+    const { maxX, maxY } = this._getGridDimensions();
     const columns = maxX + 1 + 3;
     const rows = maxY + 1 + 1;
 
+    const dimensionsChanged =
+      !this._lastDimensions ||
+      this._lastDimensions.columns !== columns ||
+      this._lastDimensions.rows !== rows;
+
+    if (dimensionsChanged) {
+      this._lastDimensions = { columns, rows };
+      this._initializeGrid(columns, rows);
+    }
+
+    this._updateCells();
+  }
+
+  private _getGridDimensions(): { maxX: number; maxY: number } {
+    let maxX = 0;
+    let maxY = 0;
+
+    for (const key of Object.keys(this._pixels)) {
+      const parts = key.split('-');
+      const x = Number(parts[0]);
+      const y = Number(parts[1]);
+      if (x > maxX) maxX = x;
+      if (y > maxY) maxY = y;
+    }
+
+    return { maxX, maxY };
+  }
+
+  private _initializeGrid(columns: number, rows: number): void {
+    const style = this._createStyle(columns, rows);
+
+    this._container = document.createElement('div');
+    this._container.className = 'pixel-grid';
+    this._cellMap.clear();
+
+    const fragment = document.createDocumentFragment();
+
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < columns; x++) {
+        const cell = this._createCell(x, y);
+        this._cellMap.set(`${x}-${y}`, cell);
+        fragment.appendChild(cell);
+      }
+    }
+
+    this._container.appendChild(fragment);
+    this._attachEventListeners();
+    this._shadowRoot.replaceChildren(style, this._container);
+  }
+
+  private _createStyle(columns: number, rows: number): HTMLStyleElement {
     const style = document.createElement('style');
     style.textContent = `
       .pixel-grid {
@@ -107,38 +171,66 @@ export class PixelGridElement extends HTMLElement {
         color: black;
       }
     `;
+    return style;
+  }
 
-    const container = document.createElement('div');
-    container.className = 'pixel-grid';
+  private _createCell(x: number, y: number): HTMLDivElement {
+    const cell = document.createElement('div');
+    cell.className = 'pixel-cell';
+    cell.dataset['x'] = x.toString();
+    cell.dataset['y'] = y.toString();
+    return cell;
+  }
 
-    for (let y = 0; y < rows; y++) {
-      for (let x = 0; x < columns; x++) {
-        const cell = document.createElement('div');
-        cell.className = 'pixel-cell';
-        cell.dataset['x'] = x.toString();
-        cell.dataset['y'] = y.toString();
+  private _updateCells(): void {
+    this._cellMap.forEach((cell, key) => {
+      const pixel = this._pixels[key as `${number}-${number}`];
 
-        const pixelKey = `${x}-${y}`;
-        const pixel = this._pixels[pixelKey as `${number}-${number}`];
+      cell.className = 'pixel-cell';
 
-        if (!pixel) {
-          cell.classList.add('cell-transparent');
-        } else {
-          cell.textContent = pixel.n.toString();
-          if (pixel.guess === -1) {
-            cell.classList.add('cell-unguessed');
-          } else if (pixel.guess === 0) {
-            cell.classList.add('cell-obscur');
-          } else if (pixel.guess === 1) {
-            cell.classList.add('cell-clair');
-          }
+      if (!pixel) {
+        cell.classList.add('cell-transparent');
+        cell.textContent = '';
+      } else {
+        cell.textContent = pixel.n.toString();
+        if (pixel.guess === -1) {
+          cell.classList.add('cell-unguessed');
+        } else if (pixel.guess === 0) {
+          cell.classList.add('cell-obscur');
+        } else if (pixel.guess === 1) {
+          cell.classList.add('cell-clair');
         }
-
-        container.appendChild(cell);
       }
-    }
+    });
+  }
 
-    container.addEventListener('mousedown', (event) => {
+  private _applyPixelChange(change: PixelChange): void {
+    const key = `${change.x}-${change.y}` as unknown as `${number}-${number}`;
+    const pixel = this._pixels[key];
+
+    if (!pixel) return;
+
+    pixel.guess = change.guess;
+
+    const cell = this._cellMap.get(`${change.x}-${change.y}`);
+    if (!cell) return;
+
+    cell.className = 'pixel-cell';
+    cell.textContent = pixel.n.toString();
+
+    if (change.guess === -1) {
+      cell.classList.add('cell-unguessed');
+    } else if (change.guess === 0) {
+      cell.classList.add('cell-obscur');
+    } else if (change.guess === 1) {
+      cell.classList.add('cell-clair');
+    }
+  }
+
+  private _attachEventListeners(): void {
+    if (!this._container) return;
+
+    this._container.addEventListener('mousedown', (event) => {
       event.preventDefault();
       const mouseEvent = event;
       const target = event.target as HTMLElement;
@@ -166,36 +258,9 @@ export class PixelGridElement extends HTMLElement {
       }
     });
 
-    container.addEventListener('contextmenu', (event) => {
+    this._container.addEventListener('contextmenu', (event) => {
       event.preventDefault();
     });
-
-    /*
-    container.addEventListener('mouseover', (event) => {
-      const target = event.target as HTMLElement;
-      if (target.classList.contains('pixel-cell')) {
-        const x = Number.parseInt(target.dataset['x'] ?? '0', 10);
-        const y = Number.parseInt(target.dataset['y'] ?? '0', 10);
-
-        if (this._hoverDebounceTimer) {
-          clearTimeout(this._hoverDebounceTimer);
-        }
-
-        this._hoverDebounceTimer = setTimeout(() => {
-          this.dispatchEvent(
-            new CustomEvent<PixelGridHoverEvent>('pixelhover', {
-              detail: { x, y },
-              composed: true,
-              bubbles: true,
-            }),
-          );
-          this._hoverDebounceTimer = null;
-        }, 50);
-      }
-    });
-    */
-
-    this._shadowRoot.replaceChildren(style, container);
   }
 }
 

@@ -7,6 +7,7 @@ import { closeStream } from '@/shared/infrastructure/datastar-stream';
 import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/web';
 import type { Context } from 'hono';
 import { SessionService } from '../../out/session/session-service';
+import { PixelChange } from '../models/pixels';
 import { getListAllSessionsHTMLComponent } from './components/list-all-sessions';
 import { DSID, getHomeHTMLPage } from './home-page';
 
@@ -30,8 +31,9 @@ export class HomeController {
 
     const { animalName, color, fontFamily } = this.sessionService.extractSessionData(session);
     const sessionItems = await this.sessionService.extractSessionListItems(session);
+    const pixelGrid = this.pixelGridQueryService.getPixelGrid();
 
-    return c.html(getHomeHTMLPage(animalName, color, fontFamily, sessionItems));
+    return c.html(getHomeHTMLPage(animalName, color, fontFamily, sessionItems, pixelGrid));
   }
 
   /**
@@ -115,17 +117,6 @@ export class HomeController {
             stream.patchElements(getListAllSessionsHTMLComponent(DSID.ALL_SESSIONS, sessionItems));
           };
 
-          const sendPixelGridUpdate = () => {
-            // const victory = this.pixelGridQueryService.checkVictory();
-
-            const pixelGrid = this.pixelGridQueryService.getPixelGrid();
-            stream.patchSignals(
-              JSON.stringify({
-                pixelGrid: JSON.stringify(pixelGrid),
-              }),
-            );
-          };
-
           const currentSession = await this.sessionService.getCurrentSession(c);
           if (!currentSession) {
             throw new Error('Current session not found for initial setup');
@@ -135,7 +126,22 @@ export class HomeController {
             closeStream(stream);
           });
 
-          sendPixelGridUpdate();
+          const sendPixelGridUpdate = (lastChange: PixelChange) => {
+            // const victory = this.pixelGridQueryService.checkVictory();
+            stream.patchSignals(
+              JSON.stringify({
+                _LastChange: JSON.stringify(lastChange),
+              }),
+            );
+          };
+
+          unsubscribePixelGridStore = this.pixelGridEventStore.subscribeLastChange(
+            currentSession.id.value,
+            (lastChange) => {
+              sendPixelGridUpdate(lastChange);
+              console.log('lastChange', lastChange);
+            },
+          );
 
           unsubscribeSessionStore = this.sessionEventStore.subscribe(
             currentSession.id.value,
@@ -149,10 +155,6 @@ export class HomeController {
               });
             },
           );
-
-          unsubscribePixelGridStore = this.pixelGridEventStore.subscribe('global', () => {
-            sendPixelGridUpdate();
-          });
         },
         {
           keepalive: true,

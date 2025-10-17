@@ -1,6 +1,7 @@
 import { BaseLayout } from '@/shared/infrastructure/web/base-layout';
 import type { FC } from 'hono/jsx';
 import { renderToString } from 'hono/jsx/dom/server';
+import { PixelData } from '../models/pixels';
 import { GameIntroduction } from './components/game-introduction';
 import { ListAllSessions, SessionItem } from './components/list-all-sessions';
 
@@ -15,14 +16,23 @@ interface HomePageProps {
   color: string;
   fontFamily: string;
   sessionItems: SessionItem[];
+  pixelGrid: PixelData;
 }
 
-const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionItems }) => {
+const HomePage: FC<HomePageProps> = ({
+  animalName,
+  color,
+  fontFamily,
+  sessionItems,
+  pixelGrid,
+}) => {
   return (
     <BaseLayout title="Clair Obscur Datastar">
+      {/* Victory message
       <div data-show="$victory">
         <div className="victory">VICTORY !!!</div>
       </div>
+       */}
 
       <div class="flex" data-on-load="@get('/subscribe-to-events')">
         {/* Session list side */}
@@ -45,12 +55,10 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
 
           <pixel-grid
             id={DSID.PIXEL_GRID}
-            data-signals-pixelclick
-            data-signals-pixelGrid
             data-on-pixelhover="console.log('pixel hovered', event.detail)"
-            data-on-pixelclick="$pixelclick = event.detail; @post('/pixel-click')"
-            data-attr-pixels="$pixelGrid"
-            data-attr-victory="$victory"></pixel-grid>
+            data-on-pixelclick="$pixelclick = event.detail; @post('/pixel-click', {requestCancellation: 'disabled'})"
+            pixels={JSON.stringify(pixelGrid)}
+            data-attr-last-change="$_LastChange"></pixel-grid>
         </main>
       </div>
     </BaseLayout>
@@ -62,6 +70,7 @@ export const getHomeHTMLPage = (
   color: string,
   fontFamily: string,
   sessionItems: SessionItem[],
+  pixelGrid: PixelData,
 ): string => {
   return renderToString(
     <HomePage
@@ -69,6 +78,7 @@ export const getHomeHTMLPage = (
       color={color}
       fontFamily={fontFamily}
       sessionItems={sessionItems}
+      pixelGrid={pixelGrid}
     />,
   );
 };

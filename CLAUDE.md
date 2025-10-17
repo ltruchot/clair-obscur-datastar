@@ -55,6 +55,6 @@ DDD forms the core of our Hexagonal Architecture:
 
 ## Workflow
 - Never run/serve/build projects unless explicitly requested
-- Always run `pnpm lint` after producing new code
+- Always run `pnpm lint` from root folder after producing new code
 - Never invent dependencies or methods. Use only existing packages (see package.json) and available values/methods
-- Prefer running individual tests over full test suite for performance
+- Prefer running individual tests over full test suite

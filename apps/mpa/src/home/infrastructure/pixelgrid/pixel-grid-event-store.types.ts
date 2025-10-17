@@ -1,4 +1,4 @@
-import type { PixelGridData } from '@/home/adapters/in/models/pixels';
+import type { PixelChange, PixelGridData } from '@/home/adapters/in/models/pixels';
 
 export interface PixelGridStoreState {
   pixelGrid: PixelGridData;
@@ -9,11 +9,12 @@ export interface PixelGridStoreEvent<
 > {
   key: K;
   value: PixelGridStoreState[K];
-  timestamp: Date;
+  timestamp: number;
 }
 
 export type PixelGridStoreSubscriber = (state: PixelGridStoreState) => void;
 
+export type PixelLastChangeSubscriber = (lastChange: PixelChange) => void;
 export interface PixelUpdate {
   x: number;
   y: number;
