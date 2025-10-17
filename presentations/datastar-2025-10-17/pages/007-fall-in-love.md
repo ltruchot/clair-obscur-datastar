@@ -31,7 +31,7 @@ Ready to make big projects together?
     <div style="width: 70%;">
        <h3> Can you give me more than a "Todo list"?</h3>
        <ul>
-        <li>Check out <a style="color: blue;" href="https://clair-obscur-datastar.onrender.com/" target="_blank">my online session room example</a></li>
+        <li>Check out <a style="color: blue;" href="https://clair-obscur-datastar.onrender.com/" target="_blank">my online minesweeper example</a></li>
         <li>Check out <a style="color: blue;" href="https://pylo.dev/play" target="_blank">Blinsky</a>, by Ben Croker</li>
        </ul>
     </div>

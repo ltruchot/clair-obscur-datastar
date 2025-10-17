@@ -17,7 +17,7 @@ export interface PixelGridHoverEvent {
 export class PixelGridElement extends HTMLElement {
   private _shadowRoot: ShadowRoot;
   private _pixels: PixelData = {};
-  private _hoverDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+  // private _hoverDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 
   static get observedAttributes(): readonly string[] {
     return ['pixels'] as const;
@@ -142,7 +142,10 @@ export class PixelGridElement extends HTMLElement {
       event.preventDefault();
       const mouseEvent = event;
       const target = event.target as HTMLElement;
-      if (target.classList.contains('pixel-cell') && !target.classList.contains('cell-transparent')) {
+      if (
+        target.classList.contains('pixel-cell') &&
+        !target.classList.contains('cell-transparent')
+      ) {
         const x = Number.parseInt(target.dataset['x'] ?? '0', 10);
         const y = Number.parseInt(target.dataset['y'] ?? '0', 10);
 

@@ -27,8 +27,8 @@ Bringing serendipity since 1989
     <li>2020: Astro, Next.js, SvelteKit, HTMX: old-school MPAs try to come back</li>
   </v-click>
   <v-click>
-    <li>2025: A new star begins to shine in the northern sky 🌟: <span style="color: #B8860B;font-weight: bold;">Datastar</span>
-    <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🚀 <span style="font-style: italic;">Hypermedia can purge the web with 2025 features, MPAs or SPAs, via AJAX, via SSE, via Signals</span> </li>
+    <li>2023: A new star begins to shine in the northern sky 🌟: <span style="color: #B8860B;font-weight: bold;">Datastar</span>
+    <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🚀 <span style="font-style: italic;">Hypermedia can purge the web with nowadays features, MPAs or SPAs, via AJAX, SSE, Signals</span> </li>
   </v-click>
 </ul>
 

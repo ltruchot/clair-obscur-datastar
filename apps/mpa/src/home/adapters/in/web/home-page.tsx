@@ -1,6 +1,7 @@
 import { BaseLayout } from '@/shared/infrastructure/web/base-layout';
 import type { FC } from 'hono/jsx';
 import { renderToString } from 'hono/jsx/dom/server';
+import { GameIntroduction } from './components/game-introduction';
 import { ListAllSessions, SessionItem } from './components/list-all-sessions';
 
 export const DSID = {
@@ -23,7 +24,7 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
         <div className="victory">VICTORY !!!</div>
       </div>
 
-      <div class="flex">
+      <div class="flex" data-on-load="@get('/subscribe-to-events')">
         {/* Session list side */}
         <aside aria-label="Active users">
           You are a{' '}
@@ -40,30 +41,7 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
 
         {/* Main game side */}
         <main class="flex-grow">
-          <h1 data-on-load="@get('/subscribe-to-events')">
-            <span class="clair">Clair&nbsp;</span>
-            <span class="obscur">&nbsp;Obscur</span>:<span class="rainbow"> Datastar</span>
-          </h1>
-          <h2>
-            A collaborative minesweeper game inspired by{' '}
-            <a href="https://store.steampowered.com/app/3083300/Proverbs/" target="_blank">
-              Proverbs
-            </a>
-          </h2>
-          <p>
-            <strong>Numbers</strong> indicate how many{' '}
-            <strong class="clair">clair pixels (white)</strong> surround the current pixel,
-            including itself. (e.g. a 9 indicate that <span class="clair">9 clair</span> pixels
-            surround the current pixel)
-          </p>
-          <div class="flex-around">
-            <p class="obscur">
-              [LEFT CLICK] to paint a pixel in <strong>obscur</strong> (black)
-            </p>
-            <p class="clair">
-              [RIGHT CLICK] to paint a pixel in <strong>clair</strong> (white)
-            </p>
-          </div>
+          <GameIntroduction />
 
           <pixel-grid
             id={DSID.PIXEL_GRID}

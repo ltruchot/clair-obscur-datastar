@@ -22,10 +22,8 @@ p {
   justify-content: flex-start;
 }
 
-.flex-around {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
+.gap-10 {
+  gap: 10px;
 }
 
 .rainbow {

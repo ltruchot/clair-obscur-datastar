@@ -116,13 +116,12 @@ export class HomeController {
           };
 
           const sendPixelGridUpdate = () => {
-            const victory = this.pixelGridQueryService.checkVictory();
+            // const victory = this.pixelGridQueryService.checkVictory();
 
             const pixelGrid = this.pixelGridQueryService.getPixelGrid();
             stream.patchSignals(
               JSON.stringify({
                 pixelGrid: JSON.stringify(pixelGrid),
-                victory,
               }),
             );
           };
