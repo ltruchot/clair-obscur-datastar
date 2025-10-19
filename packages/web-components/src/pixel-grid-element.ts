@@ -149,6 +149,7 @@ export class PixelGridElement extends HTMLElement {
         justify-content: center;
         font-size: 16px;
         font-weight: bold;
+        touch-action: manipulation;
       }
       .pixel-cell:hover {
         opacity: 0.8;
@@ -228,9 +229,8 @@ export class PixelGridElement extends HTMLElement {
   private _attachEventListeners(): void {
     if (!this._container) return;
 
-    this._container.addEventListener('mousedown', (event) => {
+    this._container.addEventListener('pointerdown', (event) => {
       event.preventDefault();
-      const mouseEvent = event;
       const target = event.target as HTMLElement;
       if (
         target.classList.contains('pixel-cell') &&
@@ -240,9 +240,9 @@ export class PixelGridElement extends HTMLElement {
         const y = Number.parseInt(target.dataset['y'] ?? '0', 10);
 
         let guess: -1 | 0 | 1 = -1;
-        if (mouseEvent.button === 0) {
+        if (event.button === 0) {
           guess = 0;
-        } else if (mouseEvent.button === 2) {
+        } else if (event.button === 2) {
           guess = 1;
         }
 
