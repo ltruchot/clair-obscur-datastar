@@ -55,7 +55,6 @@ const HomePage: FC<HomePageProps> = ({
 
           <pixel-grid
             id={DSID.PIXEL_GRID}
-            data-on-pixelhover="console.log('pixel hovered', event.detail)"
             data-on-pixelclick="$pixelclick = event.detail; @post('/pixel-click', {requestCancellation: 'disabled'})"
             pixels={JSON.stringify(pixelGrid)}
             data-attr-last-change="$_LastChange"></pixel-grid>

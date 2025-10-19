@@ -128,18 +128,13 @@ export class HomeController {
 
           const sendPixelGridUpdate = (lastChange: PixelChange) => {
             // const victory = this.pixelGridQueryService.checkVictory();
-            stream.patchSignals(
-              JSON.stringify({
-                _LastChange: JSON.stringify(lastChange),
-              }),
-            );
+            stream.patchSignals(JSON.stringify({ _LastChange: lastChange }));
           };
 
           unsubscribePixelGridStore = this.pixelGridEventStore.subscribeLastChange(
             currentSession.id.value,
             (lastChange) => {
               sendPixelGridUpdate(lastChange);
-              console.log('lastChange', lastChange);
             },
           );
 
@@ -181,7 +176,7 @@ export class HomeController {
           <strong id="${DSID.MY_SESSION}">an unknown animal</strong>
          `,
         );
-        stream.patchSignals(JSON.stringify({ items: JSON.stringify([]) }));
+        stream.patchSignals(JSON.stringify({ items: [] }));
       });
     }
   }

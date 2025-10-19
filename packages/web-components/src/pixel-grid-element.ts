@@ -38,11 +38,9 @@ export class PixelGridElement extends HTMLElement {
   }
 
   attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void {
-    console.log('attributeChangedCallback', name, newValue);
     if (name === 'pixels') {
       this.pixels = newValue ? (JSON.parse(newValue) as PixelData) : {};
     } else if (name === 'last-change' && newValue) {
-      console.log('last-change', newValue);
       const change = JSON.parse(newValue) as PixelChange;
       this._applyPixelChange(change);
     }
