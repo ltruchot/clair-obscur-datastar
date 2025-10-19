@@ -13,14 +13,9 @@ pnpm install
 
 # Development
 pnpm dev             # Start all apps in dev mode
-pnpm dev:apps:mpa         # Start MPA app only
-pnpm dev:packages:utils       # Start Utilities lib only
-
 
 # Testing
 pnpm test            # Run all tests
-pnpm test:apps:mpa        # Test MPA app
-pnpm test:packages:utils      # Test utils package
 
 # Code Quality
 pnpm lint            # Lint all projects

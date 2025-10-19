@@ -11,10 +11,6 @@ export class PixelGridEventStore {
     pixelGrid: {},
   };
 
-  private previousState: PixelGridStoreState = {
-    pixelGrid: {},
-  };
-
   private basePixelData: PixelData = {};
 
   private subscribers = new Map<string, PixelGridStoreSubscriber>();
@@ -33,24 +29,15 @@ export class PixelGridEventStore {
     }
 
     this.state.pixelGrid = pixelGrid;
-    this.previousState.pixelGrid = { ...pixelGrid };
   }
 
   reset(): void {
     const pixelGrid: PixelGridData = {};
-    for (const [key, value] of Object.entries(this.basePixelData)) {
-      pixelGrid[key as `${number}-${number}`] = {
-        ...value,
-        guess: -1,
-      };
+    for (const key of Object.keys(this.basePixelData)) {
+      pixelGrid[key as `${number}-${number}`].guess = -1;
     }
 
-    this.previousState = {
-      pixelGrid: { ...this.state.pixelGrid },
-    };
-
     this.state.pixelGrid = pixelGrid;
-
     this.notifySubscribers();
   }
 
@@ -62,14 +49,7 @@ export class PixelGridEventStore {
       return;
     }
 
-    this.previousState = {
-      pixelGrid: { ...this.state.pixelGrid },
-    };
-
-    this.state.pixelGrid[key] = {
-      ...currentPixel,
-      guess: update.guess,
-    };
+    currentPixel.guess = update.guess;
 
     this.notifyLastChangeSubscribers({
       x: update.x,
@@ -78,10 +58,8 @@ export class PixelGridEventStore {
     });
   }
 
-  read(): Readonly<PixelGridStoreState> {
-    return {
-      pixelGrid: { ...this.state.pixelGrid },
-    };
+  read(): PixelGridStoreState {
+    return this.state;
   }
 
   subscribe(sessionId: string, subscriber: PixelGridStoreSubscriber): () => void {
@@ -101,58 +79,12 @@ export class PixelGridEventStore {
   }
 
   private notifyLastChangeSubscribers(lastChange: Omit<PixelChange, 'timestamp'>): void {
-    if (!this.hasRelevantLastChangeChanges(lastChange)) {
-      return;
-    }
-
     this.lastChangeSubscribers.forEach((subscriber) =>
       subscriber({ ...lastChange, timestamp: new Date().getTime() }),
     );
   }
 
-  private hasRelevantLastChangeChanges(lastChange: Omit<PixelChange, 'timestamp'>): boolean {
-    const { x, y, guess } = lastChange;
-    const previousState = this.previousState.pixelGrid[`${x}-${y}`];
-
-    if (guess !== previousState.guess) {
-      return true;
-    }
-    return false;
-  }
-
-  private hasRelevantChanges(): boolean {
-    const currentGrid = this.state.pixelGrid;
-    const previousGrid = this.previousState.pixelGrid;
-
-    const currentKeys = Object.keys(currentGrid);
-    const previousKeys = Object.keys(previousGrid);
-
-    if (currentKeys.length !== previousKeys.length) {
-      return true;
-    }
-
-    for (const key of currentKeys) {
-      const typedKey = key as `${number}-${number}`;
-      const currentPixel = currentGrid[typedKey];
-      const previousPixel = previousGrid[typedKey];
-
-      if (!previousPixel) {
-        return true;
-      }
-
-      if (currentPixel.guess !== previousPixel.guess) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
   private notifySubscribers(): void {
-    if (!this.hasRelevantChanges()) {
-      return;
-    }
-
     const currentState = this.read();
     this.subscribers.forEach((subscriber) => subscriber(currentState));
   }

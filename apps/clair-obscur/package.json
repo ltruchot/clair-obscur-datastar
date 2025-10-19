@@ -1,5 +1,5 @@
 {
-  "name": "@clair-obscur-workspace/mpa",
+  "name": "@clair-obscur-workspace/clair-obscur",
   "type": "module",
   "scripts": {
     "dev": "vite",

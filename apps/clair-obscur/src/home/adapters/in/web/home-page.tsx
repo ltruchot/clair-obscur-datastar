@@ -34,7 +34,7 @@ const HomePage: FC<HomePageProps> = ({
       </div>
        */}
 
-      <div class="flex" data-on-load="@get('/subscribe-to-events')">
+      <div class="flex" data-on-load="@get('/subscribe-to-events', {openWhenHidden: true})">
         {/* Session list side */}
         <aside aria-label="Active users">
           You are a{' '}

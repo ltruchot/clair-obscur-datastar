@@ -248,6 +248,13 @@ export class PixelGridElement extends HTMLElement {
           guess = 1;
         }
 
+        const pixelKey = `${x}-${y}` as `${number}-${number}`;
+        const currentPixel = this._pixels[pixelKey];
+
+        if (!currentPixel || currentPixel.guess === guess) {
+          return;
+        }
+
         this.dispatchEvent(
           new CustomEvent<PixelGridChangeEvent>('pixelclick', {
             detail: { x, y, guess },

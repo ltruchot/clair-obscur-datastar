@@ -215,6 +215,8 @@ export const ANIMALS = [
   'Angelfish',
   'Clownfish',
   'Pufferfish',
+  'Killer Whale',
+  'Orca',
   // Insects/Arachnids
   'Butterfly',
   'Bee',
