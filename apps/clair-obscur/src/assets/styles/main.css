@@ -6,6 +6,47 @@ body {
   background-color: lightgray;
 }
 
+main {
+  border-left: 1px solid black;
+  min-height: 100vh;
+  box-sizing: border-box;
+  main {
+    border-left: 1px solid black;
+    min-height: 100vh;
+    box-sizing: border-box;
+    flex-grow: 1;
+  }
+
+  aside {
+    padding: 10px;
+    box-sizing: border-box;
+    min-width: 300px;
+  }
+
+  menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+  }
+}
+
+aside {
+  padding: 10px;
+  box-sizing: border-box;
+  min-width: 300px;
+}
+
+menu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 h1 {
   margin: 0;
   font-size: 36px;
@@ -32,19 +73,6 @@ p {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-}
-
-main {
-  border-left: 1px solid black;
-  min-height: 100vh;
-  box-sizing: border-box;
-  flex-grow: 1;
-}
-
-aside {
-  padding: 10px;
-  box-sizing: border-box;
-  min-width: 300px;
 }
 
 .clair {

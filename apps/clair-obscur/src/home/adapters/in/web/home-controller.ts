@@ -128,7 +128,7 @@ export class HomeController {
 
           const sendPixelGridUpdate = (lastChange: PixelChange) => {
             // const victory = this.pixelGridQueryService.checkVictory();
-            stream.patchSignals(JSON.stringify({ _LastChange: lastChange }));
+            stream.patchSignals(JSON.stringify({ _lastChange: lastChange }));
           };
 
           unsubscribePixelGridStore = this.pixelGridEventStore.subscribeLastChange(

@@ -28,11 +28,9 @@ const HomePage: FC<HomePageProps> = ({
 }) => {
   return (
     <BaseLayout title="Clair Obscur Datastar">
-      {/* Victory message
-      <div data-show="$victory">
+      <div style={{ display: 'none' }} data-show="$_victory === 'true'">
         <div className="victory">VICTORY !!!</div>
       </div>
-       */}
 
       <div class="flex" data-on-load="@get('/subscribe-to-events', {openWhenHidden: true})">
         {/* Session list side */}
@@ -44,20 +42,32 @@ const HomePage: FC<HomePageProps> = ({
           <font-picker
             data-signals-font_changed
             data-on-fontchange="$font_changed = event.detail.value; @post('/font-change')"></font-picker>
-          <hr />
           <div>All animals on this channel:</div>
           <ListAllSessions id={DSID.ALL_SESSIONS} sessionItems={sessionItems} />
         </aside>
 
         {/* Main game side */}
-        <main class="flex-grow">
+        <main>
           <GameIntroduction />
-
+          <menu>
+            <div>
+              <button>Cheat</button> will reset wrong guesses
+            </div>
+            <button data-on-click="confirm('Remove all contributions of all players?\nYou may feel bad about it.') ? @post('/reset-pixel-grid') : null">
+              Reset
+            </button>
+          </menu>
           <pixel-grid
+            data-signals-_victory="'false'"
+            {...{
+              'data-on-interval__duration.5s':
+                "$_victory = ($_victory === 'true' ? 'false' : 'true')",
+            }}
             id={DSID.PIXEL_GRID}
             data-on-pixelclick="$pixelclick = event.detail; @post('/pixel-click', {requestCancellation: 'disabled'})"
             pixels={JSON.stringify(pixelGrid)}
-            data-attr-last-change="$_LastChange"></pixel-grid>
+            data-attr-last-change="$_lastChange"
+            data-attr-victory="$_victory"></pixel-grid>
         </main>
       </div>
     </BaseLayout>

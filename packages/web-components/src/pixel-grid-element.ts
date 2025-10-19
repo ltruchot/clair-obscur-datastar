@@ -27,9 +27,10 @@ export class PixelGridElement extends HTMLElement {
   private _container: HTMLDivElement | null = null;
   private _cellMap = new Map<string, HTMLDivElement>();
   private _lastDimensions: { columns: number; rows: number } | null = null;
+  private _victory = false;
 
   static get observedAttributes(): readonly string[] {
-    return ['pixels', 'last-change'] as const;
+    return ['pixels', 'last-change', 'victory'] as const;
   }
 
   constructor() {
@@ -43,6 +44,9 @@ export class PixelGridElement extends HTMLElement {
     } else if (name === 'last-change' && newValue) {
       const change = JSON.parse(newValue) as PixelChange;
       this._applyPixelChange(change);
+    } else if (name === 'victory') {
+      this._victory = newValue === 'true';
+      this._updateVictoryState();
     }
   }
 
@@ -126,6 +130,7 @@ export class PixelGridElement extends HTMLElement {
 
     this._container.appendChild(fragment);
     this._attachEventListeners();
+    this._updateVictoryState();
     this._shadowRoot.replaceChildren(style, this._container);
   }
 
@@ -150,9 +155,13 @@ export class PixelGridElement extends HTMLElement {
         font-size: 16px;
         font-weight: bold;
         touch-action: manipulation;
+        transition: border-color 2.6s cubic-bezier(0.4, 0.0, 0.2, 1), border-width 2.6s cubic-bezier(0.4, 0.0, 0.2, 1);
       }
       .pixel-cell:hover {
         opacity: 0.8;
+      }
+      .pixel-cell:not(.cell-transparent) {
+        border-color: #888;
       }
       .pixel-cell.cell-transparent {
         cursor: default;
@@ -168,6 +177,10 @@ export class PixelGridElement extends HTMLElement {
       .pixel-cell.cell-clair {
         background-color: white;
         color: black;
+      }
+      .pixel-grid.victory .pixel-cell {
+        border-color: transparent;
+        border-width: 0;
       }
     `;
     return style;
@@ -223,6 +236,16 @@ export class PixelGridElement extends HTMLElement {
       cell.classList.add('cell-obscur');
     } else if (change.guess === 1) {
       cell.classList.add('cell-clair');
+    }
+  }
+
+  private _updateVictoryState(): void {
+    if (!this._container) return;
+
+    if (this._victory) {
+      this._container.classList.add('victory');
+    } else {
+      this._container.classList.remove('victory');
     }
   }
 
