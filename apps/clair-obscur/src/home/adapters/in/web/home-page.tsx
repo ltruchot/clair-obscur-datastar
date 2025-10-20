@@ -59,14 +59,8 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
                   className="warning"
                   title="This will reset wrong guesses"
                   data-on-click="confirm('Reset all errored pixel?') ? @post('/cheat-pixel-grid') : null"
-                  data-attr-disabled="$_victory">
+                  data-attr-disabled="JSON.parse($_victory)">
                   Cheat
-                </button>
-                <button
-                  className="success"
-                  title="This will reset all contributions of all players"
-                  data-on-click="@post('/win-pixel-grid')">
-                  Win
                 </button>
                 <victory-stars data-attr-won="$_victory.toString()"></victory-stars>
               </menu>
