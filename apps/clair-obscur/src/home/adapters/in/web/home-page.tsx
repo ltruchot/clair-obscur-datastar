@@ -62,12 +62,6 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
                   data-attr-disabled="JSON.parse($_victory)">
                   Cheat
                 </button>
-                <button
-                  className="success"
-                  title="This will reset all contributions of all players"
-                  data-on-click="@post('/win-pixel-grid')">
-                  Win
-                </button>
                 <victory-stars data-attr-won="$_victory.toString()"></victory-stars>
               </menu>
             </details>
