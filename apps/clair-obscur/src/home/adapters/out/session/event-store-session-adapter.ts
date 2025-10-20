@@ -1,12 +1,13 @@
 import { SessionEventStore } from '@/home/infrastructure/session/session-event-store.service';
 import type {
+  AnimalNameRegistryPort,
   Session,
   SessionId,
   SessionReadPort,
   SessionWritePort,
 } from '@clair-obscur-workspace/domain';
 
-export class EventStoreSessionAdapter implements SessionReadPort, SessionWritePort {
+export class EventStoreSessionAdapter implements SessionReadPort, SessionWritePort, AnimalNameRegistryPort {
   private usedAnimalNames = new Set<string>();
 
   constructor(private readonly eventStore: SessionEventStore) {}

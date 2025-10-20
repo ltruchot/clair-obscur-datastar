@@ -1,6 +1,5 @@
 import type { SessionCommandService } from '@/home/adapters/out/session/session-command.service';
 import type { SessionQueryService } from '@/home/adapters/out/session/session-query.service';
-import { SessionFactory } from '@clair-obscur-workspace/domain';
 
 export class SessionMonitorService {
   private intervalId: NodeJS.Timeout | undefined;
@@ -8,8 +7,9 @@ export class SessionMonitorService {
   constructor(
     private readonly queryService: SessionQueryService,
     private readonly commandService: SessionCommandService,
-    private readonly checkIntervalMs = 20_000,
-    private readonly purgeInactiveDurationMs = 60_000,
+    private readonly checkIntervalMs = 1_000,
+    private readonly deactivationDurationMs = 10_000,
+    private readonly purgeInactiveDurationMs = 30_000,
   ) {}
 
   start(): void {
@@ -38,7 +38,7 @@ export class SessionMonitorService {
 
         if (inactivityDuration > this.purgeInactiveDurationMs) {
           await this.commandService.deleteSession(session);
-        } else if (SessionFactory.isExpired(session, 10000)) {
+        } else if (inactivityDuration > this.deactivationDurationMs) {
           const isActive = session.isActive ?? true;
           if (isActive) {
             await this.commandService.deactivateSession(session);

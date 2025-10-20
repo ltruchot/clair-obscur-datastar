@@ -29,10 +29,7 @@ export default defineConfig(({ mode }) => ({
         copyRecursive('src/assets/pixel-grids', 'dist/assets/pixel-grids');
         copyRecursive('src/assets/scripts/tsparticles', 'dist/assets/scripts/tsparticles');
         if (mode === 'production') {
-          copyRecursive(
-            'src/assets/scripts/datastar-community',
-            'dist/assets/scripts/datastar-community',
-          );
+          copyRecursive('src/assets/scripts/datastar-community', 'dist/assets/scripts/datastar-community');
         } else {
           copyRecursive('src/assets/scripts/datastar-pro', 'dist/assets/scripts/datastar-pro');
         }

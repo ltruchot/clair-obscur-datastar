@@ -11,14 +11,13 @@ export class PixelGridEventStore {
     pixelGrid: {},
   };
 
-  private basePixelData: PixelData = {};
+  private basePixelGrid: PixelGridData = {};
 
   private subscribers = new Map<string, PixelGridStoreSubscriber>();
 
   private lastChangeSubscribers = new Map<string, PixelLastChangeSubscriber>();
 
   initialize(basePixelData: PixelData): void {
-    this.basePixelData = basePixelData;
     const pixelGrid: PixelGridData = {};
 
     for (const [key, value] of Object.entries(basePixelData)) {
@@ -27,17 +26,12 @@ export class PixelGridEventStore {
         guess: -1,
       };
     }
-
+    this.basePixelGrid = structuredClone(pixelGrid);
     this.state.pixelGrid = pixelGrid;
   }
 
   reset(): void {
-    const pixelGrid: PixelGridData = {};
-    for (const key of Object.keys(this.basePixelData)) {
-      pixelGrid[key as `${number}-${number}`].guess = -1;
-    }
-
-    this.state.pixelGrid = pixelGrid;
+    this.state.pixelGrid = structuredClone(this.basePixelGrid);
     this.notifySubscribers();
   }
 
@@ -79,9 +73,7 @@ export class PixelGridEventStore {
   }
 
   private notifyLastChangeSubscribers(lastChange: Omit<PixelChange, 'timestamp'>): void {
-    this.lastChangeSubscribers.forEach((subscriber) =>
-      subscriber({ ...lastChange, timestamp: new Date().getTime() }),
-    );
+    this.lastChangeSubscribers.forEach((subscriber) => subscriber({ ...lastChange, timestamp: new Date().getTime() }));
   }
 
   private notifySubscribers(): void {

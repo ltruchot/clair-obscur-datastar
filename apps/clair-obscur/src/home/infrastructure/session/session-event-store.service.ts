@@ -1,15 +1,11 @@
+import { isDevelopment } from '@/shared/infrastructure/config';
 import type { Session } from '@clair-obscur-workspace/domain';
 import type { StoreEvent, StoreState, StoreSubscriber } from './session-event-store.types.js';
 
 type SessionObservableFields = Omit<keyof Session, 'id' | 'lastSeen'>;
 
 export class SessionEventStore {
-  private readonly observableFields: SessionObservableFields[] = [
-    'color',
-    'fontFamily',
-    'animalName',
-    'isActive',
-  ];
+  private readonly observableFields: SessionObservableFields[] = ['color', 'fontFamily', 'animalName', 'isActive'];
 
   private state: StoreState = {
     activeSessions: [],
@@ -55,6 +51,9 @@ export class SessionEventStore {
     const previousSessions = this.previousState.activeSessions;
 
     if (currentSessions.length !== previousSessions.length) {
+      if (isDevelopment) {
+        console.info('[SessionEventStore] Length changed:', previousSessions.length, '→', currentSessions.length);
+      }
       return true;
     }
 
@@ -62,11 +61,26 @@ export class SessionEventStore {
       const previousSession = previousSessions.find((s) => s.id.value === currentSession.id.value);
 
       if (!previousSession) {
+        if (isDevelopment) {
+          console.info('[SessionEventStore] New session:', currentSession.id.value);
+        }
         return true;
       }
 
       for (const field of this.observableFields) {
         if (this.hasFieldChanged(currentSession, previousSession, field)) {
+          if (isDevelopment) {
+            console.info(
+              '[SessionEventStore] Field changed:',
+              field,
+              'for session:',
+              currentSession.id.value,
+              'previous:',
+              JSON.stringify(previousSession[field as keyof Session]),
+              'current:',
+              JSON.stringify(currentSession[field as keyof Session]),
+            );
+          }
           return true;
         }
       }
@@ -75,11 +89,7 @@ export class SessionEventStore {
     return false;
   }
 
-  private hasFieldChanged(
-    current: Session,
-    previous: Session,
-    field: SessionObservableFields,
-  ): boolean {
+  private hasFieldChanged(current: Session, previous: Session, field: SessionObservableFields): boolean {
     if (field === 'animalName') {
       return (
         current.animalName.adjective !== previous.animalName.adjective ||

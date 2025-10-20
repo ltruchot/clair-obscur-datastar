@@ -1,7 +1,7 @@
-export type PixelData = Record<
-  `${number}-${number}`,
-  { n: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; guess: -1 | 0 | 1 }
->;
+export interface PixelData {
+  pixelGrid: Record<`${number}-${number}`, { n: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; guess: -1 | 0 | 1 }>;
+  timestamp?: number;
+}
 
 export interface PixelChange {
   x: number;
@@ -23,7 +23,9 @@ export interface PixelGridHoverEvent {
 
 export class PixelGridElement extends HTMLElement {
   private _shadowRoot: ShadowRoot;
-  private _pixels: PixelData = {};
+  private _pixels: PixelData = {
+    pixelGrid: {},
+  };
   private _container: HTMLDivElement | null = null;
   private _cellMap = new Map<string, HTMLDivElement>();
   private _lastDimensions: { columns: number; rows: number } | null = null;
@@ -40,7 +42,7 @@ export class PixelGridElement extends HTMLElement {
 
   attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void {
     if (name === 'pixels') {
-      this.pixels = newValue ? (JSON.parse(newValue) as PixelData) : {};
+      this.pixels = JSON.parse(newValue ?? '{"pixelGrid":{}}') as PixelData;
     } else if (name === 'last-change' && newValue) {
       const change = JSON.parse(newValue) as PixelChange;
       this._applyPixelChange(change);
@@ -64,13 +66,12 @@ export class PixelGridElement extends HTMLElement {
 
   set pixels(value: PixelData) {
     this._pixels = value;
-    if (!this._container) {
-      this.render();
-    }
+
+    this.render();
   }
 
   private render(): void {
-    const pixelKeys = Object.keys(this._pixels);
+    const pixelKeys = Object.keys(this._pixels.pixelGrid);
     if (pixelKeys.length === 0) {
       this._shadowRoot.replaceChildren();
       this._container = null;
@@ -84,9 +85,7 @@ export class PixelGridElement extends HTMLElement {
     const rows = maxY + 1 + 1;
 
     const dimensionsChanged =
-      !this._lastDimensions ||
-      this._lastDimensions.columns !== columns ||
-      this._lastDimensions.rows !== rows;
+      !this._lastDimensions || this._lastDimensions.columns !== columns || this._lastDimensions.rows !== rows;
 
     if (dimensionsChanged) {
       this._lastDimensions = { columns, rows };
@@ -100,7 +99,7 @@ export class PixelGridElement extends HTMLElement {
     let maxX = 0;
     let maxY = 0;
 
-    for (const key of Object.keys(this._pixels)) {
+    for (const key of Object.keys(this._pixels.pixelGrid)) {
       const parts = key.split('-');
       const x = Number(parts[0]);
       const y = Number(parts[1]);
@@ -181,6 +180,8 @@ export class PixelGridElement extends HTMLElement {
       .pixel-grid.victory .pixel-cell {
         border-color: transparent;
         border-width: 0;
+        pointer-events: none;
+        cursor: default;
       }
     `;
     return style;
@@ -196,7 +197,7 @@ export class PixelGridElement extends HTMLElement {
 
   private _updateCells(): void {
     this._cellMap.forEach((cell, key) => {
-      const pixel = this._pixels[key as `${number}-${number}`];
+      const pixel = this._pixels.pixelGrid[key as `${number}-${number}`];
 
       cell.className = 'pixel-cell';
 
@@ -218,7 +219,7 @@ export class PixelGridElement extends HTMLElement {
 
   private _applyPixelChange(change: PixelChange): void {
     const key = `${change.x}-${change.y}` as unknown as `${number}-${number}`;
-    const pixel = this._pixels[key];
+    const pixel = this._pixels.pixelGrid[key];
 
     if (!pixel) return;
 
@@ -255,10 +256,7 @@ export class PixelGridElement extends HTMLElement {
     this._container.addEventListener('pointerdown', (event) => {
       event.preventDefault();
       const target = event.target as HTMLElement;
-      if (
-        target.classList.contains('pixel-cell') &&
-        !target.classList.contains('cell-transparent')
-      ) {
+      if (target.classList.contains('pixel-cell') && !target.classList.contains('cell-transparent')) {
         const x = Number.parseInt(target.dataset['x'] ?? '0', 10);
         const y = Number.parseInt(target.dataset['y'] ?? '0', 10);
 
@@ -269,8 +267,8 @@ export class PixelGridElement extends HTMLElement {
           guess = 1;
         }
 
-        const pixelKey = `${x}-${y}` as `${number}-${number}`;
-        const currentPixel = this._pixels[pixelKey];
+        const pixelKey: `${number}-${number}` = `${x}-${y}`;
+        const currentPixel = this._pixels.pixelGrid[pixelKey];
 
         if (!currentPixel || currentPixel.guess === guess) {
           return;

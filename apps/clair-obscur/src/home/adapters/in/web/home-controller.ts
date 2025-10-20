@@ -2,6 +2,7 @@ import { PixelGridCommandService } from '@/home/adapters/out/pixelgrid/pixelgrid
 import { PixelGridQueryService } from '@/home/adapters/out/pixelgrid/pixelgrid-query.service';
 import { SessionCommandService } from '@/home/adapters/out/session/session-command.service';
 import { PixelGridEventStore } from '@/home/infrastructure/pixelgrid/pixel-grid-event-store.service';
+import { PixelGridStoreState } from '@/home/infrastructure/pixelgrid/pixel-grid-event-store.types';
 import { SessionEventStore } from '@/home/infrastructure/session/session-event-store.service';
 import { closeStream } from '@/shared/infrastructure/datastar-stream';
 import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/web';
@@ -31,9 +32,112 @@ export class HomeController {
 
     const { animalName, color, fontFamily } = this.sessionService.extractSessionData(session);
     const sessionItems = await this.sessionService.extractSessionListItems(session);
-    const pixelGrid = this.pixelGridQueryService.getPixelGrid();
+    const pixelData = { pixelGrid: this.pixelGridQueryService.getPixelGrid(), timestamp: new Date().getTime() };
 
-    return c.html(getHomeHTMLPage(animalName, color, fontFamily, sessionItems, pixelGrid));
+    return c.html(getHomeHTMLPage(animalName, color, fontFamily, sessionItems, pixelData));
+  }
+
+  broadcastEvents(c: Context): Response {
+    let unsubscribeSessionStore: () => void | undefined;
+    let unsubscribePixelGridStore: () => void | undefined;
+    let unsubscribePixelGridStoreLastChange: () => void | undefined;
+    let currentStream: ServerSentEventGenerator | undefined;
+
+    try {
+      return ServerSentEventGenerator.stream(
+        async (stream: ServerSentEventGenerator) => {
+          currentStream = stream;
+
+          const sendSessionUpdate = async () => {
+            const currentSession = await this.sessionService.getCurrentSession(c);
+            if (!currentSession) {
+              throw new Error('Current session not found');
+            }
+
+            stream.patchElements(
+              `<strong
+                id="${DSID.MY_SESSION}"
+                data-on-interval__duration.3s="@post('/keep-alive', {openWhenHidden: true})"
+                style="color:${currentSession.color};
+                font-family:${currentSession.fontFamily};">
+                  ${currentSession.animalName.adjective} ${currentSession.animalName.animal}
+              </strong>`,
+            );
+
+            const sessionItems = await this.sessionService.extractSessionListItems(currentSession);
+            stream.patchElements(getListAllSessionsHTMLComponent(DSID.ALL_SESSIONS, sessionItems));
+          };
+
+          const currentSession = await this.sessionService.getCurrentSession(c);
+          if (!currentSession) {
+            throw new Error('Current session not found for initial setup');
+          }
+
+          await sendSessionUpdate().catch(() => {
+            closeStream(stream);
+          });
+
+          unsubscribePixelGridStore = this.pixelGridEventStore.subscribe(
+            currentSession.id.value,
+            (state: PixelGridStoreState) => {
+              stream.patchSignals(
+                JSON.stringify({
+                  _pixelgrid: { pixelGrid: state.pixelGrid, timestamp: new Date().getTime() },
+                  _lastChange: { x: -1, y: -1, guess: -1, timestamp: new Date().getTime() },
+                }),
+              );
+            },
+          );
+
+          unsubscribePixelGridStoreLastChange = this.pixelGridEventStore.subscribeLastChange(
+            currentSession.id.value,
+            (lastChange: PixelChange) => {
+              // const victory = this.pixelGridQueryService.checkVictory();
+              stream.patchSignals(JSON.stringify({ _lastChange: lastChange }));
+            },
+          );
+
+          unsubscribeSessionStore = this.sessionEventStore.subscribe(currentSession.id.value, () => {
+            sendSessionUpdate().catch(() => {
+              if (stream) {
+                closeStream(stream);
+              }
+              unsubscribeSessionStore?.();
+              unsubscribePixelGridStore?.();
+              unsubscribePixelGridStoreLastChange?.();
+            });
+          });
+        },
+        {
+          keepalive: true,
+          onAbort: () => {
+            unsubscribeSessionStore?.();
+            unsubscribePixelGridStore?.();
+            unsubscribePixelGridStoreLastChange?.();
+            if (currentStream) {
+              closeStream(currentStream);
+            }
+          },
+          onError: () => {
+            unsubscribeSessionStore?.();
+            unsubscribePixelGridStore?.();
+            unsubscribePixelGridStoreLastChange?.();
+            if (currentStream) {
+              closeStream(currentStream);
+            }
+          },
+        },
+      );
+    } catch {
+      return ServerSentEventGenerator.stream((stream) => {
+        stream.patchElements(
+          `
+          <strong id="${DSID.MY_SESSION}">an unknown animal</strong>
+         `,
+        );
+        stream.patchSignals(JSON.stringify({ items: [] }));
+      });
+    }
   }
 
   /**
@@ -66,8 +170,7 @@ export class HomeController {
 
   async updatePixel(c: Context): Promise<Response> {
     try {
-      const jsonBody: { pixelclick: { x: number; y: number; guess: -1 | 0 | 1 } } =
-        await c.req.json();
+      const jsonBody: { pixelclick: { x: number; y: number; guess: -1 | 0 | 1 } } = await c.req.json();
       const { x, y, guess } = jsonBody.pixelclick;
 
       if (typeof x !== 'number' || typeof y !== 'number') {
@@ -86,98 +189,8 @@ export class HomeController {
     }
   }
 
-  broadcastEvents(c: Context): Response {
-    let unsubscribeSessionStore: () => void | undefined;
-    let unsubscribePixelGridStore: () => void | undefined;
-    let currentStream: ServerSentEventGenerator | undefined;
-
-    try {
-      return ServerSentEventGenerator.stream(
-        async (stream: ServerSentEventGenerator) => {
-          currentStream = stream;
-
-          const sendSessionUpdate = async () => {
-            const currentSession = await this.sessionService.getCurrentSession(c);
-            if (!currentSession) {
-              throw new Error('Current session not found');
-            }
-
-            const sessionItems = await this.sessionService.extractSessionListItems(currentSession);
-
-            stream.patchElements(
-              `<strong
-                id="${DSID.MY_SESSION}"
-                data-on-interval__duration.10s="@post('/keep-alive')"
-                style="color:${currentSession.color};
-                font-family:${currentSession.fontFamily};">
-                  ${currentSession.animalName.adjective} ${currentSession.animalName.animal}
-              </strong>`,
-            );
-
-            stream.patchElements(getListAllSessionsHTMLComponent(DSID.ALL_SESSIONS, sessionItems));
-          };
-
-          const currentSession = await this.sessionService.getCurrentSession(c);
-          if (!currentSession) {
-            throw new Error('Current session not found for initial setup');
-          }
-
-          await sendSessionUpdate().catch(() => {
-            closeStream(stream);
-          });
-
-          const sendPixelGridUpdate = (lastChange: PixelChange) => {
-            // const victory = this.pixelGridQueryService.checkVictory();
-            stream.patchSignals(JSON.stringify({ _lastChange: lastChange }));
-          };
-
-          unsubscribePixelGridStore = this.pixelGridEventStore.subscribeLastChange(
-            currentSession.id.value,
-            (lastChange) => {
-              sendPixelGridUpdate(lastChange);
-            },
-          );
-
-          unsubscribeSessionStore = this.sessionEventStore.subscribe(
-            currentSession.id.value,
-            () => {
-              sendSessionUpdate().catch(() => {
-                if (stream) {
-                  closeStream(stream);
-                }
-                unsubscribeSessionStore?.();
-                unsubscribePixelGridStore?.();
-              });
-            },
-          );
-        },
-        {
-          keepalive: true,
-          onAbort: () => {
-            unsubscribeSessionStore?.();
-            unsubscribePixelGridStore?.();
-            if (currentStream) {
-              closeStream(currentStream);
-            }
-          },
-          onError: () => {
-            unsubscribeSessionStore?.();
-            unsubscribePixelGridStore?.();
-            if (currentStream) {
-              closeStream(currentStream);
-            }
-          },
-        },
-      );
-    } catch {
-      return ServerSentEventGenerator.stream((stream) => {
-        stream.patchElements(
-          `
-          <strong id="${DSID.MY_SESSION}">an unknown animal</strong>
-         `,
-        );
-        stream.patchSignals(JSON.stringify({ items: [] }));
-      });
-    }
+  resetPixelGrid(c: Context): Response {
+    this.pixelGridCommandService.resetPixelGrid();
+    return c.json({ success: true }, 202);
   }
 }

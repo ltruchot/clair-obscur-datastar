@@ -21,6 +21,7 @@ export { Maybe, just, maybe, nothing } from './maybe/Maybe.ts';
 export { type AnimalName } from './session/animal-name.ts';
 export { SessionFactory } from './session/application_programming_interfaces/session-factory.ts';
 export { SessionIdFactory } from './session/application_programming_interfaces/session-id-factory.ts';
+export { type AnimalNameRegistryPort } from './session/service_provider_interfaces/animal-name-registry-port.ts';
 export { type SessionPersistence } from './session/service_provider_interfaces/session-persistence.ts';
 export { type SessionReadPort } from './session/service_provider_interfaces/session-read-port.ts';
 export { type SessionRepository } from './session/service_provider_interfaces/session-repository.ts';

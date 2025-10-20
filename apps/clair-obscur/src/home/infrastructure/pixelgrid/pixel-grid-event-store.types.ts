@@ -4,9 +4,7 @@ export interface PixelGridStoreState {
   pixelGrid: PixelGridData;
 }
 
-export interface PixelGridStoreEvent<
-  K extends keyof PixelGridStoreState = keyof PixelGridStoreState,
-> {
+export interface PixelGridStoreEvent<K extends keyof PixelGridStoreState = keyof PixelGridStoreState> {
   key: K;
   value: PixelGridStoreState[K];
   timestamp: number;

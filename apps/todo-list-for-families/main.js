@@ -33,9 +33,7 @@ setInterval(() => {
     secondsLeft = 3600;
     todoEventStore.write('todos', []);
     for (const stream of activeStreams) {
-      stream.patchSignals(
-        `{ "secondsLeft": { "value": ${secondsLeft}, "timestamp": "${new Date().toISOString()}" } }`,
-      );
+      stream.patchSignals(`{ "secondsLeft": { "value": ${secondsLeft}, "timestamp": "${new Date().toISOString()}" } }`);
     }
   }
 }, 1000);
@@ -106,9 +104,7 @@ createServer(async (req, res) => {
     };
     todoEventStore.write(
       'todos',
-      todoEventStore
-        .read()
-        .todos.map((todo) => (todo.id === sanitizedUpdatedTodo.id ? sanitizedUpdatedTodo : todo)),
+      todoEventStore.read().todos.map((todo) => (todo.id === sanitizedUpdatedTodo.id ? sanitizedUpdatedTodo : todo)),
     );
     res.writeHead(202);
     res.end();

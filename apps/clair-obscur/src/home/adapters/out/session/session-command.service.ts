@@ -1,33 +1,30 @@
 import {
   Maybe,
   SessionFactory,
+  type AnimalNameRegistryPort,
   type Session,
   type SessionPersistence,
   type SessionWritePort,
 } from '@clair-obscur-workspace/domain';
-import {
-  AnimalNameFactory,
-  type AnimalNameGenerator,
-} from '@clair-obscur-workspace/funny-animals-generator';
-import type { EventStoreSessionAdapter } from './event-store-session-adapter';
+import { AnimalNameFactory, type AnimalNameGenerator } from '@clair-obscur-workspace/funny-animals-generator';
 
 export class SessionCommandService {
   private readonly writePort: SessionWritePort;
-  private readonly adapter: EventStoreSessionAdapter;
+  private readonly registryPort: AnimalNameRegistryPort;
   private readonly animalNameGenerator: AnimalNameGenerator;
 
   constructor(
     writePort: SessionWritePort,
-    adapter: EventStoreSessionAdapter,
+    registryPort: AnimalNameRegistryPort,
     animalNameGenerator: AnimalNameGenerator,
   ) {
     this.writePort = writePort;
-    this.adapter = adapter;
+    this.registryPort = registryPort;
     this.animalNameGenerator = animalNameGenerator;
   }
 
   async initializeNewSession(persistence: SessionPersistence): Promise<Session> {
-    const usedNames = this.adapter.getUsedAnimalNames();
+    const usedNames = this.registryPort.getUsedAnimalNames();
     const animalName = this.animalNameGenerator.generateUnique(usedNames);
     const maybeNewSession: Maybe<Session> = SessionFactory.create(
       crypto.randomUUID(),
@@ -50,7 +47,7 @@ export class SessionCommandService {
     }
 
     const animalKey = AnimalNameFactory.getKey(animalName);
-    this.adapter.addUsedAnimalName(animalKey);
+    this.registryPort.addUsedAnimalName(animalKey);
 
     await persistence.update({ id: newSession.id.value });
     await this.writePort.save(newSession);
@@ -80,7 +77,7 @@ export class SessionCommandService {
 
   async deleteSession(session: Session): Promise<void> {
     const animalKey = AnimalNameFactory.getKey(session.animalName);
-    this.adapter.removeUsedAnimalName(animalKey);
+    this.registryPort.removeUsedAnimalName(animalKey);
     await this.writePort.delete(session.id);
   }
 }

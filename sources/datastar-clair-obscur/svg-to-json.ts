@@ -1,5 +1,5 @@
-import { readFileSync, writeFileSync } from 'fs';
 import { createCanvas, loadImage } from 'canvas';
+import { readFileSync, writeFileSync } from 'fs';
 
 interface PixelData {
   x: number;
@@ -10,15 +10,15 @@ interface PixelData {
 async function svgToPixelArray(svgPath: string, size: number = 59): Promise<PixelData[]> {
   const canvas = createCanvas(size, size);
   const ctx = canvas.getContext('2d');
-  
+
   const svgBuffer = readFileSync(svgPath);
   const img = await loadImage(svgBuffer);
-  
+
   ctx.drawImage(img, 0, 0, size, size);
-  
+
   const imageData = ctx.getImageData(0, 0, size, size);
   const pixels: PixelData[] = [];
-  
+
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       const pixelIndex = (y * size + x) * 4;
@@ -26,7 +26,7 @@ async function svgToPixelArray(svgPath: string, size: number = 59): Promise<Pixe
       const g = imageData.data[pixelIndex + 1];
       const b = imageData.data[pixelIndex + 2];
       const a = imageData.data[pixelIndex + 3];
-      
+
       let color: string;
       if (a === 0) {
         color = 'transparent';
@@ -35,11 +35,11 @@ async function svgToPixelArray(svgPath: string, size: number = 59): Promise<Pixe
       } else {
         color = 'black';
       }
-      
+
       pixels.push({ x, y, color });
     }
   }
-  
+
   return pixels;
 }
 
@@ -48,8 +48,8 @@ async function main() {
     const pixelData = await svgToPixelArray('./toto.svg', 59);
     const jsonOutput = JSON.stringify(pixelData, null, 2);
     writeFileSync('./output.json', jsonOutput, 'utf8');
-    console.log('Fichier JSON créé: output.json');
-    console.log(`Nombre de pixels: ${pixelData.length}`);
+    console.log('JSON file created: output.json');
+    console.log(`Number of pixels: ${pixelData.length}`);
   } catch (error) {
     console.error('Error processing SVG:', error);
   }

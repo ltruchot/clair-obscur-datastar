@@ -10,51 +10,47 @@ main {
   border-left: 1px solid black;
   min-height: 100vh;
   box-sizing: border-box;
-  main {
-    border-left: 1px solid black;
-    min-height: 100vh;
-    box-sizing: border-box;
-    flex-grow: 1;
-  }
-
-  aside {
-    padding: 10px;
-    box-sizing: border-box;
-    min-width: 300px;
-  }
-
-  menu {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0;
-    box-sizing: border-box;
-    margin: 0;
-  }
 }
 
 aside {
-  padding: 10px;
   box-sizing: border-box;
-  min-width: 300px;
+  padding: 0;
 }
 
+aside:has(details[open]) {
+  min-width: 250px;
+}
+
+header {
+  border-bottom: 1px solid black;
+}
 menu {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 0;
   box-sizing: border-box;
+  margin-bottom: 0;
+  margin-top: 5px;
 }
 
 h1 {
   margin: 0;
   font-size: 36px;
+  margin-bottom: 5px;
+}
+h2 {
+  margin: 0;
+  margin-bottom: 5px;
 }
 
 p {
   margin: 0;
   margin-bottom: 5px;
+}
+
+.pixel-grid-container {
+  position: relative;
+  width: 100%;
 }
 
 .flex {
@@ -94,10 +90,10 @@ p {
   position: fixed;
   font-size: 100px;
   transform: translate(-50%, -50%);
-  top: 50%;
+  width: max-content;
+  top: 30%;
   left: 50%;
   z-index: 1001;
-  width: fit-content;
   background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -115,4 +111,9 @@ p {
   background-color: black;
   color: white;
   cursor: pointer;
+}
+
+.px-10 {
+  padding-left: 10px;
+  padding-right: 10px;
 }

@@ -82,9 +82,9 @@ export class FontPickerElement extends HTMLElement {
 
   private attachEventListeners(): void {
     const button = this.querySelector<HTMLElement>('#font-picker-button')!;
-    const popover = this.querySelector<
-      HTMLElement & { showPopover: () => void; hidePopover: () => void }
-    >('#font-picker-popover')!;
+    const popover = this.querySelector<HTMLElement & { showPopover: () => void; hidePopover: () => void }>(
+      '#font-picker-popover',
+    )!;
     const swatches = this.querySelectorAll('.font-cell-to-pick');
 
     button.addEventListener('click', () => {
@@ -133,9 +133,7 @@ export class FontPickerElement extends HTMLElement {
         e.stopPropagation();
         const font = (e.target as HTMLElement).dataset['font'];
         if (font) {
-          this.dispatchEvent(
-            new CustomEvent('fontchange', { detail: { value: font }, composed: true }),
-          );
+          this.dispatchEvent(new CustomEvent('fontchange', { detail: { value: font }, composed: true }));
           popover.hidePopover();
         }
       });

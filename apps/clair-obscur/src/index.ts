@@ -67,11 +67,7 @@ const sessionMiddleware = useSession({ secret: authSecret });
 const sessionEventStore = new SessionEventStore();
 const sessionAdapter = new EventStoreSessionAdapter(sessionEventStore);
 const animalNameGenerator = new DefaultAnimalNameGenerator();
-const sessionCommandService = new SessionCommandService(
-  sessionAdapter,
-  sessionAdapter,
-  animalNameGenerator,
-);
+const sessionCommandService = new SessionCommandService(sessionAdapter, sessionAdapter, animalNameGenerator);
 const sessionQueryService = new SessionQueryService(sessionAdapter);
 const sessionService = new SessionService(sessionQueryService, sessionCommandService);
 
@@ -99,7 +95,7 @@ type GlobalWithMonitor = Record<symbol, SessionMonitorService | undefined>;
 const global = globalThis as unknown as GlobalWithMonitor;
 if (global[MONITOR_SYMBOL]) {
   if (isDevelopment) {
-    console.log('Stopping previous session monitor (HMR reload)');
+    console.info('Stopping previous session monitor (HMR reload)');
   }
   global[MONITOR_SYMBOL]?.stop();
 }
@@ -109,7 +105,7 @@ sessionMonitor.start();
 global[MONITOR_SYMBOL] = sessionMonitor;
 
 if (isDevelopment) {
-  console.log('Session monitor started');
+  console.info('Session monitor started');
 }
 
 app.get('/', sessionMiddleware, (c) => homeController.renderHomePage(c));
@@ -122,6 +118,8 @@ app.post('/font-change', sessionMiddleware, (c) => homeController.setFont(c));
 
 app.post('/pixel-click', sessionMiddleware, (c) => homeController.updatePixel(c));
 
+app.post('/reset-pixel-grid', sessionMiddleware, (c) => homeController.resetPixelGrid(c));
+
 if (!isDevelopment) {
   const serverConfig = {
     fetch: app.fetch,
@@ -131,14 +129,14 @@ if (!isDevelopment) {
   const server = serve(serverConfig);
 
   server.once('listening', () => {
-    console.log(`Server is running on port ${port}`);
+    console.info(`Server is running on port ${port}`);
   });
 
   const gracefulShutdown = (signal: string) => {
-    console.log(`\nReceived ${signal}, closing server gracefully...`);
+    console.info(`\nReceived ${signal}, closing server gracefully...`);
     sessionMonitor.stop();
     server.close(() => {
-      console.log('Server closed');
+      console.info('Server closed');
       process.exit(0);
     });
 
