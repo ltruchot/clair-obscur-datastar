@@ -34,6 +34,9 @@ export class PixelGridElement extends HTMLElement {
   private _victory = false;
   private _isTouchDevice = false;
   private _longPressTimer: NodeJS.Timeout | null = null;
+  private _pointerStartX = 0;
+  private _pointerStartY = 0;
+  private _hasMoved = false;
 
   static get observedAttributes(): readonly string[] {
     return ['pixels', 'last-change', 'victory'] as const;
@@ -314,16 +317,64 @@ export class PixelGridElement extends HTMLElement {
       event.preventDefault();
       const target = event.target as HTMLElement;
       if (target.classList.contains('pixel-cell') && !target.classList.contains('cell-transparent')) {
+        this._pointerStartX = event.clientX;
+        this._pointerStartY = event.clientY;
+        this._hasMoved = false;
+
+        const x = Number.parseInt(target.dataset['x'] ?? '0', 10);
+        const y = Number.parseInt(target.dataset['y'] ?? '0', 10);
+        const pixelKey: `${number}-${number}` = `${x}-${y}`;
+
+        this._longPressTimer = setTimeout(() => {
+          if (!this._hasMoved) {
+            const currentPixel = this._pixels.pixelGrid[pixelKey];
+            if (currentPixel && currentPixel.guess !== 0) {
+              this.dispatchEvent(
+                new CustomEvent<PixelGridChangeEvent>('pixelclick', {
+                  detail: { x, y, guess: 0 },
+                  composed: true,
+                  bubbles: true,
+                }),
+              );
+            }
+          }
+          this._longPressTimer = null;
+        }, 300);
+      }
+    });
+
+    this._container.addEventListener('pointermove', (event) => {
+      if (this._longPressTimer) {
+        const moveThreshold = 10;
+        const deltaX = Math.abs(event.clientX - this._pointerStartX);
+        const deltaY = Math.abs(event.clientY - this._pointerStartY);
+
+        if (deltaX > moveThreshold || deltaY > moveThreshold) {
+          this._hasMoved = true;
+          clearTimeout(this._longPressTimer);
+          this._longPressTimer = null;
+        }
+      }
+    });
+
+    this._container.addEventListener('pointerup', (event) => {
+      if (this._longPressTimer) {
+        clearTimeout(this._longPressTimer);
+        this._longPressTimer = null;
+      }
+
+      const target = event.target as HTMLElement;
+      if (
+        target.classList.contains('pixel-cell') &&
+        !target.classList.contains('cell-transparent') &&
+        !this._hasMoved
+      ) {
         const x = Number.parseInt(target.dataset['x'] ?? '0', 10);
         const y = Number.parseInt(target.dataset['y'] ?? '0', 10);
         const pixelKey: `${number}-${number}` = `${x}-${y}`;
         const currentPixel = this._pixels.pixelGrid[pixelKey];
 
-        if (!currentPixel) {
-          return;
-        }
-
-        if (currentPixel.guess !== 1) {
+        if (currentPixel && currentPixel.guess !== 1) {
           this.dispatchEvent(
             new CustomEvent<PixelGridChangeEvent>('pixelclick', {
               detail: { x, y, guess: 1 },
@@ -332,28 +383,9 @@ export class PixelGridElement extends HTMLElement {
             }),
           );
         }
-
-        this._longPressTimer = setTimeout(() => {
-          const currentPixelAfterDelay = this._pixels.pixelGrid[pixelKey];
-          if (currentPixelAfterDelay && currentPixelAfterDelay.guess !== 0) {
-            this.dispatchEvent(
-              new CustomEvent<PixelGridChangeEvent>('pixelclick', {
-                detail: { x, y, guess: 0 },
-                composed: true,
-                bubbles: true,
-              }),
-            );
-          }
-          this._longPressTimer = null;
-        }, 300);
       }
-    });
 
-    this._container.addEventListener('pointerup', () => {
-      if (this._longPressTimer) {
-        clearTimeout(this._longPressTimer);
-        this._longPressTimer = null;
-      }
+      this._hasMoved = false;
     });
 
     this._container.addEventListener('pointercancel', () => {
@@ -361,6 +393,7 @@ export class PixelGridElement extends HTMLElement {
         clearTimeout(this._longPressTimer);
         this._longPressTimer = null;
       }
+      this._hasMoved = false;
     });
   }
 }
