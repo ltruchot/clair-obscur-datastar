@@ -243,10 +243,10 @@ export class VictoryStarsElement extends HTMLElement {
 
       this._container.classList.add('visible');
 
-      this._timeoutIds.push(setTimeout(() => void this._shoot(0), 0));
-      this._timeoutIds.push(setTimeout(() => void this._shoot(1), 1_500));
-      this._timeoutIds.push(setTimeout(() => void this._shoot(2), 2_500));
-      this._timeoutIds.push(setTimeout(() => void this._shoot(3), 4_500));
+      this._timeoutIds.push(setTimeout(() => void this._shoot(0), 2000));
+      this._timeoutIds.push(setTimeout(() => void this._shoot(1), 2_500));
+      this._timeoutIds.push(setTimeout(() => void this._shoot(2), 3_500));
+      this._timeoutIds.push(setTimeout(() => void this._shoot(3), 5_000));
     } else {
       this._cleanupAnimation();
     }

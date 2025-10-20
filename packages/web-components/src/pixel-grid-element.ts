@@ -188,7 +188,7 @@ export class PixelGridElement extends HTMLElement {
       .pixel-grid.victory .pixel-cell {
         will-change: border-color, border-width, color;
         transform: translateZ(0);
-        transition: border-color 2.6s cubic-bezier(0.4, 0.0, 0.2, 1), border-width 2.6s cubic-bezier(0.4, 0.0, 0.2, 1), color 2.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+        transition: border-color 2s cubic-bezier(0.4, 0.0, 0.2, 1), border-width 2s cubic-bezier(0.4, 0.0, 0.2, 1), color 2s cubic-bezier(0.4, 0.0, 0.2, 1);
         border-color: transparent;
         border-width: 0;
         color: transparent;

@@ -61,6 +61,7 @@ export class PixelGridEventStore {
         guess: currentPixel.v,
       };
     }
+    wonPixelGrid['30-1'].guess = 1;
     this.state.pixelGrid = wonPixelGrid;
     this.notifySubscribers();
   }
@@ -103,7 +104,18 @@ export class PixelGridEventStore {
   }
 
   private notifyLastChangeSubscribers(lastChange: Omit<PixelChange, 'timestamp'>): void {
-    this.lastChangeSubscribers.forEach((subscriber) => subscriber({ ...lastChange, timestamp: new Date().getTime() }));
+    const victory = this._checkVictory();
+    if (!victory) {
+      this.lastChangeSubscribers.forEach((subscriber) =>
+        subscriber({ ...lastChange, timestamp: new Date().getTime() }),
+      );
+      return;
+    }
+    const currentState = this.read();
+    this.subscribers.forEach((subscriber) => subscriber({ ...currentState, victory }));
+    if (victory && this.resetTimeoutId === null) {
+      this.resetTimeoutId = setTimeout(() => this.reset(), 12_000);
+    }
   }
 
   private notifySubscribers(): void {
