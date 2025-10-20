@@ -149,6 +149,7 @@ export class PixelGridElement extends HTMLElement {
         grid-template-columns: repeat(${columns}, 20px);
         grid-template-rows: repeat(${rows}, 20px);
         gap: 0;
+        touch-action: manipulation;
       }
       .pixel-cell {
         width: 20px;
