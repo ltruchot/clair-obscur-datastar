@@ -57,8 +57,8 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
               <menu>
                 <button
                   className="warning"
-                  title="This will reset wrong guesses"
-                  data-on-click="confirm('Reset all errored pixel?') ? @post('/cheat-pixel-grid') : null"
+                  title="This will reset all wrong guesses"
+                  data-on-click="confirm('Reset all errored pixels?') ? @post('/cheat-pixel-grid') : null"
                   data-attr-disabled="JSON.parse($_victory)">
                   Cheat
                 </button>
