@@ -10,4 +10,12 @@ export class PixelGridCommandService {
   resetPixelGrid(): void {
     this.adapter.reset();
   }
+
+  cheatPixelGrid(): void {
+    this.adapter.cheat();
+  }
+
+  winPixelGrid(): void {
+    this.adapter.win();
+  }
 }

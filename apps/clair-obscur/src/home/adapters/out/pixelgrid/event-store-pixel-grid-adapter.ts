@@ -24,4 +24,12 @@ export class EventStorePixelGridAdapter {
   reset(): void {
     this.eventStore.reset();
   }
+
+  cheat(): void {
+    this.eventStore.cheat();
+  }
+
+  win(): void {
+    this.eventStore.win();
+  }
 }

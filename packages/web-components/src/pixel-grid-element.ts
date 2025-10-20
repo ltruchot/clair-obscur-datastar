@@ -154,7 +154,7 @@ export class PixelGridElement extends HTMLElement {
         font-size: 16px;
         font-weight: bold;
         touch-action: manipulation;
-        transition: border-color 2.6s cubic-bezier(0.4, 0.0, 0.2, 1), border-width 2.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+        transition: border-color 2.6s cubic-bezier(0.4, 0.0, 0.2, 1), border-width 2.6s cubic-bezier(0.4, 0.0, 0.2, 1), color 0s;
       }
       .pixel-cell:hover {
         opacity: 0.8;
@@ -178,8 +178,10 @@ export class PixelGridElement extends HTMLElement {
         color: black;
       }
       .pixel-grid.victory .pixel-cell {
+        transition: border-color 2.6s cubic-bezier(0.4, 0.0, 0.2, 1), border-width 2.6s cubic-bezier(0.4, 0.0, 0.2, 1), color 2.6s cubic-bezier(0.4, 0.0, 0.2, 1);
         border-color: transparent;
         border-width: 0;
+        color: transparent;
         pointer-events: none;
         cursor: default;
       }
@@ -262,9 +264,9 @@ export class PixelGridElement extends HTMLElement {
 
         let guess: -1 | 0 | 1 = -1;
         if (event.button === 0) {
-          guess = 0;
-        } else if (event.button === 2) {
           guess = 1;
+        } else if (event.button === 2) {
+          guess = 0;
         }
 
         const pixelKey: `${number}-${number}` = `${x}-${y}`;

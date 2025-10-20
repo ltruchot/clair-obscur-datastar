@@ -120,6 +120,10 @@ app.post('/pixel-click', sessionMiddleware, (c) => homeController.updatePixel(c)
 
 app.post('/reset-pixel-grid', sessionMiddleware, (c) => homeController.resetPixelGrid(c));
 
+app.post('/cheat-pixel-grid', sessionMiddleware, (c) => homeController.cheatPixelGrid(c));
+
+app.post('/win-pixel-grid', sessionMiddleware, (c) => homeController.winPixelGrid(c));
+
 if (!isDevelopment) {
   const serverConfig = {
     fetch: app.fetch,

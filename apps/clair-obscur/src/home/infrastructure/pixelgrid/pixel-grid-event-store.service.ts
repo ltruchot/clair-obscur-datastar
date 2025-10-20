@@ -35,6 +35,30 @@ export class PixelGridEventStore {
     this.notifySubscribers();
   }
 
+  cheat(): void {
+    const cheatedPixelGrid: PixelGridData = structuredClone(this.state.pixelGrid);
+    for (const [key, currentPixel] of Object.entries(this.state.pixelGrid)) {
+      cheatedPixelGrid[key as `${number}-${number}`] = {
+        ...currentPixel,
+        guess: currentPixel.guess === currentPixel.v ? currentPixel.guess : -1,
+      };
+    }
+    this.state.pixelGrid = cheatedPixelGrid;
+    this.notifySubscribers();
+  }
+
+  win(): void {
+    const wonPixelGrid: PixelGridData = structuredClone(this.state.pixelGrid);
+    for (const [key, currentPixel] of Object.entries(this.state.pixelGrid)) {
+      wonPixelGrid[key as `${number}-${number}`] = {
+        ...currentPixel,
+        guess: currentPixel.v,
+      };
+    }
+    this.state.pixelGrid = wonPixelGrid;
+    this.notifySubscribers();
+  }
+
   updatePixel(update: PixelUpdate): void {
     const key: `${number}-${number}` = `${update.x}-${update.y}`;
     const currentPixel = this.state.pixelGrid[key];

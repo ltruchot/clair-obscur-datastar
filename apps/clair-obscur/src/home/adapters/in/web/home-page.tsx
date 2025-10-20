@@ -49,8 +49,15 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
               <summary></summary>
               <GameIntroduction />
               <menu>
-                <button title="This will reset wrong guesses">Cheat</button>
                 <button
+                  className="warning"
+                  title="This will reset wrong guesses"
+                  data-on-click="confirm('Reset all errored pixel?') ? @post('/cheat-pixel-grid') : null"
+                  data-attr-disabled="$_victory">
+                  Cheat
+                </button>
+                <button
+                  className="danger"
                   title="This will reset all contributions of all players"
                   data-on-click="confirm('Remove all contributions of all players?\nYou may feel bad about it.') ? @post('/reset-pixel-grid') : null">
                   Reset
@@ -61,13 +68,13 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
           <section class="pixel-grid-container">
             <pixel-grid
               data-signals-_pixelgrid={pixelGridJSON}
-              data-signals-_victory="'false'"
+              data-signals-_victory="false"
               id={DSID.PIXEL_GRID}
               data-on-pixelclick="$pixelclick = event.detail; @post('/pixel-click', {requestCancellation: 'disabled'})"
               data-attr-pixels="$_pixelgrid"
               data-attr-last-change="$_lastChange"
               data-attr-victory="$_victory"></pixel-grid>
-            <div style={{ display: 'none' }} data-show="$_victory === 'true'">
+            <div style={{ display: 'none' }} data-show="$_victory">
               <div className="victory">VICTORY</div>
             </div>
           </section>

@@ -9,7 +9,7 @@ interface PixelData {
   clairNeighbors: NeighborCount;
 }
 
-export type PixelDataEnriched = Record<`${number}-${number}`, { v: boolean; n: NeighborCount }>;
+export type PixelDataEnriched = Record<`${number}-${number}`, { v: 0 | 1; n: NeighborCount }>;
 
 function getNeighborCount(pixelData: PixelData[], x: number, y: number): number {
   const pixelMap = new Map<string, string>();
@@ -44,7 +44,7 @@ function addNeighborCounts(inputPath: string, outputPath: string): void {
 
   const mappedData = enrichedData.reduce<PixelDataEnriched>((acc, pixel) => {
     const key: `${number}-${number}` = `${pixel.x}-${pixel.y}`;
-    const value = pixel.color === 'white';
+    const value = pixel.color === 'white' ? 1 : 0;
 
     acc[key] = { v: value, n: pixel.clairNeighbors as NeighborCount };
     return acc;

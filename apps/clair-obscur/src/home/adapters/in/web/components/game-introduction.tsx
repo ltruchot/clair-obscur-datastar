@@ -18,11 +18,11 @@ export const GameIntroduction = () => {
           <strong class="clair">9 clair pixels</strong> surround the current pixel)
         </p>
         <div class="flex gap-10">
-          <p class="obscur">
-            <strong>[LEFT CLICK]</strong> to paint a pixel in <strong>obscur</strong>
-          </p>
           <p class="clair">
-            <strong>[RIGHT CLICK]</strong> to paint a pixel in <strong>clair</strong>
+            <strong>[LEFT CLICK]</strong> to paint a pixel in <strong>clair</strong>
+          </p>
+          <p class="obscur">
+            <strong>[RIGHT CLICK]</strong> to paint a pixel in <strong>obscur</strong>
           </p>
         </div>
       </section>

@@ -117,3 +117,27 @@ p {
   padding-left: 10px;
   padding-right: 10px;
 }
+
+.warning {
+  background-color: white;
+  color: black;
+  outline: orange;
+  cursor: pointer;
+}
+.warning:hover {
+  border-color: orange;
+  background-color: orange;
+  color: white;
+}
+
+.danger {
+  background-color: black;
+  color: white;
+  outline: red;
+  cursor: pointer;
+}
+.danger:hover {
+  border-color: red;
+  background-color: red;
+  color: white;
+}

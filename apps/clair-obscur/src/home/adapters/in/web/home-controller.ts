@@ -80,10 +80,12 @@ export class HomeController {
           unsubscribePixelGridStore = this.pixelGridEventStore.subscribe(
             currentSession.id.value,
             (state: PixelGridStoreState) => {
+              const victory = this.pixelGridQueryService.checkVictory();
               stream.patchSignals(
                 JSON.stringify({
                   _pixelgrid: { pixelGrid: state.pixelGrid, timestamp: new Date().getTime() },
                   _lastChange: { x: -1, y: -1, guess: -1, timestamp: new Date().getTime() },
+                  _victory: victory,
                 }),
               );
             },
@@ -92,8 +94,8 @@ export class HomeController {
           unsubscribePixelGridStoreLastChange = this.pixelGridEventStore.subscribeLastChange(
             currentSession.id.value,
             (lastChange: PixelChange) => {
-              // const victory = this.pixelGridQueryService.checkVictory();
-              stream.patchSignals(JSON.stringify({ _lastChange: lastChange }));
+              const victory = this.pixelGridQueryService.checkVictory();
+              stream.patchSignals(JSON.stringify({ _lastChange: lastChange, _victory: victory }));
             },
           );
 
@@ -191,6 +193,16 @@ export class HomeController {
 
   resetPixelGrid(c: Context): Response {
     this.pixelGridCommandService.resetPixelGrid();
+    return c.json({ success: true }, 202);
+  }
+
+  cheatPixelGrid(c: Context): Response {
+    this.pixelGridCommandService.cheatPixelGrid();
+    return c.json({ success: true }, 202);
+  }
+
+  winPixelGrid(c: Context): Response {
+    this.pixelGridCommandService.winPixelGrid();
     return c.json({ success: true }, 202);
   }
 }
