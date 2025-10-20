@@ -40,8 +40,8 @@
     "vitest": "catalog:"
   },
   "dependencies": {
-    "@tsparticles/engine": "^3.9.1",
-    "@tsparticles/preset-confetti": "^3.2.0",
-    "@tsparticles/shape-star": "^3.9.1"
+    "@tsparticles/engine": "3.9.1",
+    "@tsparticles/preset-confetti": "3.2.0",
+    "@tsparticles/shape-star": "3.9.1"
   }
 }

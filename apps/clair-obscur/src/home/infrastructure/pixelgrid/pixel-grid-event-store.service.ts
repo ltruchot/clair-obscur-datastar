@@ -17,6 +17,8 @@ export class PixelGridEventStore {
 
   private lastChangeSubscribers = new Map<string, PixelLastChangeSubscriber>();
 
+  private resetTimeoutId: NodeJS.Timeout | null = null;
+
   initialize(basePixelData: PixelData): void {
     const pixelGrid: PixelGridData = {};
 
@@ -31,6 +33,10 @@ export class PixelGridEventStore {
   }
 
   reset(): void {
+    if (this.resetTimeoutId !== null) {
+      clearTimeout(this.resetTimeoutId);
+      this.resetTimeoutId = null;
+    }
     this.state.pixelGrid = structuredClone(this.basePixelGrid);
     this.notifySubscribers();
   }
@@ -102,6 +108,19 @@ export class PixelGridEventStore {
 
   private notifySubscribers(): void {
     const currentState = this.read();
-    this.subscribers.forEach((subscriber) => subscriber(currentState));
+    const victory = this._checkVictory();
+    this.subscribers.forEach((subscriber) => subscriber({ ...currentState, victory }));
+    if (victory && this.resetTimeoutId === null) {
+      this.resetTimeoutId = setTimeout(() => this.reset(), 12_000);
+    }
+  }
+
+  private _checkVictory(): boolean {
+    for (const pixel of Object.values(this.state.pixelGrid)) {
+      if (pixel.v !== pixel.guess) {
+        return false;
+      }
+    }
+    return true;
   }
 }

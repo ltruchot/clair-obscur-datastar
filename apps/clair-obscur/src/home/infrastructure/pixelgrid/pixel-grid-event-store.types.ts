@@ -10,7 +10,7 @@ export interface PixelGridStoreEvent<K extends keyof PixelGridStoreState = keyof
   timestamp: number;
 }
 
-export type PixelGridStoreSubscriber = (state: PixelGridStoreState) => void;
+export type PixelGridStoreSubscriber = (state: PixelGridStoreState & { victory: boolean }) => void;
 
 export type PixelLastChangeSubscriber = (lastChange: PixelChange) => void;
 export interface PixelUpdate {

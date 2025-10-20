@@ -2,7 +2,6 @@ import { PixelGridCommandService } from '@/home/adapters/out/pixelgrid/pixelgrid
 import { PixelGridQueryService } from '@/home/adapters/out/pixelgrid/pixelgrid-query.service';
 import { SessionCommandService } from '@/home/adapters/out/session/session-command.service';
 import { PixelGridEventStore } from '@/home/infrastructure/pixelgrid/pixel-grid-event-store.service';
-import { PixelGridStoreState } from '@/home/infrastructure/pixelgrid/pixel-grid-event-store.types';
 import { SessionEventStore } from '@/home/infrastructure/session/session-event-store.service';
 import { closeStream } from '@/shared/infrastructure/datastar-stream';
 import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/web';
@@ -78,25 +77,20 @@ export class HomeController {
             closeStream(stream);
           });
 
-          unsubscribePixelGridStore = this.pixelGridEventStore.subscribe(
-            currentSession.id.value,
-            (state: PixelGridStoreState) => {
-              const victory = this.pixelGridQueryService.checkVictory();
-              stream.patchSignals(
-                JSON.stringify({
-                  _pixelgrid: { pixelGrid: state.pixelGrid, timestamp: new Date().getTime() },
-                  _lastChange: { x: -1, y: -1, guess: -1, timestamp: new Date().getTime() },
-                  _victory: victory,
-                }),
-              );
-            },
-          );
+          unsubscribePixelGridStore = this.pixelGridEventStore.subscribe(currentSession.id.value, (state) => {
+            stream.patchSignals(
+              JSON.stringify({
+                _pixelgrid: { pixelGrid: state.pixelGrid, timestamp: new Date().getTime() },
+                _lastChange: { x: -1, y: -1, guess: -1, timestamp: new Date().getTime() },
+                _victory: state.victory,
+              }),
+            );
+          });
 
           unsubscribePixelGridStoreLastChange = this.pixelGridEventStore.subscribeLastChange(
             currentSession.id.value,
             (lastChange: PixelChange) => {
-              const victory = this.pixelGridQueryService.checkVictory();
-              stream.patchSignals(JSON.stringify({ _lastChange: lastChange, _victory: victory }));
+              stream.patchSignals(JSON.stringify({ _lastChange: lastChange }));
             },
           );
 
