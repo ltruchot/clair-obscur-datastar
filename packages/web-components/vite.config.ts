@@ -22,6 +22,7 @@ export default defineConfig({
         'font-picker-element': resolve(__dirname, 'src/font-picker-element.ts'),
         'pixel-grid-element': resolve(__dirname, 'src/pixel-grid-element.ts'),
         'victory-stars': resolve(__dirname, 'src/victory-stars-element.ts'),
+        'responsive-content': resolve(__dirname, 'src/responsive-content-element.ts'),
       },
       formats: ['es'],
     },

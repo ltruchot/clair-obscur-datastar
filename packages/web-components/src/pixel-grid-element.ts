@@ -1,3 +1,5 @@
+import { isTouchOnlyDevice } from '@clair-obscur-workspace/utils';
+
 export interface PixelData {
   pixelGrid: Record<`${number}-${number}`, { n: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; guess: -1 | 0 | 1 }>;
   timestamp?: number;
@@ -30,6 +32,8 @@ export class PixelGridElement extends HTMLElement {
   private _cellMap = new Map<string, HTMLDivElement>();
   private _lastDimensions: { columns: number; rows: number } | null = null;
   private _victory = false;
+  private _isTouchDevice = false;
+  private _longPressTimer: NodeJS.Timeout | null = null;
 
   static get observedAttributes(): readonly string[] {
     return ['pixels', 'last-change', 'victory'] as const;
@@ -38,6 +42,7 @@ export class PixelGridElement extends HTMLElement {
   constructor() {
     super();
     this._shadowRoot = this.attachShadow({ mode: 'open' });
+    this._isTouchDevice = isTouchOnlyDevice();
   }
 
   attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void {
@@ -154,7 +159,6 @@ export class PixelGridElement extends HTMLElement {
         font-size: 16px;
         font-weight: bold;
         touch-action: manipulation;
-        transition: border-color 2.6s cubic-bezier(0.4, 0.0, 0.2, 1), border-width 2.6s cubic-bezier(0.4, 0.0, 0.2, 1), color 0s;
       }
       .pixel-cell:hover {
         opacity: 0.8;
@@ -178,6 +182,8 @@ export class PixelGridElement extends HTMLElement {
         color: black;
       }
       .pixel-grid.victory .pixel-cell {
+        will-change: border-color, border-width, color;
+        transform: translateZ(0);
         transition: border-color 2.6s cubic-bezier(0.4, 0.0, 0.2, 1), border-width 2.6s cubic-bezier(0.4, 0.0, 0.2, 1), color 2.6s cubic-bezier(0.4, 0.0, 0.2, 1);
         border-color: transparent;
         border-width: 0;
@@ -255,6 +261,16 @@ export class PixelGridElement extends HTMLElement {
   private _attachEventListeners(): void {
     if (!this._container) return;
 
+    if (this._isTouchDevice) {
+      this._attachTouchListeners();
+    } else {
+      this._attachDesktopListeners();
+    }
+  }
+
+  private _attachDesktopListeners(): void {
+    if (!this._container) return;
+
     this._container.addEventListener('pointerdown', (event) => {
       event.preventDefault();
       const target = event.target as HTMLElement;
@@ -288,6 +304,63 @@ export class PixelGridElement extends HTMLElement {
 
     this._container.addEventListener('contextmenu', (event) => {
       event.preventDefault();
+    });
+  }
+
+  private _attachTouchListeners(): void {
+    if (!this._container) return;
+
+    this._container.addEventListener('pointerdown', (event) => {
+      event.preventDefault();
+      const target = event.target as HTMLElement;
+      if (target.classList.contains('pixel-cell') && !target.classList.contains('cell-transparent')) {
+        const x = Number.parseInt(target.dataset['x'] ?? '0', 10);
+        const y = Number.parseInt(target.dataset['y'] ?? '0', 10);
+        const pixelKey: `${number}-${number}` = `${x}-${y}`;
+        const currentPixel = this._pixels.pixelGrid[pixelKey];
+
+        if (!currentPixel) {
+          return;
+        }
+
+        if (currentPixel.guess !== 1) {
+          this.dispatchEvent(
+            new CustomEvent<PixelGridChangeEvent>('pixelclick', {
+              detail: { x, y, guess: 1 },
+              composed: true,
+              bubbles: true,
+            }),
+          );
+        }
+
+        this._longPressTimer = setTimeout(() => {
+          const currentPixelAfterDelay = this._pixels.pixelGrid[pixelKey];
+          if (currentPixelAfterDelay && currentPixelAfterDelay.guess !== 0) {
+            this.dispatchEvent(
+              new CustomEvent<PixelGridChangeEvent>('pixelclick', {
+                detail: { x, y, guess: 0 },
+                composed: true,
+                bubbles: true,
+              }),
+            );
+          }
+          this._longPressTimer = null;
+        }, 300);
+      }
+    });
+
+    this._container.addEventListener('pointerup', () => {
+      if (this._longPressTimer) {
+        clearTimeout(this._longPressTimer);
+        this._longPressTimer = null;
+      }
+    });
+
+    this._container.addEventListener('pointercancel', () => {
+      if (this._longPressTimer) {
+        clearTimeout(this._longPressTimer);
+        this._longPressTimer = null;
+      }
     });
   }
 }

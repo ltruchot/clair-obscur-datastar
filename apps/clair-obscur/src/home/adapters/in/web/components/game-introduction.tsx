@@ -19,10 +19,18 @@ export const GameIntroduction = () => {
         </p>
         <div class="flex gap-10">
           <p class="clair">
-            <strong>[LEFT CLICK]</strong> to paint a pixel in <strong>clair</strong>
+            <responsive-content>
+              <span slot="mobile">[TAP]</span>
+              <strong slot="desktop">[LEFT CLICK]</strong>
+            </responsive-content>{' '}
+            to paint a pixel in <strong>clair</strong>
           </p>
           <p class="obscur">
-            <strong>[RIGHT CLICK]</strong> to paint a pixel in <strong>obscur</strong>
+            <responsive-content>
+              <span slot="mobile">[LONG TOUCH]</span>
+              <strong slot="desktop">[RIGHT CLICK]</strong>
+            </responsive-content>{' '}
+            to paint a pixel in <strong>obscur</strong>
           </p>
         </div>
       </section>

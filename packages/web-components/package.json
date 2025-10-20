@@ -16,6 +16,10 @@
     "./victory-stars": {
       "types": "./dist/victory-stars.d.ts",
       "import": "./dist/victory-stars.es.js"
+    },
+    "./responsive-content": {
+      "types": "./dist/responsive-content.d.ts",
+      "import": "./dist/responsive-content.es.js"
     }
   },
   "files": [
@@ -40,6 +44,7 @@
     "vitest": "catalog:"
   },
   "dependencies": {
+    "@clair-obscur-workspace/utils": "workspace:*",
     "@tsparticles/engine": "3.9.1",
     "@tsparticles/preset-confetti": "3.2.0",
     "@tsparticles/shape-star": "3.9.1"
