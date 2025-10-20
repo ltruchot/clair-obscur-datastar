@@ -12,6 +12,10 @@
     "./pixel-grid-element": {
       "types": "./dist/pixel-grid-element.d.ts",
       "import": "./dist/pixel-grid-element.es.js"
+    },
+    "./victory-stars": {
+      "types": "./dist/victory-stars.d.ts",
+      "import": "./dist/victory-stars.es.js"
     }
   },
   "files": [
@@ -34,5 +38,10 @@
     "vite": "catalog:",
     "vite-plugin-dts": "catalog:",
     "vitest": "catalog:"
+  },
+  "dependencies": {
+    "@tsparticles/engine": "^3.9.1",
+    "@tsparticles/preset-confetti": "^3.2.0",
+    "@tsparticles/shape-star": "^3.9.1"
   }
 }

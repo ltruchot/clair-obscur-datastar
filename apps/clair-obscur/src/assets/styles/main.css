@@ -63,14 +63,6 @@ p {
   gap: 10px;
 }
 
-.rainbow {
-  width: fit-content;
-  background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
 .clair {
   background-color: white;
   color: black;
@@ -86,33 +78,6 @@ p {
   color: black;
 }
 
-.victory {
-  position: fixed;
-  font-size: 100px;
-  transform: translate(-50%, -50%);
-  width: max-content;
-  top: 30%;
-  left: 50%;
-  z-index: 1001;
-  background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.reset {
-  position: absolute;
-  top: 60%;
-  left: 50%;
-  font-size: 50px;
-  transform: translate(-50%, -50%);
-  z-index: 1001;
-  width: fit-content;
-  background-color: black;
-  color: white;
-  cursor: pointer;
-}
-
 .px-10 {
   padding-left: 10px;
   padding-right: 10px;
@@ -120,7 +85,6 @@ p {
 
 .warning {
   background-color: white;
-  color: black;
   outline: orange;
   cursor: pointer;
 }

@@ -33,8 +33,9 @@ export class HomeController {
     const { animalName, color, fontFamily } = this.sessionService.extractSessionData(session);
     const sessionItems = await this.sessionService.extractSessionListItems(session);
     const pixelData = { pixelGrid: this.pixelGridQueryService.getPixelGrid(), timestamp: new Date().getTime() };
+    const victory = this.pixelGridQueryService.checkVictory();
 
-    return c.html(getHomeHTMLPage(animalName, color, fontFamily, sessionItems, pixelData));
+    return c.html(getHomeHTMLPage(animalName, color, fontFamily, sessionItems, pixelData, victory));
   }
 
   broadcastEvents(c: Context): Response {

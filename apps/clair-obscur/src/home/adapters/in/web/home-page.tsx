@@ -17,13 +17,19 @@ interface HomePageProps {
   fontFamily: string;
   sessionItems: SessionItem[];
   pixelData: { pixelGrid: PixelData; timestamp: number };
+  victory: boolean;
 }
 
-const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionItems, pixelData }) => {
+const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionItems, pixelData, victory }) => {
   const pixelGridJSON = `'${JSON.stringify(pixelData)}'`;
+  const victoryJSON = `'${victory.toString()}'`;
   return (
     <BaseLayout title="Clair Obscur Datastar">
-      <div class="flex" data-on-load="@get('/subscribe-to-events', {openWhenHidden: true})">
+      <div
+        class="flex"
+        data-on-load="@get('/subscribe-to-events', {openWhenHidden: true})"
+        data-signals-_pixelgrid={pixelGridJSON}
+        data-signals-_victory={victoryJSON}>
         {/* Session list side */}
         <aside aria-label="Active users">
           <details open>
@@ -62,21 +68,17 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
                   data-on-click="confirm('Remove all contributions of all players?\nYou may feel bad about it.') ? @post('/reset-pixel-grid') : null">
                   Reset
                 </button>
+                <victory-stars data-attr-won="$_victory.toString()"></victory-stars>
               </menu>
             </details>
           </header>
           <section class="pixel-grid-container">
             <pixel-grid
-              data-signals-_pixelgrid={pixelGridJSON}
-              data-signals-_victory="false"
               id={DSID.PIXEL_GRID}
               data-on-pixelclick="$pixelclick = event.detail; @post('/pixel-click', {requestCancellation: 'disabled'})"
               data-attr-pixels="$_pixelgrid"
               data-attr-last-change="$_lastChange"
-              data-attr-victory="$_victory"></pixel-grid>
-            <div style={{ display: 'none' }} data-show="$_victory">
-              <div className="victory">VICTORY</div>
-            </div>
+              data-attr-victory="$_victory.toString()"></pixel-grid>
           </section>
         </main>
       </div>
@@ -90,6 +92,7 @@ export const getHomeHTMLPage = (
   fontFamily: string,
   sessionItems: SessionItem[],
   pixelData: { pixelGrid: PixelData; timestamp: number },
+  victory: boolean,
 ): string => {
   return renderToString(
     <HomePage
@@ -98,6 +101,7 @@ export const getHomeHTMLPage = (
       fontFamily={fontFamily}
       sessionItems={sessionItems}
       pixelData={pixelData}
+      victory={victory}
     />,
   );
 };
