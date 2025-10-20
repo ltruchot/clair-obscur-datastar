@@ -20,6 +20,9 @@ export class PixelGridQueryService {
         return false;
       }
     }
+    setTimeout(() => {
+      this.adapter.reset();
+    }, 12_000);
     return true;
   }
 }

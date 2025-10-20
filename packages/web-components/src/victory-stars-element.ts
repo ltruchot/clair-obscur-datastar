@@ -6,8 +6,8 @@ export class VictoryStarsElement extends HTMLElement {
   private _shadowRoot: ShadowRoot;
   private _won = false;
   private _container: HTMLDivElement | null = null;
-  private _particlesContainer: HTMLDivElement | null = null;
   private _particlesInitialized = false;
+  private _permanentContainers: HTMLDivElement[] = [];
 
   static get observedAttributes(): readonly string[] {
     return ['won'] as const;
@@ -28,14 +28,65 @@ export class VictoryStarsElement extends HTMLElement {
 
   connectedCallback(): void {
     this._render();
-    void this._updateDisplay();
+    this._createPermanentContainers();
+    void this._initializeParticles();
+  }
+
+  private _createPermanentContainers(): void {
+    for (let i = 0; i < 3; i++) {
+      const container = document.createElement('div');
+      container.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9999;
+      `;
+      container.id = `permanent-confetti-${i}`;
+      document.body.appendChild(container);
+      this._permanentContainers.push(container);
+    }
+  }
+
+  private async _initializeParticles(): Promise<void> {
+    if (!this._particlesInitialized) {
+      await loadConfettiPreset(tsParticles);
+      await loadStarShape(tsParticles);
+
+      const warmupContainer = document.createElement('div');
+      warmupContainer.style.cssText =
+        'position: fixed; top: 0; left: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none;';
+      warmupContainer.id = 'warmup-particles';
+      document.body.appendChild(warmupContainer);
+
+      await tsParticles.load({
+        id: 'warmup-particles',
+        element: warmupContainer,
+        options: {
+          preset: 'confetti',
+          particles: {
+            number: { value: 1 },
+          },
+        },
+      });
+
+      await new Promise((resolve) => requestAnimationFrame(() => resolve(undefined)));
+
+      warmupContainer.remove();
+
+      this._particlesInitialized = true;
+    }
   }
 
   disconnectedCallback(): void {
-    if (this._particlesContainer?.parentNode) {
-      this._particlesContainer.parentNode.removeChild(this._particlesContainer);
-      this._particlesContainer = null;
-    }
+    this._permanentContainers.forEach((container) => {
+      if (container.parentNode) {
+        container.parentNode.removeChild(container);
+      }
+    });
+    this._permanentContainers = [];
   }
 
   override get shadowRoot(): ShadowRoot {
@@ -67,113 +118,65 @@ export class VictoryStarsElement extends HTMLElement {
     this._container.className = 'victory-container';
     this._container.textContent = '⭐⭐⭐⭐🌟✨ Victory ✨🌟⭐⭐⭐⭐';
 
-    if (!this._particlesContainer) {
-      this._particlesContainer = document.createElement('div');
-      this._particlesContainer.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 9999;
-      `;
-      this._particlesContainer.id = 'victory-particles';
-      document.body.appendChild(this._particlesContainer);
-    }
-
     this._shadowRoot.replaceChildren(style, this._container);
     void this._updateDisplay();
   }
 
   private async _updateDisplay(): Promise<void> {
-    if (!this._container || !this._particlesContainer) return;
+    if (!this._container) return;
 
     if (this._won) {
       this._container.classList.add('visible');
 
-      if (!this._particlesInitialized) {
-        await loadConfettiPreset(tsParticles);
-        await loadStarShape(tsParticles);
-        this._particlesInitialized = true;
-      }
+      await this._initializeParticles();
 
-      setTimeout(() => this._shoot(), 0);
-      setTimeout(() => this._shoot(), 500);
-      setTimeout(() => this._shoot(), 1_500);
+      setTimeout(() => void this._shoot(0), 0);
+      setTimeout(() => void this._shoot(1), 500);
+      setTimeout(() => void this._shoot(2), 1_500);
     } else {
       this._container.classList.remove('visible');
     }
   }
 
-  private _shoot(): void {
-    if (!this._particlesContainer) return;
+  private async _shoot(index: number): Promise<void> {
+    const container = this._permanentContainers[index];
+    if (!container) return;
 
-    const defaults = {
-      spread: 360,
-      ticks: 500,
-      gravity: 0,
-      decay: 0.94,
-      startVelocity: 30,
-      colors: ['#FFE400', '#FFBD00', '#E89400', '#FFCA6C', '#FDFFB8'],
-    };
+    const containerId = container.id;
+    const existingInstance = tsParticles.domItem(index);
+    if (existingInstance) {
+      existingInstance.destroy();
+    }
 
-    const timestamp = Date.now();
-    const random = Math.random();
-
-    const starContainer = document.createElement('div');
-    starContainer.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 9999;
-    `;
-    starContainer.id = `confetti-star-${timestamp}-${random}`;
-    document.body.appendChild(starContainer);
-
-    const circleContainer = document.createElement('div');
-    circleContainer.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 9999;
-    `;
-    circleContainer.id = `confetti-circle-${timestamp}-${random}`;
-    document.body.appendChild(circleContainer);
-
-    void tsParticles.load({
-      id: starContainer.id,
-      element: starContainer,
+    await tsParticles.load({
+      id: containerId,
+      element: container,
       options: {
         preset: 'confetti',
+        fpsLimit: 120,
+        reduceDuplicates: true,
         particles: {
           number: {
-            value: 20,
+            value: 0,
           },
           color: {
-            value: defaults.colors,
+            value: ['#FFE400', '#FFBD00', '#E89400', '#FFCA6C', '#FDFFB8'],
           },
           shape: {
-            type: 'star',
+            type: ['star', 'circle'],
           },
           life: {
             duration: {
-              value: defaults.ticks / 60,
+              value: 8.33,
             },
           },
           move: {
             enable: true,
-            speed: defaults.startVelocity,
-            decay: 1 - defaults.decay,
+            speed: 30,
+            decay: 0.06,
             gravity: {
-              enable: defaults.gravity > 0,
-              acceleration: defaults.gravity,
+              enable: false,
+              acceleration: 0,
             },
             direction: 'none',
             outModes: {
@@ -181,84 +184,57 @@ export class VictoryStarsElement extends HTMLElement {
             },
           },
           size: {
-            value: 12,
+            value: { min: 6, max: 8 },
           },
         },
-        emitters: {
-          life: {
-            count: 1,
-            duration: 0.1,
+        emitters: [
+          {
+            life: {
+              count: 1,
+              duration: 0.1,
+            },
+            rate: {
+              delay: 0,
+              quantity: 20,
+            },
+            position: {
+              x: 50,
+              y: 50,
+            },
+            particles: {
+              shape: {
+                type: 'star',
+              },
+              size: {
+                value: 8,
+              },
+            },
           },
-          rate: {
-            delay: 0,
-            quantity: 40,
+          {
+            life: {
+              count: 1,
+              duration: 0.1,
+            },
+            rate: {
+              delay: 0,
+              quantity: 10,
+            },
+            position: {
+              x: 50,
+              y: 50,
+            },
+            particles: {
+              shape: {
+                type: 'circle',
+              },
+              size: {
+                value: 7.5,
+              },
+            },
           },
-          position: {
-            x: 50,
-            y: 50,
-          },
-        },
+        ],
       },
     });
-
-    void tsParticles.load({
-      id: circleContainer.id,
-      element: circleContainer,
-      options: {
-        preset: 'confetti',
-        particles: {
-          number: {
-            value: 10,
-          },
-          color: {
-            value: defaults.colors,
-          },
-          shape: {
-            type: 'circle',
-          },
-          life: {
-            duration: {
-              value: defaults.ticks / 60,
-            },
-          },
-          move: {
-            enable: true,
-            speed: defaults.startVelocity,
-            decay: 1 - defaults.decay,
-            gravity: {
-              enable: defaults.gravity > 0,
-              acceleration: defaults.gravity,
-            },
-            direction: 'none',
-            outModes: {
-              default: 'destroy',
-            },
-          },
-          size: {
-            value: 7.5,
-          },
-        },
-        emitters: {
-          life: {
-            count: 1,
-            duration: 0.1,
-          },
-          rate: {
-            delay: 0,
-            quantity: 10,
-          },
-          position: {
-            x: 50,
-            y: 50,
-          },
-        },
-      },
-    });
-
-    setTimeout(() => {
-      starContainer.remove();
-      circleContainer.remove();
-    }, 10_000);
   }
 }
 

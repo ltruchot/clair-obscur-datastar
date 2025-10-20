@@ -63,10 +63,10 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
                   Cheat
                 </button>
                 <button
-                  className="danger"
+                  className="success"
                   title="This will reset all contributions of all players"
-                  data-on-click="confirm('Remove all contributions of all players?\nYou may feel bad about it.') ? @post('/reset-pixel-grid') : null">
-                  Reset
+                  data-on-click="@post('/win-pixel-grid')">
+                  Win
                 </button>
                 <victory-stars data-attr-won="$_victory.toString()"></victory-stars>
               </menu>
