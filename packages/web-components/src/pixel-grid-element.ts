@@ -358,31 +358,30 @@ export class PixelGridElement extends HTMLElement {
     });
 
     this._container.addEventListener('pointerup', (event) => {
-      if (this._longPressTimer) {
+      if (this._longPressTimer && !this._hasMoved) {
         clearTimeout(this._longPressTimer);
         this._longPressTimer = null;
-      }
 
-      const target = event.target as HTMLElement;
-      if (
-        target.classList.contains('pixel-cell') &&
-        !target.classList.contains('cell-transparent') &&
-        !this._hasMoved
-      ) {
-        const x = Number.parseInt(target.dataset['x'] ?? '0', 10);
-        const y = Number.parseInt(target.dataset['y'] ?? '0', 10);
-        const pixelKey: `${number}-${number}` = `${x}-${y}`;
-        const currentPixel = this._pixels.pixelGrid[pixelKey];
+        const target = event.target as HTMLElement;
+        if (target.classList.contains('pixel-cell') && !target.classList.contains('cell-transparent')) {
+          const x = Number.parseInt(target.dataset['x'] ?? '0', 10);
+          const y = Number.parseInt(target.dataset['y'] ?? '0', 10);
+          const pixelKey: `${number}-${number}` = `${x}-${y}`;
+          const currentPixel = this._pixels.pixelGrid[pixelKey];
 
-        if (currentPixel && currentPixel.guess !== 1) {
-          this.dispatchEvent(
-            new CustomEvent<PixelGridChangeEvent>('pixelclick', {
-              detail: { x, y, guess: 1 },
-              composed: true,
-              bubbles: true,
-            }),
-          );
+          if (currentPixel && currentPixel.guess !== 1) {
+            this.dispatchEvent(
+              new CustomEvent<PixelGridChangeEvent>('pixelclick', {
+                detail: { x, y, guess: 1 },
+                composed: true,
+                bubbles: true,
+              }),
+            );
+          }
         }
+      } else if (this._longPressTimer) {
+        clearTimeout(this._longPressTimer);
+        this._longPressTimer = null;
       }
 
       this._hasMoved = false;
