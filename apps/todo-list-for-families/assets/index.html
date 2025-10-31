@@ -6,7 +6,7 @@
 
     <script
       type="module"
-      src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js"></script>
+      src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.6/bundles/datastar.js"></script>
 
     <link rel="stylesheet" href="/main.css" />
 
@@ -18,33 +18,33 @@
 
     <title>Todo List</title>
   </head>
-  <body data-on-load="@get('/subscribe-to-events')">
+  <body data-init="@get('/subscribe-to-events')">
     <main class="flex-between">
       <section>
         <!-- Pretty title -->
         <h1 class="rainbow">Todo List For Big Families</h1>
 
         <!-- Forms inputs to create/remove todos -->
-        <input id="todo" maxlength="80" data-bind-todo />
+        <input id="todo" maxlength="80" data-bind:todo />
 
         <button
           id="add-todo"
-          data-on-click="@post('/add-todo')
+          data-on:click="@post('/add-todo')
             $todo='';
             focusTo('todo')"
-          data-attr-disabled="$todo.length === 0">
+          data-attr:disabled="$todo.length === 0">
           Add
         </button>
 
         <button
-          data-attr-disabled="$todos ? $todos.filter((todo) => todo.checked).length === 0 : true"
-          data-on-click="$shouldClearDoneOnly = true; @post('/clear')">
+          data-attr:disabled="$todos ? $todos.filter((todo) => todo.checked).length === 0 : true"
+          data-on:click="$shouldClearDoneOnly = true; @post('/clear')">
           Clear Done
         </button>
 
         <button
-          data-attr-disabled="$todos ? $todos?.length === 0 : true"
-          data-on-click="$shouldClearDoneOnly = false; @post('/clear')">
+          data-attr:disabled="$todos ? $todos?.length === 0 : true"
+          data-on:click="$shouldClearDoneOnly = false; @post('/clear')">
           Clear All
         </button>
 
@@ -59,13 +59,13 @@
             <td data-text="$todos ? $todos.filter((todo) => todo.checked).length : 0"></td>
           </tr>
         </table>
-        <count-down data-attr-seconds-left="$secondsLeft"></count-down>
+        <count-down data-attr:seconds-left="$secondsLeft"></count-down>
 
         <!-- List of todos -->
         <list-of-items
           id="todos"
-          data-attr-items="$todos || []"
-          data-on-item-toggle="
+          data-attr:items="$todos || []"
+          data-on:item-toggle="
             $updatedTodo = { id: event.detail.id,label: event.detail.label, checked: event.detail.checked };
             @post('/update-todo');">
         </list-of-items>

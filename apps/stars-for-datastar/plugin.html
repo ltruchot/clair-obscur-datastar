@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script type="importmap">
+      {
+        "imports": {
+          "datastar": "https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.6/bundles/datastar.js"
+        }
+      }
+    </script>
+
+    <script type="module">
+      import { attribute, mergePatch } from 'datastar';
+
+      attribute({
+        name: 'fetch',
+        requirement: 'must',
+        async apply({ key, value, mods }) {
+          const response = await fetch(value);
+          const json = await response.json();
+          const pluckSet = mods.get('pluck');
+          const fieldName = pluckSet ? [...pluckSet][0] : null;
+          const data = fieldName ? json[fieldName] : json;
+          mergePatch({ [key]: data });
+        },
+      });
+    </script>
+
+    <title>Stars for Datastar</title>
+  </head>
+  <body>
+    <h1>Stars for Datastar</h1>
+
+    <figure data-fetch:datastars__pluck.stargazers_count="https://api.github.com/repos/starfederation/datastar">
+      <figcaption>Datastar Repository Statistics</figcaption>
+      ⭐ <output data-text="$datastars || 'loading...'"></output>
+    </figure>
+
+    <figure data-fetch:my-repo__pluck.stargazers_count="https://api.github.com/repos/ltruchot/clair-obscur-datastar">
+      <figcaption>My Repository Statistics</figcaption>
+      ⭐ <output data-text="$my-repo || 'loading...'"></output>
+    </figure>
+
+    <article data-fetch:wiki__pluck.extract="https://en.wikipedia.org/api/rest_v1/page/summary/Milky_Way">
+      <h2>The Milky Way</h2>
+      <p data-text="$wiki || 'loading...'"></p>
+    </article>
+  </body>
+</html>

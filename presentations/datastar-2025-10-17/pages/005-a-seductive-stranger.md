@@ -37,9 +37,9 @@ Forget your first framework love in minutes
 ```html
   <script type="module" src="path/to/datastar.js"></script>
 
-  <input data-bind-msg />
+  <input data-bind:msg />
   <p data-text="$msg"></p>
-  <button data-on-click="@post('/send-msg')">send</button>
+  <button data-on:click="@post('/send-msg')">send</button>
   <p id="waiting-for-response"></p>
 ```
 <v-click>

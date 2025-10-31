@@ -199,6 +199,8 @@ importers:
         specifier: 1.0.0-RC.1
         version: 1.0.0-RC.1
 
+  apps/stars-for-datastar: {}
+
   apps/todo-list: {}
 
   apps/todo-list-for-families:

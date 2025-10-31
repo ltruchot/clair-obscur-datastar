@@ -145,4 +145,6 @@ createServer(async (req, res) => {
       res.end();
     }
   }
-}).listen(669);
+}).listen(669, () => {
+  console.log('🚀 Todo List For Families server running at http://localhost:669');
+});

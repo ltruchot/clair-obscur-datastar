@@ -15,4 +15,6 @@ createServer(async (req, res) => {
     res.writeHead(404);
     res.end();
   }
-}).listen(668);
+}).listen(668, () => {
+  console.log('🚀 Todo List server running at http://localhost:668');
+});

@@ -19,9 +19,11 @@ createServer(async (req, res) => {
     res.writeHead(404);
     res.end();
   }
-}).listen(667);
+}).listen(667, () => {
+  console.log('🚀 Hello World server running at http://localhost:667');
+});
 
-async function sendMsgLetterByLetter(req, res, msg, delay = 50) {
+async function sendMsgLetterByLetter(req, res, msg, delay = 100) {
   return ServerSentEventGenerator.stream(req, res, async (stream) => {
     let index = 0;
     await new Promise((resolve) => {

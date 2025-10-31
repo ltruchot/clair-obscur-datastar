@@ -12,33 +12,29 @@
 
     <title>Todo List</title>
   </head>
-  <body>
+  <body data-persist>
     <main class="flex-between">
       <section>
         <h1 class="rainbow">Todo List</h1>
 
         <!-- Forms inputs -->
-        <input id="todo" maxlength="80" data-bind-todo />
+        <input id="todo" maxlength="80" data-bind:todo />
 
         <button
           id="add-todo"
-          data-on-click="$todos = [{ id: randomId(), label: $todo, checked: false }, ...$todos]; 
+          data-on:click="$todos = [{ id: randomId(), label: $todo, checked: false }, ...$todos]; 
             $todo=''; 
             focusTo('todo')"
-          data-attr-disabled="$todo ? $todo.length === 0 : true">
+          data-attr:disabled="$todo ? $todo.length === 0 : true">
           Add
         </button>
 
         <button
-          data-attr-disabled="$todos ? $todos.filter((todo) => todo.checked).length === 0 : true"
-          data-on-click="$todos = $todos.filter((todo) => !todo.checked);">
+          data-attr:disabled="$todos ? $todos.filter((todo) => todo.checked).length === 0 : true"
+          data-on:click="$todos = $todos.filter((todo) => !todo.checked);">
           Clear Done
         </button>
-        <button
-          data-attr-disabled="$todos ? $todos.length === 0 : true"
-          data-on-click="$todos = [];">
-          Clear All
-        </button>
+        <button data-attr:disabled="$todos ? $todos.length === 0 : true" data-on:click="$todos = [];">Clear All</button>
 
         <!-- Todo stats -->
         <table class="stats-table">
@@ -55,8 +51,8 @@
         <!-- List of todos -->
         <list-of-items
           id="todos"
-          data-attr-items="$todos || []"
-          data-on-item-toggle="$todos = $todos.map((todo) => todo.id === event.detail.id ? {...todo, checked: event.detail.checked} : todo);">
+          data-attr:items="$todos || []"
+          data-on:item-toggle="$todos = $todos.map((todo) => todo.id === event.detail.id ? {...todo, checked: event.detail.checked} : todo);">
         </list-of-items>
 
         <br />
@@ -82,11 +78,7 @@
       }
 
       document.body.addEventListener('keydown', (event) => {
-        if (
-          event.key === 'Enter' &&
-          byId('add-todo').disabled === false &&
-          byId('todo').matches(':focus')
-        ) {
+        if (event.key === 'Enter' && byId('add-todo').disabled === false && byId('todo').matches(':focus')) {
           byId('add-todo').click();
         }
       });

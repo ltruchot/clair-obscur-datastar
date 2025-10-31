@@ -9,7 +9,7 @@
   "engines": {
     "node": "22.20.0"
   },
-  "packageManager": "pnpm@10.18.2",
+  "packageManager": "pnpm@10.20.0",
   "scripts": {
     "dev": "pnpm --parallel --stream --filter @clair-obscur-workspace/domain --filter @clair-obscur-workspace/utils --filter @clair-obscur-workspace/funny-animals-generator --filter @clair-obscur-workspace/web-components --filter @clair-obscur-workspace/clair-obscur dev",
     "dev:apps:clair-obscur": "pnpm --filter @clair-obscur-workspace/clair-obscur dev",
@@ -17,20 +17,27 @@
     "dev:packages:utils": "pnpm --filter @clair-obscur-workspace/utils dev",
     "dev:packages:funny-animals-generator": "pnpm --filter @clair-obscur-workspace/funny-animals-generator dev",
     "dev:packages:web-components": "pnpm --filter @clair-obscur-workspace/web-components dev",
-
+    
+    "dev:apps:hello": "pnpm --filter @clair-obscur-workspace/hello-world dev",
+    "dev:apps:stars": "pnpm --filter @clair-obscur-workspace/stars-for-datastar dev",
+    "dev:apps:todo": "pnpm --filter @clair-obscur-workspace/todo-list dev",
+    "dev:apps:todo2": "pnpm --filter @clair-obscur-workspace/todo-list-for-families dev",
+   
     "dev:tech-session": "pnpm --filter @clair-obscur-workspace/tech-session-intro-2025-10-10 dev",
+    
     "dev:datastar": "pnpm --filter @clair-obscur-workspace/datastar-2025-10-17 dev",
     "build:datastar": "pnpm --filter @clair-obscur-workspace/datastar-2025-10-17 build",
-    
+
     "build": "pnpm --filter @clair-obscur-workspace/domain --filter @clair-obscur-workspace/utils --filter @clair-obscur-workspace/funny-animals-generator --filter @clair-obscur-workspace/web-components --filter @clair-obscur-workspace/clair-obscur build",
     "build:apps:clair-obscur": "pnpm --filter @clair-obscur-workspace/clair-obscur build",
     "build:packages:domain": "pnpm --filter @clair-obscur-workspace/domain build",
     "build:packages:utils": "pnpm --filter @clair-obscur-workspace/utils build",
     "build:packages:funny-animals-generator": "pnpm --filter @clair-obscur-workspace/funny-animals-generator build",
     "build:packages:web-components": "pnpm --filter @clair-obscur-workspace/web-components build",
+   
     "serve": "pnpm --filter @clair-obscur-workspace/clair-obscur serve",
-    "serve:todo-list": "pnpm --filter @clair-obscur-workspace/todo-list serve",
     "serve:todo-list-for-families": "pnpm --filter @clair-obscur-workspace/todo-list-for-families serve",
+  
     "lint": "eslint . --fix",
     "test": "pnpm --recursive test",
     "test:apps:clair-obscur": "pnpm --filter @clair-obscur-workspace/clair-obscur test",
