@@ -1,4 +1,4 @@
-import type { PixelGridData } from '@/home/adapters/in/models/pixels';
+import type { PixelGridData } from '@/home/domain/pixel-grid';
 import type { EventStorePixelGridAdapter } from './event-store-pixel-grid-adapter';
 
 export class PixelGridQueryService {

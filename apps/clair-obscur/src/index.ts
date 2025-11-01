@@ -13,7 +13,6 @@ import { DefaultAnimalNameGenerator } from '@clair-obscur-workspace/funny-animal
 
 // local
 import orcaPixelGrid from '@/assets/pixel-grids/orca-enriched.json';
-import { PixelData } from '@/home/adapters/in/models/pixels';
 import { HomeController } from '@/home/adapters/in/web/home-controller';
 import { EventStorePixelGridAdapter } from '@/home/adapters/out/pixelgrid/event-store-pixel-grid-adapter';
 import { PixelGridCommandService } from '@/home/adapters/out/pixelgrid/pixelgrid-command.service';
@@ -22,6 +21,7 @@ import { EventStoreSessionAdapter } from '@/home/adapters/out/session/event-stor
 import { SessionCommandService } from '@/home/adapters/out/session/session-command.service';
 import { SessionQueryService } from '@/home/adapters/out/session/session-query.service';
 import { SessionService } from '@/home/adapters/out/session/session-service';
+import type { PixelData } from '@/home/domain/pixel-grid';
 
 import { PixelGridEventStore } from '@/home/infrastructure/pixelgrid/pixel-grid-event-store.service';
 import { SessionData } from '@/home/infrastructure/session';

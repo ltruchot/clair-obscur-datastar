@@ -2,9 +2,13 @@
   "name": "@clair-obscur-workspace/clair-obscur",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev:webcomponents": "vite build --config vite.config.webcomponents.ts --watch",
+    "dev:server": "vite",
+    "dev": "pnpm dev:webcomponents & pnpm dev:server",
     "test": "vitest",
-    "build": "vite build",
+    "build:webcomponents": "vite build --config vite.config.webcomponents.ts",
+    "build:server": "vite build",
+    "build": "pnpm build:webcomponents && pnpm build:server",
     "serve": "node dist/index.js"
   },
   "dependencies": {
@@ -14,7 +18,10 @@
     "@hono/session": "catalog:",
     "@starfederation/datastar-sdk": "catalog:",
     "dotenv": "catalog:",
-    "hono": "catalog:"
+    "hono": "catalog:",
+    "@tsparticles/engine": "3.9.1",
+    "@tsparticles/preset-confetti": "3.2.0",
+    "@tsparticles/shape-star": "3.9.1"
   },
   "devDependencies": {
     "@hono/node-server": "catalog:",

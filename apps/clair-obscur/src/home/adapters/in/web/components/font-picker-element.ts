@@ -131,7 +131,7 @@ export class FontPickerElement extends HTMLElement {
       swatch.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        const font = (e.target as HTMLElement).dataset['font'];
+        const font = (e.target as HTMLElement).dataset.font;
         if (font) {
           this.dispatchEvent(new CustomEvent('fontchange', { detail: { value: font }, composed: true }));
           popover.hidePopover();

@@ -1,7 +1,7 @@
+import type { PixelGridChange } from '@/home/domain/pixel-grid';
 import { BaseLayout } from '@/shared/infrastructure/web/base-layout';
 import type { FC } from 'hono/jsx';
 import { renderToString } from 'hono/jsx/dom/server';
-import { PixelData } from '../models/pixels';
 import { GameIntroduction } from './components/game-introduction';
 import { ListAllSessions, SessionItem } from './components/list-all-sessions';
 
@@ -16,7 +16,7 @@ interface HomePageProps {
   color: string;
   fontFamily: string;
   sessionItems: SessionItem[];
-  pixelData: { pixelGrid: PixelData; timestamp: number };
+  pixelData: PixelGridChange;
   victory: boolean;
 }
 
@@ -85,7 +85,7 @@ export const getHomeHTMLPage = (
   color: string,
   fontFamily: string,
   sessionItems: SessionItem[],
-  pixelData: { pixelGrid: PixelData; timestamp: number },
+  pixelData: PixelGridChange,
   victory: boolean,
 ): string => {
   return renderToString(

@@ -1,4 +1,4 @@
-import type { PixelChange, PixelGridData } from '@/home/adapters/in/models/pixels';
+import type { PixelChange, PixelGridData, PixelGuess } from '@/home/domain/pixel-grid';
 
 export interface PixelGridStoreState {
   pixelGrid: PixelGridData;
@@ -16,5 +16,5 @@ export type PixelLastChangeSubscriber = (lastChange: PixelChange) => void;
 export interface PixelUpdate {
   x: number;
   y: number;
-  guess: -1 | 0 | 1;
+  guess: PixelGuess;
 }

@@ -27,6 +27,7 @@ export default defineConfig(({ mode }) => ({
         copyRecursive('src/assets/favicon', 'dist/assets/favicon');
         copyRecursive('src/assets/styles', 'dist/assets/styles');
         copyRecursive('src/assets/pixel-grids', 'dist/assets/pixel-grids');
+        copyRecursive('src/assets/web-components', 'dist/assets/web-components');
         if (mode === 'production') {
           copyRecursive('src/assets/scripts/datastar-community', 'dist/assets/scripts/datastar-community');
         } else {

@@ -1,13 +1,13 @@
 import { PixelGridCommandService } from '@/home/adapters/out/pixelgrid/pixelgrid-command.service';
 import { PixelGridQueryService } from '@/home/adapters/out/pixelgrid/pixelgrid-query.service';
 import { SessionCommandService } from '@/home/adapters/out/session/session-command.service';
+import type { PixelChange } from '@/home/domain/pixel-grid';
 import { PixelGridEventStore } from '@/home/infrastructure/pixelgrid/pixel-grid-event-store.service';
 import { SessionEventStore } from '@/home/infrastructure/session/session-event-store.service';
 import { closeStream } from '@/shared/infrastructure/datastar-stream';
 import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/web';
 import type { Context } from 'hono';
 import { SessionService } from '../../out/session/session-service';
-import { PixelChange } from '../models/pixels';
 import { getListAllSessionsHTMLComponent } from './components/list-all-sessions';
 import { DSID, getHomeHTMLPage } from './home-page';
 

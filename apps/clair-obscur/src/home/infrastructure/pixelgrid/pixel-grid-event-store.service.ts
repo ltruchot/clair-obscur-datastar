@@ -1,4 +1,4 @@
-import type { PixelChange, PixelData, PixelGridData } from '@/home/adapters/in/models/pixels';
+import type { PixelChange, PixelData, PixelGridData } from '@/home/domain/pixel-grid';
 import type {
   PixelGridStoreState,
   PixelGridStoreSubscriber,

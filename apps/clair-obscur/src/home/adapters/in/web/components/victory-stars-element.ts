@@ -21,7 +21,6 @@ export class VictoryStarsElement extends HTMLElement {
   }
 
   attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void {
-    console.log('attributeChangedCallback', name, newValue);
     if (name === 'won') {
       this._won = newValue === 'true';
       this._updateDisplay();
