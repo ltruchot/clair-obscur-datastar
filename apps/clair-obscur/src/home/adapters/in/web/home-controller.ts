@@ -57,7 +57,7 @@ export class HomeController {
             stream.patchElements(
               `<strong
                 id="${DSID.MY_SESSION}"
-                data-on-interval__duration.3s="@post('/keep-alive', {openWhenHidden: true})"
+                data-on-interval__duration.10s="@post('/keep-alive', {openWhenHidden: true})"
                 style="color:${currentSession.color};
                 font-family:${currentSession.fontFamily};">
                   ${currentSession.animalName.adjective} ${currentSession.animalName.animal}

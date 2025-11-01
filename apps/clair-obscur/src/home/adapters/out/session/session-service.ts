@@ -37,7 +37,7 @@ export class SessionService {
     const animalName = session?.animalName
       ? session.animalName.adjective + ' ' + session.animalName.animal
       : 'an unknown animal';
-    const color = session?.color ?? '#000000';
+    const color = session?.color ?? '#ffffff';
     const fontFamily = session?.fontFamily ?? 'sans-serif';
     return {
       animalName,

@@ -2,8 +2,8 @@ export const GameIntroduction = () => {
   return (
     <>
       <h1>
-        <span class="clair">Clair&nbsp;</span>
-        <span class="obscur">&nbsp;Obscur</span>
+        <div class="clair">Clair&nbsp;</div>
+        <div class="obscur">&nbsp;Obscur</div>
       </h1>
       <h2>
         A collaborative minesweeper game inspired by{' '}
@@ -13,26 +13,14 @@ export const GameIntroduction = () => {
       </h2>
       <section aria-label="Game rules">
         <p>
-          <strong>Numbers</strong> indicate how many <strong class="clair">clair pixels</strong> there are within the
-          current pixel and its neighbors (e.g., a <strong class="gray">9</strong> means{' '}
-          <strong class="clair">9 clair pixels</strong> in total)
+          <span class="pixel-cell">4</span> tell how many <strong class="clair">clair pixels</strong> are within this
+          pixel and its neighbors
+          <br />
+          <span class="pixel-cell">9</span> means{' '}
+          <span class="clair">
+            this pixel and its neighbors are all <strong>clair</strong>
+          </span>
         </p>
-        <div class="flex gap-10">
-          <p class="clair">
-            <responsive-content>
-              <span slot="mobile">[TAP]</span>
-              <strong slot="desktop">[LEFT CLICK]</strong>
-            </responsive-content>{' '}
-            to paint a pixel in <strong>clair</strong>
-          </p>
-          <p class="obscur">
-            <responsive-content>
-              <span slot="mobile">[LONG TOUCH]</span>
-              <strong slot="desktop">[RIGHT CLICK]</strong>
-            </responsive-content>{' '}
-            to paint a pixel in <strong>obscur</strong>
-          </p>
-        </div>
       </section>
     </>
   );

@@ -1,6 +1,6 @@
 export class FontPickerElement extends HTMLElement {
   private readonly colors = [
-    '#000000',
+    '#ffffff',
     '#E60000',
     '#FF4500',
     '#F57F17',
@@ -9,7 +9,7 @@ export class FontPickerElement extends HTMLElement {
     '#00A000',
     '#00BCD4',
     '#2196F3',
-    '#4B0082',
+    '#F5DEB3',
     '#9C27B0',
     '#D500F9',
   ];

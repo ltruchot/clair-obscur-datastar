@@ -55,6 +55,22 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
               <summary></summary>
               <GameIntroduction />
               <menu>
+                <div class="flex gap-10">
+                  <p class="clair">
+                    <responsive-content>
+                      <span slot="mobile">[1st tap]</span>
+                      <strong slot="desktop">[1st click]</strong>
+                    </responsive-content>{' '}
+                    paint in <strong>clair</strong>
+                  </p>
+                  <p class="obscur">
+                    <responsive-content>
+                      <span slot="mobile">[2nd tap]</span>
+                      <strong slot="desktop">[2nd click]</strong>
+                    </responsive-content>{' '}
+                    paint in <strong>obscur</strong>
+                  </p>
+                </div>
                 <button
                   className="warning"
                   title="This will reset all wrong guesses"

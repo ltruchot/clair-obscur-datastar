@@ -29,7 +29,7 @@ export class SessionCommandService {
     const maybeNewSession: Maybe<Session> = SessionFactory.create(
       crypto.randomUUID(),
       animalName,
-      '#000000',
+      '#ffffff',
       'sans-serif',
     );
 

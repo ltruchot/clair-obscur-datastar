@@ -1,6 +1,6 @@
-function a() {
-  const o = navigator.maxTouchPoints > 0, e = window.matchMedia("(pointer: coarse)").matches, s = window.matchMedia("(hover: none)").matches;
-  return o && e && s;
+function o() {
+  const a = navigator.maxTouchPoints > 0, e = window.matchMedia("(pointer: coarse)").matches, t = window.matchMedia("(hover: none)").matches;
+  return a && e && t;
 }
 class c extends HTMLElement {
   _shadowRoot;
@@ -12,23 +12,26 @@ class c extends HTMLElement {
   _lastDimensions = null;
   _victory = !1;
   _isTouchDevice = !1;
-  _longPressTimer = null;
   _pointerStartX = 0;
   _pointerStartY = 0;
   _hasMoved = !1;
+  getNextGuess(e) {
+    const t = [-1, 1, 0], i = (t.indexOf(e) + 1) % 3;
+    return t[i];
+  }
   static get observedAttributes() {
     return ["pixels", "last-change", "victory"];
   }
   constructor() {
-    super(), this._shadowRoot = this.attachShadow({ mode: "open" }), this._isTouchDevice = a();
+    super(), this._shadowRoot = this.attachShadow({ mode: "open" }), this._isTouchDevice = o();
   }
-  attributeChangedCallback(e, s, t) {
+  attributeChangedCallback(e, t, s) {
     if (e === "pixels")
-      this.pixels = JSON.parse(t ?? '{"pixelGrid":{}}');
-    else if (e === "last-change" && t) {
-      const i = JSON.parse(t);
+      this.pixels = JSON.parse(s ?? '{"pixelGrid":{}}');
+    else if (e === "last-change" && s) {
+      const i = JSON.parse(s);
       this._applyPixelChange(i);
-    } else e === "victory" && (this._victory = t === "true", this._updateVictoryState());
+    } else e === "victory" && (this._victory = s === "true", this._updateVictoryState());
   }
   connectedCallback() {
     this.render();
@@ -47,63 +50,65 @@ class c extends HTMLElement {
       this._shadowRoot.replaceChildren(), this._container = null, this._cellMap.clear(), this._lastDimensions = null;
       return;
     }
-    const { maxX: s, maxY: t } = this._getGridDimensions(), i = s + 1 + 3, r = t + 1 + 1;
-    (!this._lastDimensions || this._lastDimensions.columns !== i || this._lastDimensions.rows !== r) && (this._lastDimensions = { columns: i, rows: r }, this._initializeGrid(i, r)), this._updateCells();
+    const { maxX: t, maxY: s } = this._getGridDimensions(), i = t + 1 + 3, l = s + 1 + 1;
+    (!this._lastDimensions || this._lastDimensions.columns !== i || this._lastDimensions.rows !== l) && (this._lastDimensions = { columns: i, rows: l }, this._initializeGrid(i, l)), this._updateCells();
   }
   _getGridDimensions() {
-    let e = 0, s = 0;
-    for (const t of Object.keys(this._pixels.pixelGrid)) {
-      const i = t.split("-"), r = Number(i[0]), l = Number(i[1]);
-      r > e && (e = r), l > s && (s = l);
+    let e = 0, t = 0;
+    for (const s of Object.keys(this._pixels.pixelGrid)) {
+      const i = s.split("-"), l = Number(i[0]), n = Number(i[1]);
+      l > e && (e = l), n > t && (t = n);
     }
-    return { maxX: e, maxY: s };
+    return { maxX: e, maxY: t };
   }
-  _initializeGrid(e, s) {
-    const t = this._createStyle(e, s);
+  _initializeGrid(e, t) {
+    const s = this._createStyle(e, t);
     this._container = document.createElement("div"), this._container.className = "pixel-grid", this._cellMap.clear();
     const i = document.createDocumentFragment();
-    for (let r = 0; r < s; r++)
-      for (let l = 0; l < e; l++) {
-        const n = this._createCell(l, r);
-        this._cellMap.set(`${l}-${r}`, n), i.appendChild(n);
+    for (let l = 0; l < t; l++)
+      for (let n = 0; n < e; n++) {
+        const r = this._createCell(n, l);
+        this._cellMap.set(`${n}-${l}`, r), i.appendChild(r);
       }
-    this._container.appendChild(i), this._attachEventListeners(), this._updateVictoryState(), this._shadowRoot.replaceChildren(t, this._container);
+    this._container.appendChild(i), this._attachEventListeners(), this._updateVictoryState(), this._shadowRoot.replaceChildren(s, this._container);
   }
-  _createStyle(e, s) {
-    const t = document.createElement("style");
-    return t.textContent = `
+  _createStyle(e, t) {
+    const s = document.createElement("style");
+    return s.textContent = `
       .pixel-grid {
         display: grid;
-        grid-template-columns: repeat(${e}, 20px);
-        grid-template-rows: repeat(${s}, 20px);
+        grid-template-columns: repeat(${e}, 25px);
+        grid-template-rows: repeat(${t}, 25px);
         gap: 0;
         touch-action: manipulation;
       }
       .pixel-cell {
-        width: 20px;
-        height: 20px;
+        color: black;
+        width: 25px;
+        height: 25px;
         border: 1px solid lightgray;
         box-sizing: border-box;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 16px;
+        font-family: 'Courier New', 'Courier', monospace;
+        font-size: 18px;
         font-weight: bold;
         touch-action: manipulation;
       }
-      .pixel-cell:hover {
-        opacity: 0.8;
-      }
       .pixel-cell:not(.cell-transparent) {
         border-color: #888;
+      }
+      .pixel-cell:not(.cell-transparent):hover {
+        border-color: #aaa;
       }
       .pixel-cell.cell-transparent {
         cursor: default;
         background-color: #2facc2;
       }
       .pixel-cell.cell-unguessed {
-        background-color: lightgray;
+        background-color: #d4c5b9;
       }
       .pixel-cell.cell-obscur {
         background-color: black;
@@ -123,24 +128,42 @@ class c extends HTMLElement {
         pointer-events: none;
         cursor: default;
       }
-    `, t;
+      .pixel-cell.flash {
+        animation: clickFlash 150ms ease-out;
+      }
+      @keyframes clickFlash {
+        0% {
+          box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.8);
+        }
+        100% {
+          box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0);
+        }
+      }
+    `, s;
   }
-  _createCell(e, s) {
-    const t = document.createElement("div");
-    return t.className = "pixel-cell", t.dataset.x = e.toString(), t.dataset.y = s.toString(), t;
+  _createCell(e, t) {
+    const s = document.createElement("div");
+    return s.className = "pixel-cell", s.dataset.x = e.toString(), s.dataset.y = t.toString(), s;
   }
   _updateCells() {
-    this._cellMap.forEach((e, s) => {
-      const t = this._pixels.pixelGrid[s];
-      e.className = "pixel-cell", t ? (e.textContent = t.n.toString(), t.guess === -1 ? e.classList.add("cell-unguessed") : t.guess === 0 ? e.classList.add("cell-obscur") : t.guess === 1 && e.classList.add("cell-clair")) : (e.classList.add("cell-transparent"), e.textContent = "");
+    this._cellMap.forEach((e, t) => {
+      this._updateSingleCell(e, t);
     });
   }
+  _updateSingleCell(e, t) {
+    const s = this._pixels.pixelGrid[t];
+    if (!s) {
+      e.className = "pixel-cell cell-transparent", e.textContent = "";
+      return;
+    }
+    e.textContent = s.n.toString(), s.guess === -1 ? e.className = "pixel-cell cell-unguessed" : s.guess === 0 ? e.className = "pixel-cell cell-obscur" : e.className = "pixel-cell cell-clair";
+  }
   _applyPixelChange(e) {
-    const s = `${e.x}-${e.y}`, t = this._pixels.pixelGrid[s];
-    if (!t) return;
-    t.guess = e.guess;
-    const i = this._cellMap.get(`${e.x}-${e.y}`);
-    i && (i.className = "pixel-cell", i.textContent = t.n.toString(), e.guess === -1 ? i.classList.add("cell-unguessed") : e.guess === 0 ? i.classList.add("cell-obscur") : e.guess === 1 && i.classList.add("cell-clair"));
+    const t = `${e.x}-${e.y}`, s = this._pixels.pixelGrid[t];
+    if (!s) return;
+    s.guess = e.guess;
+    const i = this._cellMap.get(t);
+    i && this._updateSingleCell(i, t);
   }
   _updateVictoryState() {
     this._container && (this._victory ? this._container.classList.add("victory") : this._container.classList.remove("victory"));
@@ -149,72 +172,53 @@ class c extends HTMLElement {
     this._container && (this._isTouchDevice ? this._attachTouchListeners() : this._attachDesktopListeners());
   }
   _attachDesktopListeners() {
-    this._container && (this._container.addEventListener("pointerdown", (e) => {
+    this._container && this._container.addEventListener("click", (e) => {
       e.preventDefault();
-      const s = e.target;
-      if (s.classList.contains("pixel-cell") && !s.classList.contains("cell-transparent")) {
-        const t = Number.parseInt(s.dataset.x ?? "0", 10), i = Number.parseInt(s.dataset.y ?? "0", 10);
-        let r = -1;
-        e.button === 0 ? r = 1 : e.button === 2 && (r = 0);
-        const l = `${t}-${i}`, n = this._pixels.pixelGrid[l];
-        if (!n || n.guess === r)
-          return;
-        this.dispatchEvent(
+      const t = e.target;
+      if (t.classList.contains("pixel-cell") && !t.classList.contains("cell-transparent")) {
+        const s = Number.parseInt(t.dataset.x ?? "0", 10), i = Number.parseInt(t.dataset.y ?? "0", 10), l = `${s}-${i}`, n = this._pixels.pixelGrid[l];
+        if (!n) return;
+        const r = this.getNextGuess(n.guess);
+        if (n.guess === r) return;
+        t.classList.add("flash"), setTimeout(() => t.classList.remove("flash"), 150), this.dispatchEvent(
           new CustomEvent("pixelclick", {
-            detail: { x: t, y: i, guess: r },
+            detail: { x: s, y: i, guess: r },
             composed: !0,
             bubbles: !0
           })
         );
       }
-    }), this._container.addEventListener("contextmenu", (e) => {
-      e.preventDefault();
-    }));
+    });
   }
   _attachTouchListeners() {
     this._container && (this._container.addEventListener("pointerdown", (e) => {
-      e.preventDefault();
-      const s = e.target;
-      if (s.classList.contains("pixel-cell") && !s.classList.contains("cell-transparent")) {
-        this._pointerStartX = e.clientX, this._pointerStartY = e.clientY, this._hasMoved = !1;
-        const t = Number.parseInt(s.dataset.x ?? "0", 10), i = Number.parseInt(s.dataset.y ?? "0", 10), r = `${t}-${i}`;
-        this._longPressTimer = setTimeout(() => {
-          if (!this._hasMoved) {
-            const l = this._pixels.pixelGrid[r];
-            l && l.guess !== 0 && this.dispatchEvent(
-              new CustomEvent("pixelclick", {
-                detail: { x: t, y: i, guess: 0 },
-                composed: !0,
-                bubbles: !0
-              })
-            );
-          }
-          this._longPressTimer = null;
-        }, 300);
-      }
+      const t = e.target;
+      t.classList.contains("pixel-cell") && !t.classList.contains("cell-transparent") && (this._pointerStartX = e.clientX, this._pointerStartY = e.clientY, this._hasMoved = !1);
     }), this._container.addEventListener("pointermove", (e) => {
-      if (this._longPressTimer) {
-        const t = Math.abs(e.clientX - this._pointerStartX), i = Math.abs(e.clientY - this._pointerStartY);
-        (t > 10 || i > 10) && (this._hasMoved = !0, clearTimeout(this._longPressTimer), this._longPressTimer = null);
-      }
+      const s = Math.abs(e.clientX - this._pointerStartX), i = Math.abs(e.clientY - this._pointerStartY);
+      (s > 10 || i > 10) && (this._hasMoved = !0);
     }), this._container.addEventListener("pointerup", (e) => {
-      if (this._longPressTimer && !this._hasMoved) {
-        clearTimeout(this._longPressTimer), this._longPressTimer = null;
-        const s = e.target;
-        if (s.classList.contains("pixel-cell") && !s.classList.contains("cell-transparent")) {
-          const t = Number.parseInt(s.dataset.x ?? "0", 10), i = Number.parseInt(s.dataset.y ?? "0", 10), r = `${t}-${i}`, l = this._pixels.pixelGrid[r];
-          l && l.guess !== 1 && this.dispatchEvent(
+      if (this._hasMoved) {
+        this._hasMoved = !1;
+        return;
+      }
+      const t = e.target;
+      if (t.classList.contains("pixel-cell") && !t.classList.contains("cell-transparent")) {
+        const s = Number.parseInt(t.dataset.x ?? "0", 10), i = Number.parseInt(t.dataset.y ?? "0", 10), l = `${s}-${i}`, n = this._pixels.pixelGrid[l];
+        if (n) {
+          const r = this.getNextGuess(n.guess);
+          n.guess !== r && (t.classList.add("flash"), setTimeout(() => t.classList.remove("flash"), 150), this.dispatchEvent(
             new CustomEvent("pixelclick", {
-              detail: { x: t, y: i, guess: 1 },
+              detail: { x: s, y: i, guess: r },
               composed: !0,
               bubbles: !0
             })
-          );
+          ));
         }
-      } else this._longPressTimer && (clearTimeout(this._longPressTimer), this._longPressTimer = null);
+      }
       this._hasMoved = !1;
     }), this._container.addEventListener("pointercancel", () => {
-      this._longPressTimer && (clearTimeout(this._longPressTimer), this._longPressTimer = null), this._hasMoved = !1;
+      this._hasMoved = !1;
     }));
   }
 }

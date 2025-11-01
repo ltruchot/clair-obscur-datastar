@@ -27,10 +27,16 @@ export class PixelGridElement extends HTMLElement {
   private _lastDimensions: { columns: number; rows: number } | null = null;
   private _victory = false;
   private _isTouchDevice = false;
-  private _longPressTimer: NodeJS.Timeout | null = null;
   private _pointerStartX = 0;
   private _pointerStartY = 0;
   private _hasMoved = false;
+
+  private getNextGuess(currentGuess: PixelGuess): PixelGuess {
+    const cycle: PixelGuess[] = [-1, 1, 0];
+    const currentIndex = cycle.indexOf(currentGuess);
+    const nextIndex = (currentIndex + 1) % 3;
+    return cycle[nextIndex];
+  }
 
   static get observedAttributes(): readonly string[] {
     return ['pixels', 'last-change', 'victory'] as const;
@@ -140,36 +146,38 @@ export class PixelGridElement extends HTMLElement {
     style.textContent = `
       .pixel-grid {
         display: grid;
-        grid-template-columns: repeat(${columns}, 20px);
-        grid-template-rows: repeat(${rows}, 20px);
+        grid-template-columns: repeat(${columns}, 25px);
+        grid-template-rows: repeat(${rows}, 25px);
         gap: 0;
         touch-action: manipulation;
       }
       .pixel-cell {
-        width: 20px;
-        height: 20px;
+        color: black;
+        width: 25px;
+        height: 25px;
         border: 1px solid lightgray;
         box-sizing: border-box;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 16px;
+        font-family: 'Courier New', 'Courier', monospace;
+        font-size: 18px;
         font-weight: bold;
         touch-action: manipulation;
       }
-      .pixel-cell:hover {
-        opacity: 0.8;
-      }
       .pixel-cell:not(.cell-transparent) {
         border-color: #888;
+      }
+      .pixel-cell:not(.cell-transparent):hover {
+        border-color: #aaa;
       }
       .pixel-cell.cell-transparent {
         cursor: default;
         background-color: #2facc2;
       }
       .pixel-cell.cell-unguessed {
-        background-color: lightgray;
+        background-color: #d4c5b9;
       }
       .pixel-cell.cell-obscur {
         background-color: black;
@@ -189,6 +197,17 @@ export class PixelGridElement extends HTMLElement {
         pointer-events: none;
         cursor: default;
       }
+      .pixel-cell.flash {
+        animation: clickFlash 150ms ease-out;
+      }
+      @keyframes clickFlash {
+        0% {
+          box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.8);
+        }
+        100% {
+          box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0);
+        }
+      }
     `;
     return style;
   }
@@ -203,24 +222,28 @@ export class PixelGridElement extends HTMLElement {
 
   private _updateCells(): void {
     this._cellMap.forEach((cell, key) => {
-      const pixel = this._pixels.pixelGrid[key as PixelKey];
-
-      cell.className = 'pixel-cell';
-
-      if (!pixel) {
-        cell.classList.add('cell-transparent');
-        cell.textContent = '';
-      } else {
-        cell.textContent = pixel.n.toString();
-        if (pixel.guess === -1) {
-          cell.classList.add('cell-unguessed');
-        } else if (pixel.guess === 0) {
-          cell.classList.add('cell-obscur');
-        } else if (pixel.guess === 1) {
-          cell.classList.add('cell-clair');
-        }
-      }
+      this._updateSingleCell(cell, key as PixelKey);
     });
+  }
+
+  private _updateSingleCell(cell: HTMLDivElement, key: PixelKey): void {
+    const pixel = this._pixels.pixelGrid[key];
+
+    if (!pixel) {
+      cell.className = 'pixel-cell cell-transparent';
+      cell.textContent = '';
+      return;
+    }
+
+    cell.textContent = pixel.n.toString();
+
+    if (pixel.guess === -1) {
+      cell.className = 'pixel-cell cell-unguessed';
+    } else if (pixel.guess === 0) {
+      cell.className = 'pixel-cell cell-obscur';
+    } else {
+      cell.className = 'pixel-cell cell-clair';
+    }
   }
 
   private _applyPixelChange(change: PixelChange): void {
@@ -231,19 +254,10 @@ export class PixelGridElement extends HTMLElement {
 
     pixel.guess = change.guess;
 
-    const cell = this._cellMap.get(`${change.x}-${change.y}`);
+    const cell = this._cellMap.get(key);
     if (!cell) return;
 
-    cell.className = 'pixel-cell';
-    cell.textContent = pixel.n.toString();
-
-    if (change.guess === -1) {
-      cell.classList.add('cell-unguessed');
-    } else if (change.guess === 0) {
-      cell.classList.add('cell-obscur');
-    } else if (change.guess === 1) {
-      cell.classList.add('cell-clair');
-    }
+    this._updateSingleCell(cell, key);
   }
 
   private _updateVictoryState(): void {
@@ -269,39 +283,32 @@ export class PixelGridElement extends HTMLElement {
   private _attachDesktopListeners(): void {
     if (!this._container) return;
 
-    this._container.addEventListener('pointerdown', (event) => {
+    this._container.addEventListener('click', (event) => {
       event.preventDefault();
       const target = event.target as HTMLElement;
       if (target.classList.contains('pixel-cell') && !target.classList.contains('cell-transparent')) {
         const x = Number.parseInt(target.dataset.x ?? '0', 10);
         const y = Number.parseInt(target.dataset.y ?? '0', 10);
-
-        let guess: -1 | 0 | 1 = -1;
-        if (event.button === 0) {
-          guess = 1;
-        } else if (event.button === 2) {
-          guess = 0;
-        }
-
         const pixelKey: PixelKey = `${x}-${y}`;
         const currentPixel = this._pixels.pixelGrid[pixelKey];
 
-        if (!currentPixel || currentPixel.guess === guess) {
-          return;
-        }
+        if (!currentPixel) return;
+
+        const newGuess = this.getNextGuess(currentPixel.guess);
+
+        if (currentPixel.guess === newGuess) return;
+
+        target.classList.add('flash');
+        setTimeout(() => target.classList.remove('flash'), 150);
 
         this.dispatchEvent(
           new CustomEvent<PixelGridChangeEvent>('pixelclick', {
-            detail: { x, y, guess },
+            detail: { x, y, guess: newGuess },
             composed: true,
             bubbles: true,
           }),
         );
       }
-    });
-
-    this._container.addEventListener('contextmenu', (event) => {
-      event.preventDefault();
     });
   }
 
@@ -309,84 +316,59 @@ export class PixelGridElement extends HTMLElement {
     if (!this._container) return;
 
     this._container.addEventListener('pointerdown', (event) => {
-      event.preventDefault();
       const target = event.target as HTMLElement;
       if (target.classList.contains('pixel-cell') && !target.classList.contains('cell-transparent')) {
         this._pointerStartX = event.clientX;
         this._pointerStartY = event.clientY;
         this._hasMoved = false;
-
-        const x = Number.parseInt(target.dataset.x ?? '0', 10);
-        const y = Number.parseInt(target.dataset.y ?? '0', 10);
-        const pixelKey: PixelKey = `${x}-${y}`;
-
-        this._longPressTimer = setTimeout(() => {
-          if (!this._hasMoved) {
-            const currentPixel = this._pixels.pixelGrid[pixelKey];
-            if (currentPixel && currentPixel.guess !== 0) {
-              this.dispatchEvent(
-                new CustomEvent<PixelGridChangeEvent>('pixelclick', {
-                  detail: { x, y, guess: 0 },
-                  composed: true,
-                  bubbles: true,
-                }),
-              );
-            }
-          }
-          this._longPressTimer = null;
-        }, 300);
       }
     });
 
     this._container.addEventListener('pointermove', (event) => {
-      if (this._longPressTimer) {
-        const moveThreshold = 10;
-        const deltaX = Math.abs(event.clientX - this._pointerStartX);
-        const deltaY = Math.abs(event.clientY - this._pointerStartY);
+      const moveThreshold = 10;
+      const deltaX = Math.abs(event.clientX - this._pointerStartX);
+      const deltaY = Math.abs(event.clientY - this._pointerStartY);
 
-        if (deltaX > moveThreshold || deltaY > moveThreshold) {
-          this._hasMoved = true;
-          clearTimeout(this._longPressTimer);
-          this._longPressTimer = null;
-        }
+      if (deltaX > moveThreshold || deltaY > moveThreshold) {
+        this._hasMoved = true;
       }
     });
 
     this._container.addEventListener('pointerup', (event) => {
-      if (this._longPressTimer && !this._hasMoved) {
-        clearTimeout(this._longPressTimer);
-        this._longPressTimer = null;
+      if (this._hasMoved) {
+        this._hasMoved = false;
+        return;
+      }
 
-        const target = event.target as HTMLElement;
-        if (target.classList.contains('pixel-cell') && !target.classList.contains('cell-transparent')) {
-          const x = Number.parseInt(target.dataset.x ?? '0', 10);
-          const y = Number.parseInt(target.dataset.y ?? '0', 10);
-          const pixelKey: PixelKey = `${x}-${y}`;
-          const currentPixel = this._pixels.pixelGrid[pixelKey];
+      const target = event.target as HTMLElement;
+      if (target.classList.contains('pixel-cell') && !target.classList.contains('cell-transparent')) {
+        const x = Number.parseInt(target.dataset.x ?? '0', 10);
+        const y = Number.parseInt(target.dataset.y ?? '0', 10);
+        const pixelKey: PixelKey = `${x}-${y}`;
+        const currentPixel = this._pixels.pixelGrid[pixelKey];
 
-          if (currentPixel && currentPixel.guess !== 1) {
+        if (currentPixel) {
+          const newGuess = this.getNextGuess(currentPixel.guess);
+
+          if (currentPixel.guess !== newGuess) {
+            target.classList.add('flash');
+            setTimeout(() => target.classList.remove('flash'), 150);
+
             this.dispatchEvent(
               new CustomEvent<PixelGridChangeEvent>('pixelclick', {
-                detail: { x, y, guess: 1 },
+                detail: { x, y, guess: newGuess },
                 composed: true,
                 bubbles: true,
               }),
             );
           }
         }
-      } else if (this._longPressTimer) {
-        clearTimeout(this._longPressTimer);
-        this._longPressTimer = null;
       }
 
       this._hasMoved = false;
     });
 
     this._container.addEventListener('pointercancel', () => {
-      if (this._longPressTimer) {
-        clearTimeout(this._longPressTimer);
-        this._longPressTimer = null;
-      }
       this._hasMoved = false;
     });
   }
