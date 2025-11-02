@@ -26,7 +26,6 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
   return (
     <BaseLayout title="Clair Obscur Datastar">
       <div
-        class="flex"
         data-init="@get('/subscribe-to-events', {openWhenHidden: true})"
         data-signals:_pixelgrid={pixelGridJSON}
         data-signals:_victory={victoryJSON}>
@@ -38,6 +37,20 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
               <font-picker
                 data-signals:font_changed
                 data-on:fontchange="$font_changed = event.detail.value; @post('/font-change')"></font-picker>
+              <button
+                aria-label="Cheat"
+                title="This will reset all wrong guesses"
+                data-on:click="confirm('Reset all errored pixels?') ? @post('/cheat-pixel-grid') : null"
+                data-attr:disabled="JSON.parse($_victory)">
+                🔮
+              </button>
+              <button
+                aria-label="High scores"
+                title="This will show"
+                data-on:click="confirm('Reset all errored pixels?') ? @post('/cheat-pixel-grid') : null"
+                data-attr:disabled="JSON.parse($_victory)">
+                🏆
+              </button>
             </summary>
             <div class="p-10">
               You are a{' '}
@@ -73,19 +86,6 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
                     paint in <strong>obscur</strong>
                   </div>
                 </div>
-                <button
-                  title="This will reset all wrong guesses"
-                  data-on:click="confirm('Reset all errored pixels?') ? @post('/cheat-pixel-grid') : null"
-                  data-attr:disabled="JSON.parse($_victory)">
-                  Cheat
-                </button>
-                <button
-                  class="coral"
-                  title="This will show"
-                  data-on:click="confirm('Reset all errored pixels?') ? @post('/cheat-pixel-grid') : null"
-                  data-attr:disabled="JSON.parse($_victory)">
-                  High scores
-                </button>
                 <victory-stars data-attr:won="$_victory.toString()"></victory-stars>
               </menu>
             </details>

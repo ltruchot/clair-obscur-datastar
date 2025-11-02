@@ -6,22 +6,38 @@ body {
   margin: 0;
   background-color: #150a24;
   color: #f0f0f0;
+  padding-left: 3px;
 }
 
 main {
   min-height: 100vh;
   box-sizing: border-box;
+  margin-left: 25px;
+  transition: margin-left 0.4s ease-out;
+}
+
+body:has(aside details[open]) main {
+  margin-left: 250px;
 }
 
 aside {
   box-sizing: border-box;
   padding: 0;
+  margin: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 100;
 }
 
 aside details {
-  width: 25px;
+  width: 28px;
   overflow: hidden;
   transition: width 0.4s ease-out;
+  height: 100%;
+  background-color: #150a24;
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.6);
 }
 
 aside details[open] {
@@ -32,16 +48,20 @@ aside summary {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  cursor: pointer;
+  cursor: default;
   background-color: transparent;
   border: none;
   user-select: none;
   width: fit-content;
+  padding: 0;
+  padding-top: 3px;
+  padding-left: 3px;
 }
 
 aside details[open] summary {
   flex-direction: row;
   gap: 10px;
+  align-items: center;
 }
 
 aside summary::marker,
@@ -60,6 +80,20 @@ aside summary font-picker #font-picker-button {
   font-size: 16px;
 }
 
+aside summary button {
+  flex-shrink: 0;
+  width: 25px;
+  padding: 0;
+  font-size: 19px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow:
+    0 0 4px rgba(255, 255, 255, 1),
+    0 0 8px rgba(255, 255, 255, 0.8),
+    0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
 .aside-menu-icon {
   width: 25px;
   height: 25px;
@@ -73,12 +107,15 @@ aside summary font-picker #font-picker-button {
 
 .aside-menu-icon::before,
 .aside-menu-icon::after {
-  content: "";
+  content: '';
   position: absolute;
   width: 18px;
   height: 2px;
   background-color: #f0f0f0;
-  transition: transform 0.3s ease-out, top 0.3s ease-out, box-shadow 0.3s ease-out;
+  transition:
+    transform 0.3s ease-out,
+    top 0.3s ease-out,
+    box-shadow 0.3s ease-out;
 }
 
 .aside-menu-icon::before {
@@ -143,15 +180,15 @@ button {
 button:hover {
   background-color: #d4bfff;
   border-color: #b794f6;
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
 }
 
 button:active {
   background-color: #9f7dd9;
   border-color: #b794f6;
-  transform: translate(3px, 3px);
-  box-shadow: none;
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
 }
 
 button.cyan {
@@ -170,18 +207,66 @@ button.cyan:active {
 }
 
 button.coral {
-  background-color: #FF6B35;
-  border-color: #FF8A65;
+  background-color: #ff6b35;
+  border-color: #ff8a65;
 }
 
 button.coral:hover {
-  background-color: #FF8A65;
-  border-color: #FF6B35;
+  background-color: #ff8a65;
+  border-color: #ff6b35;
 }
 
 button.coral:active {
-  background-color: #E64A19;
-  border-color: #FF6B35;
+  background-color: #e64a19;
+  border-color: #ff6b35;
+}
+
+button.dark {
+  background-color: #2c2c2c;
+  border-color: #444444;
+  color: #f0f0f0;
+}
+
+button.dark:hover {
+  background-color: #444444;
+  border-color: #2c2c2c;
+}
+
+button.dark:active {
+  background-color: #1a1a1a;
+  border-color: #2c2c2c;
+}
+
+button.beige {
+  background-color: #f5deb3;
+  border-color: #ffe4c4;
+  color: #150a24;
+}
+
+button.beige:hover {
+  background-color: #ffe4c4;
+  border-color: #f5deb3;
+}
+
+button.beige:active {
+  background-color: #deb887;
+  border-color: #f5deb3;
+}
+
+button.lime {
+  background-color: #9ccc65;
+  border-color: #aed581;
+  color: #150a24;
+}
+
+button.lime:hover {
+  background-color: #aed581;
+  border-color: #9ccc65;
+}
+
+button.lime:active {
+  background-color: #7cb342;
+  border-color: #9ccc65;
 }
 
 menu {
@@ -215,6 +300,7 @@ h2 {
 .pixel-grid-container {
   position: relative;
   width: 100%;
+  overflow-x: auto;
 }
 
 .flex {
@@ -261,4 +347,7 @@ h2 {
   font-size: 18px;
   font-weight: bold;
   background-color: #d4c5b9;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.3);
+  user-select: none;
 }

@@ -62,7 +62,7 @@ class f extends HTMLElement {
           color: #150a24;
         }
       </style>
-      <button type="button" id="font-picker-button">&#119808;</button>
+      <button type="button" id="font-picker-button">✏️</button>
       <div id="font-picker-popover" popover>
         <div class="font-grid">
           ${this.colors.map((t) => `<button type="submit" class="font-cell-to-pick" data-font="color:${t}" style="background-color: ${t}"></button>`).join("")}
