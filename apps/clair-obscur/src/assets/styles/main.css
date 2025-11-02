@@ -13,7 +13,7 @@ main {
   min-height: 100vh;
   box-sizing: border-box;
   margin-left: 25px;
-  transition: margin-left 0.4s ease-out;
+  transition: margin-left 0.2s ease-out;
 }
 
 body:has(aside details[open]) main {
@@ -34,7 +34,7 @@ aside {
 aside details {
   width: 28px;
   overflow: hidden;
-  transition: width 0.4s ease-out;
+  transition: width 0.2s ease-out;
   height: 100%;
   background-color: #150a24;
   box-shadow: 4px 0 15px rgba(0, 0, 0, 0.6);
@@ -45,23 +45,70 @@ aside details[open] {
 }
 
 aside summary {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  cursor: default;
+  position: relative;
+  cursor: pointer;
   background-color: transparent;
   border: none;
   user-select: none;
   width: fit-content;
-  padding: 0;
-  padding-top: 3px;
-  padding-left: 3px;
+  padding: 3px 0 0 3px;
+  height: 130px;
+  list-style: none;
+}
+
+aside summary::-webkit-details-marker {
+  display: none;
 }
 
 aside details[open] summary {
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
+  height: 30px;
+  cursor: default;
+}
+
+aside summary > * {
+  position: absolute;
+  transition: top 0.2s ease-out, left 0.2s ease-out;
+}
+
+aside summary > *:nth-child(1) {
+  position: static;
+  transition: none;
+}
+
+aside summary > *:nth-child(2) {
+  top: 30px;
+  left: 3px;
+  transition-delay: 0.02s;
+}
+
+aside summary > *:nth-child(3) {
+  top: 60px;
+  left: 3px;
+  transition-delay: 0.04s;
+}
+
+aside summary > *:nth-child(4) {
+  top: 90px;
+  left: 3px;
+  transition-delay: 0.06s;
+}
+
+aside details[open] summary > *:nth-child(2) {
+  top: 3px;
+  left: 35px;
+  transition-delay: 0s;
+}
+
+aside details[open] summary > *:nth-child(3) {
+  top: 3px;
+  left: 70px;
+  transition-delay: 0s;
+}
+
+aside details[open] summary > *:nth-child(4) {
+  top: 3px;
+  left: 105px;
+  transition-delay: 0s;
 }
 
 aside summary::marker,
@@ -142,6 +189,31 @@ aside .p-10 {
   padding: 10px;
   width: 250px;
   box-sizing: border-box;
+  overflow-y: auto;
+  max-height: calc(100vh - 40px);
+  scrollbar-width: none;
+}
+
+aside .p-10::-webkit-scrollbar {
+  display: none;
+}
+
+aside ul {
+  padding-left: 10px;
+  list-style: none;
+}
+
+aside li {
+  position: relative;
+  padding-left: 15px;
+}
+
+aside li::before {
+  content: "✦";
+  position: absolute;
+  left: 0;
+  color: #b794f6;
+  font-size: 0.85em;
 }
 
 a {

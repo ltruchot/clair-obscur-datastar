@@ -53,7 +53,7 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
               </button>
             </summary>
             <div class="p-10">
-              You are a{' '}
+              You are{' '}
               <strong id={DSID.MY_SESSION} style={`color: ${color}; font-family: ${fontFamily};`}>
                 {animalName}
               </strong>
