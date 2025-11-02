@@ -469,6 +469,72 @@ h2 {
   font-weight: normal;
 }
 
+header summary {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  margin-bottom: 5px;
+}
+
+header summary::-webkit-details-marker {
+  display: none;
+}
+
+.header-collapse-icon {
+  width: 25px;
+  height: 25px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.header-collapse-icon::before,
+.header-collapse-icon::after {
+  content: '';
+  position: absolute;
+  width: 9px;
+  height: 2px;
+  background-color: #f0f0f0;
+  transition:
+    transform 0.3s ease-out,
+    top 0.3s ease-out,
+    left 0.3s ease-out;
+}
+
+.header-collapse-icon::before {
+  transform: rotate(45deg);
+  transform-origin: right center;
+  left: 7px;
+  top: 12px;
+}
+
+.header-collapse-icon::after {
+  transform: rotate(-45deg);
+  transform-origin: left center;
+  left: 16px;
+  top: 12px;
+}
+
+header details[open] .header-collapse-icon::before {
+  transform: rotate(45deg);
+  transform-origin: left center;
+  left: 8px;
+  top: 6px;
+}
+
+header details[open] .header-collapse-icon::after {
+  transform: rotate(-45deg);
+  transform-origin: left center;
+  left: 8px;
+  top: 18px;
+}
+
 .pixel-grid-container {
   position: relative;
   width: 100%;

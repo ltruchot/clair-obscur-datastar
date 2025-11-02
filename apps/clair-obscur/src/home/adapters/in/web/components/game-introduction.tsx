@@ -1,10 +1,6 @@
 export const GameIntroduction = () => {
   return (
     <>
-      <h1>
-        <div class="clair">Clair</div>
-        <div class="obscur">Obscur</div>
-      </h1>
       <h2>
         A collaborative minesweeper game inspired by{' '}
         <a href="https://store.steampowered.com/app/3083300/Proverbs/" target="_blank">

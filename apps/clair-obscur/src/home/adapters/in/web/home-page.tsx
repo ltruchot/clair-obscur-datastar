@@ -77,7 +77,13 @@ const HomePage: FC<HomePageProps> = ({
         <main>
           <header>
             <details {...(defaultDevice === 'desktop' ? { open: true } : {})}>
-              <summary></summary>
+              <summary>
+                <h1>
+                  <div class="clair">Clair</div>
+                  <div class="obscur">Obscur</div>
+                </h1>
+                <span class="header-collapse-icon"></span>
+              </summary>
               <GameIntroduction />
               <menu>
                 <div class="flex gap-10">
