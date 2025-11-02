@@ -33,7 +33,12 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
         {/* Session list side */}
         <aside aria-label="Active users">
           <details open>
-            <summary></summary>
+            <summary>
+              <span class="aside-menu-icon"></span>
+              <font-picker
+                data-signals:font_changed
+                data-on:fontchange="$font_changed = event.detail.value; @post('/font-change')"></font-picker>
+            </summary>
             <div class="p-10">
               You are a{' '}
               <strong id={DSID.MY_SESSION} style={`color: ${color}; font-family: ${fontFamily};`}>
@@ -68,9 +73,6 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
                     paint in <strong>obscur</strong>
                   </div>
                 </div>
-                <font-picker
-                  data-signals:font_changed
-                  data-on:fontchange="$font_changed = event.detail.value; @post('/font-change')"></font-picker>
                 <button
                   title="This will reset all wrong guesses"
                   data-on:click="confirm('Reset all errored pixels?') ? @post('/cheat-pixel-grid') : null"

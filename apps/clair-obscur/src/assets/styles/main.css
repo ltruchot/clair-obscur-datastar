@@ -18,8 +18,93 @@ aside {
   padding: 0;
 }
 
-aside:has(details[open]) {
-  min-width: 250px;
+aside details {
+  width: 25px;
+  overflow: hidden;
+  transition: width 0.4s ease-out;
+}
+
+aside details[open] {
+  width: 250px;
+}
+
+aside summary {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  user-select: none;
+  width: fit-content;
+}
+
+aside details[open] summary {
+  flex-direction: row;
+  gap: 10px;
+}
+
+aside summary::marker,
+aside summary::-webkit-details-marker {
+  display: none;
+}
+
+aside summary font-picker {
+  flex-shrink: 0;
+}
+
+aside summary font-picker #font-picker-button {
+  width: 25px;
+  height: 25px;
+  padding: 0;
+  font-size: 16px;
+}
+
+.aside-menu-icon {
+  width: 25px;
+  height: 25px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.aside-menu-icon::before,
+.aside-menu-icon::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 2px;
+  background-color: #f0f0f0;
+  transition: transform 0.3s ease-out, top 0.3s ease-out, box-shadow 0.3s ease-out;
+}
+
+.aside-menu-icon::before {
+  top: 5px;
+  box-shadow: 0 8px 0 #f0f0f0;
+}
+
+.aside-menu-icon::after {
+  top: 21px;
+}
+
+aside details[open] .aside-menu-icon::before {
+  top: 11px;
+  transform: rotate(45deg);
+  box-shadow: 0 0 0 transparent;
+}
+
+aside details[open] .aside-menu-icon::after {
+  top: 11px;
+  transform: rotate(-45deg);
+}
+
+aside .p-10 {
+  padding: 10px;
+  width: 250px;
+  box-sizing: border-box;
 }
 
 a {
