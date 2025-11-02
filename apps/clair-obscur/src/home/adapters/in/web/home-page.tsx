@@ -39,9 +39,6 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
               <strong id={DSID.MY_SESSION} style={`color: ${color}; font-family: ${fontFamily};`}>
                 {animalName}
               </strong>
-              <font-picker
-                data-signals:font_changed
-                data-on:fontchange="$font_changed = event.detail.value; @post('/font-change')"></font-picker>
               <div>All animals on this channel:</div>
               <ListAllSessions id={DSID.ALL_SESSIONS} sessionItems={sessionItems} />
             </div>
@@ -56,27 +53,36 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
               <GameIntroduction />
               <menu>
                 <div class="flex gap-10">
-                  <p class="clair">
+                  <div class="clair">
                     <responsive-content>
                       <span slot="mobile">[1st tap]</span>
                       <strong slot="desktop">[1st click]</strong>
                     </responsive-content>{' '}
                     paint in <strong>clair</strong>
-                  </p>
-                  <p class="obscur">
+                  </div>
+                  <div class="obscur">
                     <responsive-content>
                       <span slot="mobile">[2nd tap]</span>
                       <strong slot="desktop">[2nd click]</strong>
                     </responsive-content>{' '}
                     paint in <strong>obscur</strong>
-                  </p>
+                  </div>
                 </div>
+                <font-picker
+                  data-signals:font_changed
+                  data-on:fontchange="$font_changed = event.detail.value; @post('/font-change')"></font-picker>
                 <button
-                  className="warning"
                   title="This will reset all wrong guesses"
                   data-on:click="confirm('Reset all errored pixels?') ? @post('/cheat-pixel-grid') : null"
                   data-attr:disabled="JSON.parse($_victory)">
                   Cheat
+                </button>
+                <button
+                  class="coral"
+                  title="This will show"
+                  data-on:click="confirm('Reset all errored pixels?') ? @post('/cheat-pixel-grid') : null"
+                  data-attr:disabled="JSON.parse($_victory)">
+                  High scores
                 </button>
                 <victory-stars data-attr:won="$_victory.toString()"></victory-stars>
               </menu>

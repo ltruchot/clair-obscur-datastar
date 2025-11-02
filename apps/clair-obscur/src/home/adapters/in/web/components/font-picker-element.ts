@@ -2,15 +2,15 @@ export class FontPickerElement extends HTMLElement {
   private readonly colors = [
     '#ffffff',
     '#E60000',
-    '#FF4500',
-    '#F57F17',
+    '#FF6B35',
     '#F9A825',
+    '#d4c5b9',
     '#7CB342',
     '#00A000',
-    '#00BCD4',
+    '#00bcd4',
     '#2196F3',
     '#F5DEB3',
-    '#9C27B0',
+    '#b794f6',
     '#D500F9',
   ];
   private readonly fontFamilies = [
@@ -28,19 +28,9 @@ export class FontPickerElement extends HTMLElement {
   private render(): void {
     this.innerHTML = `
       <style>
-        #font-picker-button {
-          background: white;
-          color: black;
-          border: 1px solid black;
-          cursor: pointer;
-          font-size: 0.8rem;
-          padding: 0 2px;
-          border-radius: 4px;
-          display: inline-block;
-        }
         [popover] {
-          border: 1px solid #ccc;
-          border-radius: 4px;
+          border: 1px solid #150a24;
+          background-color: #f0f0f0;
           padding: 8px;
           margin: 0;
           opacity: 0;
@@ -55,6 +45,8 @@ export class FontPickerElement extends HTMLElement {
           gap: 4px;
         }
         .font-cell-to-pick {
+          background-color: #f0f0f0;
+          color: #150a24;
           width: 32px;
           height: 32px;
           border: 1px solid #ddd;
@@ -69,9 +61,11 @@ export class FontPickerElement extends HTMLElement {
         }
         .font-cell-to-pick:hover {
           border-color: #999;
+          background-color: #f0f0f0;
+          color: #150a24;
         }
       </style>
-      <div id="font-picker-button">&#119808;</div>
+      <button type="button" id="font-picker-button">&#119808;</button>
       <div id="font-picker-popover" popover>
         <div class="font-grid">
           ${this.colors.map((color) => `<button type="submit" class="font-cell-to-pick" data-font="color:${color}" style="background-color: ${color}"></button>`).join('')}

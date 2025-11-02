@@ -39,6 +39,7 @@ a:visited {
 
 p {
   margin: 0;
+  margin-bottom: 5px;
 }
 
 button {
@@ -66,6 +67,36 @@ button:active {
   border-color: #b794f6;
   transform: translate(3px, 3px);
   box-shadow: none;
+}
+
+button.cyan {
+  background-color: #00bcd4;
+  border-color: #4dd0e1;
+}
+
+button.cyan:hover {
+  background-color: #4dd0e1;
+  border-color: #00bcd4;
+}
+
+button.cyan:active {
+  background-color: #0097a7;
+  border-color: #00bcd4;
+}
+
+button.coral {
+  background-color: #FF6B35;
+  border-color: #FF8A65;
+}
+
+button.coral:hover {
+  background-color: #FF8A65;
+  border-color: #FF6B35;
+}
+
+button.coral:active {
+  background-color: #E64A19;
+  border-color: #FF6B35;
 }
 
 menu {

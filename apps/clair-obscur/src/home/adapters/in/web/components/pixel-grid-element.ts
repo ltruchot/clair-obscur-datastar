@@ -174,7 +174,7 @@ export class PixelGridElement extends HTMLElement {
       }
       .pixel-cell.cell-transparent {
         cursor: default;
-        background-color: #2facc2;
+        background-color: #00bcd4;
       }
       .pixel-cell.cell-unguessed {
         background-color: #d4c5b9;

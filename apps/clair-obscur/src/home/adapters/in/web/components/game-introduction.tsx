@@ -12,10 +12,11 @@ export const GameIntroduction = () => {
         </a>
       </h2>
       <section aria-label="Game rules">
-        <p>
+        <p class="m-2">
           <span class="pixel-cell">4</span> tell how many <strong class="clair">clair pixels</strong> are within this
-          pixel and its neighbors
-          <br />
+          pixel and its 8 neighbors
+        </p>
+        <p>
           <span class="pixel-cell">9</span> means{' '}
           <span class="clair">
             this pixel and its neighbors are all <strong>clair</strong>
