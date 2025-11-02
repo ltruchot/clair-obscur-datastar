@@ -52,13 +52,12 @@ export class VictoryStarsElement extends HTMLElement {
   }
 
   private async _initializeParticles(): Promise<void> {
-    console.log('initializeParticles');
     if (!this._particlesInitialized) {
       await loadConfettiPreset(tsParticles);
       await loadStarShape(tsParticles);
 
       const defaults = {
-        ticks: 500,
+        ticks: 300,
         decay: 0.94,
         startVelocity: 30,
         gravity: 0,
@@ -90,14 +89,14 @@ export class VictoryStarsElement extends HTMLElement {
                 value: 0,
               },
               color: {
-                value: ['#FFE400', '#FFBD00', '#E89400', '#FFCA6C', '#FDFFB8'],
+                value: ['#FFE400', '#FFBD00', '#E89400', '#FFCA6C', '#b794f6'],
               },
               shape: {
                 type: ['star', 'circle'],
               },
               life: {
                 duration: {
-                  value: defaults.ticks / 60,
+                  value: (i === 3 ? 600 : defaults.ticks) / 60,
                 },
               },
               move: {
@@ -203,57 +202,28 @@ export class VictoryStarsElement extends HTMLElement {
   }
 
   private _render(): void {
-    console.log('render');
-    const style = document.createElement('style');
-    style.textContent = `
-      .victory-container {
-        width: fit-content;
-        margin: 0 auto;
-        background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.5s ease-in-out;
-        font-size: 35px;
-
-      }
-      .victory-container.visible {
-        opacity: 1;
-      }
-    `;
-
     this._container = document.createElement('div');
-    this._container.className = 'victory-container';
-    this._container.textContent = '⭐⭐⭐⭐🌟✨ Victory ✨🌟⭐⭐⭐⭐';
-
-    this._shadowRoot.replaceChildren(style, this._container);
+    this._shadowRoot.replaceChildren(this._container);
     this._updateDisplay();
   }
 
   private _updateDisplay(): void {
-    console.log('updateDisplay');
     if (!this._container) return;
 
     if (this._won) {
       this._timeoutIds.forEach((id) => clearTimeout(id));
       this._timeoutIds = [];
 
-      this._container.classList.add('visible');
-
-      this._timeoutIds.push(setTimeout(() => void this._shoot(0), 2000));
-      this._timeoutIds.push(setTimeout(() => void this._shoot(1), 2_500));
-      this._timeoutIds.push(setTimeout(() => void this._shoot(2), 3_500));
-      this._timeoutIds.push(setTimeout(() => void this._shoot(3), 5_000));
+      this._timeoutIds.push(setTimeout(() => void this._shoot(0), 2_000));
+      this._timeoutIds.push(setTimeout(() => void this._shoot(1), 5_000));
+      this._timeoutIds.push(setTimeout(() => void this._shoot(2), 7_500));
+      this._timeoutIds.push(setTimeout(() => void this._shoot(3), 10_000));
     } else {
       this._cleanupAnimation();
     }
   }
 
   private _cleanupAnimation(): void {
-    this._container?.classList.remove('visible');
-
     this._timeoutIds.forEach((id) => clearTimeout(id));
     this._timeoutIds = [];
 
@@ -266,7 +236,6 @@ export class VictoryStarsElement extends HTMLElement {
   }
 
   private _shoot(index: number): void {
-    console.log('shoot', index);
     const particleContainer = this._particleContainers[index];
     if (!particleContainer || typeof particleContainer !== 'object') return;
 

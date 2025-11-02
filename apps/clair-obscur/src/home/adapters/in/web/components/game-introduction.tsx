@@ -2,8 +2,8 @@ export const GameIntroduction = () => {
   return (
     <>
       <h1>
-        <div class="clair">Clair&nbsp;</div>
-        <div class="obscur">&nbsp;Obscur</div>
+        <div class="clair">Clair</div>
+        <div class="obscur">Obscur</div>
       </h1>
       <h2>
         A collaborative minesweeper game inspired by{' '}
@@ -13,14 +13,16 @@ export const GameIntroduction = () => {
       </h2>
       <section aria-label="Game rules">
         <p class="m-2">
-          <span class="pixel-cell">4</span> tell how many <strong class="clair">clair pixels</strong> are within this
-          pixel and its 8 neighbors
+          Mark numbered pixels like <span class="pixel-cell">3</span> as <strong class="clair">clair</strong> or{' '}
+          <strong class="obscur">obscur</strong>
+        </p>
+        <p class="m-2">
+          <span class="pixel-cell">4</span> is <strong class="clair">4 clairs</strong> among the 9 (itself + 8
+          neighbors)
         </p>
         <p>
-          <span class="pixel-cell">9</span> means{' '}
-          <span class="clair">
-            this pixel and its neighbors are all <strong>clair</strong>
-          </span>
+          <span class="pixel-cell">9</span> means <strong class="clair">9 clairs</strong>, while{' '}
+          <span class="pixel-cell">0</span> means <strong class="obscur">9 obscurs</strong>
         </p>
       </section>
     </>

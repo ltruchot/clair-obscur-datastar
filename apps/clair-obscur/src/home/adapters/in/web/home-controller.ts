@@ -22,6 +22,21 @@ export class HomeController {
   ) {}
 
   /**
+   * Detect if the user is on a mobile device using modern Client Hints with User-Agent fallback
+   * @param c - The Hono context
+   * @returns true if mobile, false if desktop
+   */
+  private detectMobileDevice(c: Context): boolean {
+    const clientHintMobile = c.req.header('sec-ch-ua-mobile');
+    if (clientHintMobile !== undefined) {
+      return clientHintMobile === '?1';
+    }
+
+    const userAgent = c.req.header('user-agent') ?? '';
+    return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
+  }
+
+  /**
    * Populate and render the home page
    * @param c - The Hono context
    * @returns A HTML string representing the home page
@@ -33,8 +48,9 @@ export class HomeController {
     const sessionItems = await this.sessionService.extractSessionListItems(session);
     const pixelData = { pixelGrid: this.pixelGridQueryService.getPixelGrid(), timestamp: new Date().getTime() };
     const victory = this.pixelGridQueryService.checkVictory();
+    const isMobile = this.detectMobileDevice(c);
 
-    return c.html(getHomeHTMLPage(animalName, color, fontFamily, sessionItems, pixelData, victory));
+    return c.html(getHomeHTMLPage(animalName, color, fontFamily, sessionItems, pixelData, victory, isMobile));
   }
 
   broadcastEvents(c: Context): Response {

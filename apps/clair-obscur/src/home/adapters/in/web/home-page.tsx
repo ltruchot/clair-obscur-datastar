@@ -18,20 +18,30 @@ interface HomePageProps {
   sessionItems: SessionItem[];
   pixelData: PixelGridChange;
   victory: boolean;
+  defaultDevice: 'mobile' | 'desktop';
 }
 
-const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionItems, pixelData, victory }) => {
+const HomePage: FC<HomePageProps> = ({
+  animalName,
+  color,
+  fontFamily,
+  sessionItems,
+  pixelData,
+  victory,
+  defaultDevice,
+}) => {
   const pixelGridJSON = `'${JSON.stringify(pixelData)}'`;
   const victoryJSON = `'${victory.toString()}'`;
   return (
     <BaseLayout title="Clair Obscur Datastar">
+      <victory-stars data-attr:won="$_victory.toString()"></victory-stars>
       <div
         data-init="@get('/subscribe-to-events', {openWhenHidden: true})"
         data-signals:_pixelgrid={pixelGridJSON}
         data-signals:_victory={victoryJSON}>
         {/* Session list side */}
         <aside aria-label="Active users">
-          <details open>
+          <details {...(defaultDevice === 'desktop' ? { open: true } : {})}>
             <summary>
               <span class="aside-menu-icon"></span>
               <font-picker
@@ -66,27 +76,26 @@ const HomePage: FC<HomePageProps> = ({ animalName, color, fontFamily, sessionIte
         {/* Main game side */}
         <main>
           <header>
-            <details open>
+            <details {...(defaultDevice === 'desktop' ? { open: true } : {})}>
               <summary></summary>
               <GameIntroduction />
               <menu>
                 <div class="flex gap-10">
                   <div class="clair">
-                    <responsive-content>
+                    <responsive-content default={defaultDevice}>
                       <span slot="mobile">[1st tap]</span>
                       <strong slot="desktop">[1st click]</strong>
                     </responsive-content>{' '}
                     paint in <strong>clair</strong>
                   </div>
                   <div class="obscur">
-                    <responsive-content>
+                    <responsive-content default={defaultDevice}>
                       <span slot="mobile">[2nd tap]</span>
                       <strong slot="desktop">[2nd click]</strong>
                     </responsive-content>{' '}
                     paint in <strong>obscur</strong>
                   </div>
                 </div>
-                <victory-stars data-attr:won="$_victory.toString()"></victory-stars>
               </menu>
             </details>
           </header>
@@ -111,7 +120,9 @@ export const getHomeHTMLPage = (
   sessionItems: SessionItem[],
   pixelData: PixelGridChange,
   victory: boolean,
+  isMobile: boolean,
 ): string => {
+  const defaultDevice: 'mobile' | 'desktop' = isMobile ? 'mobile' : 'desktop';
   return renderToString(
     <HomePage
       animalName={animalName}
@@ -120,6 +131,7 @@ export const getHomeHTMLPage = (
       sessionItems={sessionItems}
       pixelData={pixelData}
       victory={victory}
+      defaultDevice={defaultDevice}
     />,
   );
 };

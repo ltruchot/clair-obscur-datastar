@@ -114,7 +114,7 @@ export class PixelGridEventStore {
     const currentState = this.read();
     this.subscribers.forEach((subscriber) => subscriber({ ...currentState, victory }));
     if (victory && this.resetTimeoutId === null) {
-      this.resetTimeoutId = setTimeout(() => this.reset(), 12_000);
+      this.resetTimeoutId = setTimeout(() => this.reset(), 20_000);
     }
   }
 
@@ -123,7 +123,7 @@ export class PixelGridEventStore {
     const victory = this._checkVictory();
     this.subscribers.forEach((subscriber) => subscriber({ ...currentState, victory }));
     if (victory && this.resetTimeoutId === null) {
-      this.resetTimeoutId = setTimeout(() => this.reset(), 12_000);
+      this.resetTimeoutId = setTimeout(() => this.reset(), 20_000);
     }
   }
 
