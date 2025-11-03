@@ -84,25 +84,27 @@ const HomePage: FC<HomePageProps> = ({
                 </h1>
                 <span class="header-collapse-icon"></span>
               </summary>
-              <GameIntroduction />
-              <menu>
-                <div class="flex gap-10">
-                  <div class="clair">
-                    <responsive-content default={defaultDevice}>
-                      <span slot="mobile">[1st tap]</span>
-                      <strong slot="desktop">[1st click]</strong>
-                    </responsive-content>{' '}
-                    paint in <strong>clair</strong>
+              <div class="header-content-wrapper">
+                <GameIntroduction />
+                <menu>
+                  <div class="flex gap-10">
+                    <div class="clair">
+                      <responsive-content default={defaultDevice}>
+                        <span slot="mobile">[1st tap]</span>
+                        <strong slot="desktop">[1st click]</strong>
+                      </responsive-content>{' '}
+                      paint in <strong>clair</strong>
+                    </div>
+                    <div class="obscur">
+                      <responsive-content default={defaultDevice}>
+                        <span slot="mobile">[2nd tap]</span>
+                        <strong slot="desktop">[2nd click]</strong>
+                      </responsive-content>{' '}
+                      paint in <strong>obscur</strong>
+                    </div>
                   </div>
-                  <div class="obscur">
-                    <responsive-content default={defaultDevice}>
-                      <span slot="mobile">[2nd tap]</span>
-                      <strong slot="desktop">[2nd click]</strong>
-                    </responsive-content>{' '}
-                    paint in <strong>obscur</strong>
-                  </div>
-                </div>
-              </menu>
+                </menu>
+              </div>
             </details>
           </header>
           <section class="pixel-grid-container">

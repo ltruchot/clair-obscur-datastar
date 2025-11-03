@@ -469,6 +469,16 @@ h2 {
   font-weight: normal;
 }
 
+header details {
+  height: 30px;
+  overflow: hidden;
+  transition: height 0.2s ease-out;
+}
+
+header details[open] {
+  height: 200px;
+}
+
 header summary {
   display: flex;
   align-items: flex-start;
@@ -476,7 +486,6 @@ header summary {
   cursor: pointer;
   list-style: none;
   user-select: none;
-  margin-bottom: 5px;
 }
 
 header summary::-webkit-details-marker {
