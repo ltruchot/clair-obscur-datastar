@@ -54,11 +54,7 @@ const HomePage: FC<HomePageProps> = ({
                 data-attr:disabled="JSON.parse($_victory)">
                 🔮
               </button>
-              <button
-                aria-label="High scores"
-                title="This will show"
-                data-on:click="confirm('Reset all errored pixels?') ? @post('/cheat-pixel-grid') : null"
-                data-attr:disabled="JSON.parse($_victory)">
+              <button aria-label="High scores" title="This will show the high scores" disabled={true}>
                 🏆
               </button>
             </summary>
@@ -84,26 +80,32 @@ const HomePage: FC<HomePageProps> = ({
                 </h1>
                 <span class="header-collapse-icon"></span>
               </summary>
+              <h2>
+                Multiplayer minesweeper à la{' '}
+                <a href="https://store.steampowered.com/app/3083300/Proverbs/" target="_blank">
+                  Proverbs
+                </a>
+              </h2>
               <div class="header-content-wrapper">
                 <GameIntroduction />
-                <menu>
+                <section aria-label="Game controls">
                   <div class="flex gap-10">
                     <div class="clair">
                       <responsive-content default={defaultDevice}>
                         <span slot="mobile">[1st tap]</span>
                         <strong slot="desktop">[1st click]</strong>
                       </responsive-content>{' '}
-                      paint in <strong>clair</strong>
+                      paints <strong>clair</strong>
                     </div>
                     <div class="obscur">
                       <responsive-content default={defaultDevice}>
                         <span slot="mobile">[2nd tap]</span>
                         <strong slot="desktop">[2nd click]</strong>
                       </responsive-content>{' '}
-                      paint in <strong>obscur</strong>
+                      paints <strong>obscur</strong>
                     </div>
                   </div>
-                </menu>
+                </section>
               </div>
             </details>
           </header>

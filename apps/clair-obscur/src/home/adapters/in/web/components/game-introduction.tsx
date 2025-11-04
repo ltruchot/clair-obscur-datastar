@@ -1,18 +1,12 @@
 export const GameIntroduction = () => {
   return (
     <>
-      <h2>
-        A collaborative minesweeper game inspired by{' '}
-        <a href="https://store.steampowered.com/app/3083300/Proverbs/" target="_blank">
-          Proverbs
-        </a>
-      </h2>
-      <section aria-label="Game rules">
-        <p class="m-2">
+      <section aria-label="Game rules" class="mb-10">
+        <p>
           Mark numbered pixels like <span class="pixel-cell">3</span> as <strong class="clair">clair</strong> or{' '}
           <strong class="obscur">obscur</strong>
         </p>
-        <p class="m-2">
+        <p>
           <span class="pixel-cell">4</span> is <strong class="clair">4 clairs</strong> among the 9 (itself + 8
           neighbors)
         </p>

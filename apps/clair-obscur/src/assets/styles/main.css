@@ -4,7 +4,8 @@ body {
   font-size: 16px;
   padding: 0;
   margin: 0;
-  background-color: #150a24;
+  background: linear-gradient(to bottom, #150a24 0, #150a24 90vh, #2a1218 100vh);
+  background-attachment: fixed;
   color: #f0f0f0;
   padding-left: 3px;
 }
@@ -38,7 +39,7 @@ aside details {
   overflow: hidden;
   transition: width 0.2s ease-out;
   height: 100%;
-  background-color: #150a24;
+  background: linear-gradient(to bottom, #150a24 0, #150a24 90vh, #2a1218 100vh);
   box-shadow: 4px 0 15px rgba(0, 0, 0, 0.6);
 }
 
@@ -276,6 +277,32 @@ button:active {
     1px 1px 0 rgba(0, 0, 0, 0.3);
 }
 
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+}
+
+button:disabled:hover {
+  background-color: #b794f6;
+  border-color: #d4bfff;
+  transform: none;
+  box-shadow:
+    0 0 5px rgba(212, 191, 255, 0.8),
+    0 0 10px rgba(212, 191, 255, 0.4),
+    3px 3px 0 rgba(0, 0, 0, 0.3);
+}
+
+button:disabled:active {
+  background-color: #b794f6;
+  border-color: #d4bfff;
+  transform: none;
+  box-shadow:
+    0 0 5px rgba(212, 191, 255, 0.8),
+    0 0 10px rgba(212, 191, 255, 0.4),
+    3px 3px 0 rgba(0, 0, 0, 0.3);
+}
+
 button.cyan {
   background-color: #00bcd4;
   border-color: #4dd0e1;
@@ -414,16 +441,6 @@ button.lime:active {
     1px 1px 0 rgba(0, 0, 0, 0.3);
 }
 
-menu {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  padding: 0;
-  box-sizing: border-box;
-  margin-bottom: 0;
-  margin-top: 5px;
-}
-
 h1 {
   margin: 0;
   padding: 0;
@@ -440,6 +457,7 @@ h1 > * {
   display: flex !important;
   align-items: center;
   line-height: 1;
+  font-family: 'Courier New', 'Courier', monospace;
 }
 
 h1 > .clair {
@@ -463,9 +481,8 @@ h1 > .obscur {
 
 h2 {
   margin: 0;
-  margin-bottom: 5px;
-  font-size: 18px;
-  font-style: italic;
+  margin-bottom: 15px;
+  font-size: 1rem;
   font-weight: normal;
 }
 
@@ -544,10 +561,27 @@ header details[open] .header-collapse-icon::after {
   top: 18px;
 }
 
+.header-content-wrapper {
+  padding: 5px 10px;
+  margin: 5px;
+  box-sizing: border-box;
+  font-size: 0.85rem;
+  background-color: rgba(183, 148, 246, 0.05);
+  border: 1px solid rgba(183, 148, 246, 0.2);
+  border-radius: 4px;
+  box-shadow:
+    0 0 8px rgba(183, 148, 246, 0.15),
+    inset 0 0 20px rgba(183, 148, 246, 0.03);
+}
+
 .pixel-grid-container {
   position: relative;
   width: 100%;
   overflow-x: auto;
+}
+
+.mb-10 {
+  margin-bottom: 10px;
 }
 
 .flex {

@@ -165,6 +165,9 @@ export class PixelGridElement extends HTMLElement {
         font-size: 18px;
         font-weight: bold;
         touch-action: manipulation;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
       }
       .pixel-cell:not(.cell-transparent) {
         border-color: #888;
@@ -174,7 +177,7 @@ export class PixelGridElement extends HTMLElement {
       }
       .pixel-cell.cell-transparent {
         cursor: default;
-        background-color: #00bcd4;
+        background-color: #5b8dc4;
       }
       .pixel-cell.cell-unguessed {
         background-color: #d4c5b9;
@@ -315,9 +318,14 @@ export class PixelGridElement extends HTMLElement {
   private _attachTouchListeners(): void {
     if (!this._container) return;
 
+    this._container.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+    });
+
     this._container.addEventListener('pointerdown', (event) => {
       const target = event.target as HTMLElement;
       if (target.classList.contains('pixel-cell') && !target.classList.contains('cell-transparent')) {
+        event.preventDefault();
         this._pointerStartX = event.clientX;
         this._pointerStartY = event.clientY;
         this._hasMoved = false;
@@ -335,12 +343,16 @@ export class PixelGridElement extends HTMLElement {
     });
 
     this._container.addEventListener('pointerup', (event) => {
+      const target = event.target as HTMLElement;
+      if (target.classList.contains('pixel-cell') && !target.classList.contains('cell-transparent')) {
+        event.preventDefault();
+      }
+
       if (this._hasMoved) {
         this._hasMoved = false;
         return;
       }
 
-      const target = event.target as HTMLElement;
       if (target.classList.contains('pixel-cell') && !target.classList.contains('cell-transparent')) {
         const x = Number.parseInt(target.dataset.x ?? '0', 10);
         const y = Number.parseInt(target.dataset.y ?? '0', 10);
