@@ -486,17 +486,31 @@ h2 {
   font-weight: normal;
 }
 
-header details {
-  height: 30px;
-  overflow: hidden;
-  transition: height 0.2s ease-out;
+.header-toggle {
+  display: none;
 }
 
-header details[open] {
-  height: 200px;
+header details {
+  overflow: hidden;
+}
+
+.header-grid-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.2s ease-out;
+}
+
+.header-toggle:checked ~ details .header-grid-wrapper {
+  grid-template-rows: 1fr;
+}
+
+.header-grid-content {
+  overflow: hidden;
+  min-height: 0;
 }
 
 header summary {
+  min-height: 30px;
   display: flex;
   align-items: flex-start;
   gap: 10px;
@@ -517,7 +531,7 @@ header summary::-webkit-details-marker {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  pointer-events: none;
+  cursor: pointer;
 }
 
 .header-collapse-icon::before,
@@ -547,14 +561,14 @@ header summary::-webkit-details-marker {
   top: 12px;
 }
 
-header details[open] .header-collapse-icon::before {
+.header-toggle:checked ~ details .header-collapse-icon::before {
   transform: rotate(45deg);
   transform-origin: left center;
   left: 8px;
   top: 6px;
 }
 
-header details[open] .header-collapse-icon::after {
+.header-toggle:checked ~ details .header-collapse-icon::after {
   transform: rotate(-45deg);
   transform-origin: left center;
   left: 8px;

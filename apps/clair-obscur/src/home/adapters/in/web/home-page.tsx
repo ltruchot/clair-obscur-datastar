@@ -72,40 +72,50 @@ const HomePage: FC<HomePageProps> = ({
         {/* Main game side */}
         <main>
           <header>
-            <details {...(defaultDevice === 'desktop' ? { open: true } : {})}>
+            <input
+              type="checkbox"
+              id="header-toggle"
+              class="header-toggle"
+              {...(defaultDevice === 'desktop' ? { checked: true } : {})}
+            />
+            <details open>
               <summary>
                 <h1>
                   <div class="clair">Clair</div>
                   <div class="obscur">Obscur</div>
                 </h1>
-                <span class="header-collapse-icon"></span>
+                <label for="header-toggle" class="header-collapse-icon"></label>
               </summary>
-              <h2>
-                Multiplayer minesweeper à la{' '}
-                <a href="https://store.steampowered.com/app/3083300/Proverbs/" target="_blank">
-                  Proverbs
-                </a>
-              </h2>
-              <div class="header-content-wrapper">
-                <GameIntroduction />
-                <section aria-label="Game controls">
-                  <div class="flex gap-10">
-                    <div class="clair">
-                      <responsive-content default={defaultDevice}>
-                        <span slot="mobile">[1st tap]</span>
-                        <strong slot="desktop">[1st click]</strong>
-                      </responsive-content>{' '}
-                      paints <strong>clair</strong>
-                    </div>
-                    <div class="obscur">
-                      <responsive-content default={defaultDevice}>
-                        <span slot="mobile">[2nd tap]</span>
-                        <strong slot="desktop">[2nd click]</strong>
-                      </responsive-content>{' '}
-                      paints <strong>obscur</strong>
-                    </div>
+              <div class="header-grid-wrapper">
+                <div class="header-grid-content">
+                  <h2>
+                    Multiplayer minesweeper à la{' '}
+                    <a href="https://store.steampowered.com/app/3083300/Proverbs/" target="_blank">
+                      Proverbs
+                    </a>
+                  </h2>
+                  <div class="header-content-wrapper">
+                    <GameIntroduction />
+                    <section aria-label="Game controls">
+                      <div class="flex gap-10">
+                        <div class="clair">
+                          <responsive-content default={defaultDevice}>
+                            <span slot="mobile">[1st tap]</span>
+                            <strong slot="desktop">[1st click]</strong>
+                          </responsive-content>{' '}
+                          paints <strong>clair</strong>
+                        </div>
+                        <div class="obscur">
+                          <responsive-content default={defaultDevice}>
+                            <span slot="mobile">[2nd tap]</span>
+                            <strong slot="desktop">[2nd click]</strong>
+                          </responsive-content>{' '}
+                          paints <strong>obscur</strong>
+                        </div>
+                      </div>
+                    </section>
                   </div>
-                </section>
+                </div>
               </div>
             </details>
           </header>
