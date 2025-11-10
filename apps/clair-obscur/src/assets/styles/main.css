@@ -498,11 +498,11 @@ header details {
   display: grid;
   grid-template-rows: 0fr;
   transition: grid-template-rows 0.2s ease-out;
-  margin-bottom: 20px;
 }
 
 .header-toggle:checked ~ details .header-grid-wrapper {
   grid-template-rows: 1fr;
+  margin-bottom: 15px;
 }
 
 .header-grid-content {

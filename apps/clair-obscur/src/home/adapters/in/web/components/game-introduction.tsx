@@ -7,8 +7,8 @@ export const GameIntroduction = () => {
           <strong class="obscur">obscur</strong>
         </p>
         <p>
-          <span class="pixel-cell">4</span> is <strong class="clair">4 clairs</strong> among the 9 (itself + 8
-          neighbors)
+          <span class="pixel-cell">4</span> means <strong class="clair">4 clairs</strong> among the 9: self + 8
+          neighbors
         </p>
         <p>
           <span class="pixel-cell">9</span> means <strong class="clair">9 clairs</strong>, while{' '}
