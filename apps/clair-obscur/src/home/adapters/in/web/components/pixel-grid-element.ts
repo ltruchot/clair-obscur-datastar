@@ -89,8 +89,8 @@ export class PixelGridElement extends HTMLElement {
     }
 
     const { maxX, maxY } = this._getGridDimensions();
-    const columns = maxX + 1 + 3;
-    const rows = maxY + 1 + 1;
+    const columns = maxX + 1;
+    const rows = maxY + 1;
 
     const dimensionsChanged =
       !this._lastDimensions || this._lastDimensions.columns !== columns || this._lastDimensions.rows !== rows;

@@ -31,9 +31,16 @@ function getNeighborCount(pixelData: PixelData[], x: number, y: number): number 
   return whiteCount;
 }
 
-function addNeighborCounts(inputPath: string, outputPath: string): void {
+function addNeighborCounts(inputPath: string, outputPath: string, noTransparent: boolean): void {
   const rawData = readFileSync(inputPath, 'utf-8');
-  const pixelData = JSON.parse(rawData) as PixelData[];
+  let pixelData = JSON.parse(rawData) as PixelData[];
+
+  if (noTransparent) {
+    pixelData = pixelData.map((pixel) => ({
+      ...pixel,
+      color: pixel.color === 'transparent' ? 'white' : pixel.color,
+    }));
+  }
 
   const enrichedData = pixelData
     .filter((pixel) => pixel.color !== 'transparent')
@@ -54,16 +61,20 @@ function addNeighborCounts(inputPath: string, outputPath: string): void {
   console.log(`✓ Enriched ${enrichedData.length} pixels with neighbor counts`);
   console.log(`✓ Stripped ${pixelData.length - enrichedData.length} transparent pixels`);
   console.log(`✓ Mapped to ${Object.keys(mappedData).length} coordinate entries`);
+  console.log(`✓ No transparent mode: ${noTransparent}`);
   console.log(`✓ Output written to ${outputPath}`);
 }
 
-const [inputPath, outputPath] = process.argv.slice(2);
+const args = process.argv.slice(2);
+const noTransparent = args.includes('--no-transparent');
+const filteredArgs = args.filter((arg) => !arg.startsWith('--'));
+const [inputPath, outputPath] = filteredArgs;
 
 if (!inputPath) {
-  console.error('Usage: tsx scripts/add-neighbor-count.ts <input.json> [output.json]');
+  console.error('Usage: tsx scripts/add-neighbor-count.ts <input.json> [output.json] [--no-transparent]');
   process.exit(1);
 }
 
 const finalOutputPath = outputPath ?? inputPath.replace(/\.json$/, '-enriched.json');
 
-addNeighborCounts(inputPath, finalOutputPath);
+addNeighborCounts(inputPath, finalOutputPath, noTransparent);

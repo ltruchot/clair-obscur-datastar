@@ -12,7 +12,7 @@ import { Hono } from 'hono';
 import { DefaultAnimalNameGenerator } from '@clair-obscur-workspace/funny-animals-generator';
 
 // local
-import orcaPixelGrid from '@/assets/pixel-grids/orca-enriched.json';
+import orcaPixelGrid from '@/assets/pixel-grids/space-invader-enriched.json';
 import { HomeController } from '@/home/adapters/in/web/home-controller';
 import { EventStorePixelGridAdapter } from '@/home/adapters/out/pixelgrid/event-store-pixel-grid-adapter';
 import { PixelGridCommandService } from '@/home/adapters/out/pixelgrid/pixelgrid-command.service';

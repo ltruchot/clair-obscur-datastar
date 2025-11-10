@@ -4,9 +4,11 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "add-neighbors": "tsx add-neighbor-count.ts"
+    "add-neighbors": "tsx add-neighbor-count.ts",
+    "svg-to-json": "tsx svg-to-json.ts"
   },
   "devDependencies": {
-    "tsx": "catalog:"
+    "tsx": "catalog:",
+    "canvas": "^3.2.0"
   }
 }
