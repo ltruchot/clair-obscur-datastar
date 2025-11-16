@@ -74,9 +74,8 @@ function detectBlockSize(imageData: ImageData, canvasSize: number): number {
   return median;
 }
 
-async function svgToPixelArray(svgPath: string, forcedGridSize?: number): Promise<PixelData[]> {
-  const svgBuffer = readFileSync(svgPath);
-  const img = await loadImage(svgBuffer);
+async function svgToPixelArray(svgContent: string, forcedGridSize?: number): Promise<PixelData[]> {
+  const img = await loadImage(Buffer.from(svgContent));
 
   const originalSize = Math.max(img.width, img.height);
   const canvas = createCanvas(originalSize, originalSize);
@@ -123,18 +122,19 @@ async function svgToPixelArray(svgPath: string, forcedGridSize?: number): Promis
     }
   }
 
-  return trimPixels(pixels);
+  return pixels;
 }
 
 async function main() {
   const args = process.argv.slice(2);
   const sizeArg = args.find((arg) => arg.startsWith('--size='));
+  const shouldTrim = args.includes('--trim');
   const forcedSize = sizeArg ? parseInt(sizeArg.split('=')[1], 10) : 13;
   const filteredArgs = args.filter((arg) => !arg.startsWith('--'));
   const [inputPath, outputPath] = filteredArgs;
 
   if (!inputPath) {
-    console.error('Usage: tsx scripts/svg-to-json.ts <input.svg> [output.json] [--size=N]');
+    console.error('Usage: tsx scripts/svg-to-json.ts <input.svg> [output.json] [--size=N] [--trim]');
     console.error('Default size: 13');
     process.exit(1);
   }
@@ -143,10 +143,27 @@ async function main() {
 
   try {
     const svgBuffer = readFileSync(inputPath);
-    const img = await loadImage(svgBuffer);
+    const svgContent = svgBuffer.toString('utf-8');
+
+    let svgToLoad = svgContent;
+    const svgTagMatch = svgContent.match(/<svg[^>]*>/);
+    if (svgTagMatch && (!svgTagMatch[0].includes('width=') || !svgTagMatch[0].includes('height='))) {
+      const viewBoxMatch = svgContent.match(/viewBox="[^"]*\s+[^"]*\s+(\d+)\s+(\d+)"/);
+      if (viewBoxMatch) {
+        const [, width, height] = viewBoxMatch;
+        svgToLoad = svgContent.replace('<svg', `<svg width="${width}" height="${height}"`);
+      }
+    }
+
+    const img = await loadImage(Buffer.from(svgToLoad));
     const originalSize = Math.max(img.width, img.height);
 
-    const pixelData = await svgToPixelArray(inputPath, forcedSize);
+    let pixelData = await svgToPixelArray(svgToLoad, forcedSize);
+
+    if (shouldTrim) {
+      pixelData = trimPixels(pixelData);
+    }
+
     const jsonOutput = JSON.stringify(pixelData, null, 2);
     writeFileSync(finalOutputPath, jsonOutput, 'utf8');
 
@@ -167,9 +184,10 @@ async function main() {
 
     console.log(`✓ SVG original size: ${originalSize}x${originalSize}px`);
     console.log(`✓ Grid size: ${forcedSize}x${forcedSize}`);
-    console.log(`✓ Final grid (after trim): ${gridWidth}x${gridHeight}`);
+    console.log(`✓ Final grid: ${gridWidth}x${gridHeight}`);
     console.log(`✓ Total pixels: ${pixelData.length}`);
     console.log(`✓ Non-transparent pixels: ${nonTransparentCount}`);
+    console.log(`✓ Trim: ${shouldTrim ? 'yes' : 'no'}`);
     console.log(`✓ Output written to ${finalOutputPath}`);
   } catch (error) {
     console.error('Error processing SVG:', error);

@@ -18,7 +18,6 @@ interface PixelGridElementState {
 }
 
 export class PixelGridElement extends HTMLElement {
-  private _shadowRoot: ShadowRoot;
   private _pixels: PixelGridElementState = {
     pixelGrid: {},
   };
@@ -44,7 +43,6 @@ export class PixelGridElement extends HTMLElement {
 
   constructor() {
     super();
-    this._shadowRoot = this.attachShadow({ mode: 'open' });
     this._isTouchDevice = isTouchOnlyDevice();
   }
 
@@ -64,10 +62,6 @@ export class PixelGridElement extends HTMLElement {
     this.render();
   }
 
-  override get shadowRoot(): ShadowRoot {
-    return this._shadowRoot;
-  }
-
   get pixels(): PixelGridElementState {
     return this._pixels;
   }
@@ -81,7 +75,7 @@ export class PixelGridElement extends HTMLElement {
   private render(): void {
     const pixelKeys = Object.keys(this._pixels.pixelGrid);
     if (pixelKeys.length === 0) {
-      this._shadowRoot.replaceChildren();
+      this.replaceChildren();
       this._container = null;
       this._cellMap.clear();
       this._lastDimensions = null;
@@ -119,18 +113,28 @@ export class PixelGridElement extends HTMLElement {
   }
 
   private _initializeGrid(columns: number, rows: number): void {
-    const style = this._createStyle(columns, rows);
+    const gridColumns = columns + 2;
+    const gridRows = rows + 2;
 
     this._container = document.createElement('div');
     this._container.className = 'pixel-grid';
+    this._container.style.display = 'grid';
+    this._container.style.gridTemplateColumns = `repeat(${gridColumns}, 25px)`;
+    this._container.style.gridTemplateRows = `repeat(${gridRows}, 25px)`;
+    this._container.style.gap = '0';
+    this._container.style.touchAction = 'manipulation';
+
     this._cellMap.clear();
 
     const fragment = document.createDocumentFragment();
 
-    for (let y = 0; y < rows; y++) {
-      for (let x = 0; x < columns; x++) {
-        const cell = this._createCell(x, y);
-        this._cellMap.set(`${x}-${y}`, cell);
+    for (let y = -1; y <= rows; y++) {
+      for (let x = -1; x <= columns; x++) {
+        const isBorder = x === -1 || x === columns || y === -1 || y === rows;
+        const cell = this._createCell(x, y, isBorder);
+        if (!isBorder) {
+          this._cellMap.set(`${x}-${y}`, cell);
+        }
         fragment.appendChild(cell);
       }
     }
@@ -138,88 +142,18 @@ export class PixelGridElement extends HTMLElement {
     this._container.appendChild(fragment);
     this._attachEventListeners();
     this._updateVictoryState();
-    this._shadowRoot.replaceChildren(style, this._container);
+    this.replaceChildren(this._container);
   }
 
-  private _createStyle(columns: number, rows: number): HTMLStyleElement {
-    const style = document.createElement('style');
-    style.textContent = `
-      .pixel-grid {
-        display: grid;
-        grid-template-columns: repeat(${columns}, 25px);
-        grid-template-rows: repeat(${rows}, 25px);
-        gap: 0;
-        touch-action: manipulation;
-      }
-      .pixel-cell {
-        color: black;
-        width: 25px;
-        height: 25px;
-        border: 1px solid lightgray;
-        box-sizing: border-box;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: 'Courier New', 'Courier', monospace;
-        font-size: 18px;
-        font-weight: bold;
-        touch-action: manipulation;
-        user-select: none;
-        -webkit-user-select: none;
-        -webkit-touch-callout: none;
-      }
-      .pixel-cell:not(.cell-transparent) {
-        border-color: #888;
-      }
-      .pixel-cell:not(.cell-transparent):hover {
-        border-color: #aaa;
-      }
-      .pixel-cell.cell-transparent {
-        cursor: default;
-        background-color: #5b8dc4;
-      }
-      .pixel-cell.cell-unguessed {
-        background-color: #d4c5b9;
-      }
-      .pixel-cell.cell-obscur {
-        background-color: black;
-        color: white;
-      }
-      .pixel-cell.cell-clair {
-        background-color: white;
-        color: black;
-      }
-      .pixel-grid.victory .pixel-cell {
-        will-change: border-color, border-width, color;
-        transform: translateZ(0);
-        transition: border-color 2s cubic-bezier(0.4, 0.0, 0.2, 1), border-width 2s cubic-bezier(0.4, 0.0, 0.2, 1), color 2s cubic-bezier(0.4, 0.0, 0.2, 1);
-        border-color: transparent;
-        border-width: 0;
-        color: transparent;
-        pointer-events: none;
-        cursor: default;
-      }
-      .pixel-cell.flash {
-        animation: clickFlash 150ms ease-out;
-      }
-      @keyframes clickFlash {
-        0% {
-          box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.8);
-        }
-        100% {
-          box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0);
-        }
-      }
-    `;
-    return style;
-  }
-
-  private _createCell(x: number, y: number): HTMLDivElement {
+  private _createCell(x: number, y: number, isBorder = false): HTMLDivElement {
     const cell = document.createElement('div');
-    cell.className = 'pixel-cell';
-    cell.dataset.x = x.toString();
-    cell.dataset.y = y.toString();
+    if (isBorder) {
+      cell.className = 'pixel-cell cell-transparent';
+    } else {
+      cell.className = 'pixel-cell';
+      cell.dataset.x = x.toString();
+      cell.dataset.y = y.toString();
+    }
     return cell;
   }
 

@@ -7,9 +7,9 @@ export class SessionMonitorService {
   constructor(
     private readonly queryService: SessionQueryService,
     private readonly commandService: SessionCommandService,
-    private readonly checkIntervalMs = 1_000,
-    private readonly deactivationDurationMs = 10_000,
-    private readonly purgeInactiveDurationMs = 30_000,
+    private readonly checkIntervalMs = 5_000, // 5 seconds
+    private readonly deactivationDurationMs = 10_000, // 10 seconds
+    private readonly purgeInactiveDurationMs = 24 * 60 * 1000, // 30 days
   ) {}
 
   start(): void {

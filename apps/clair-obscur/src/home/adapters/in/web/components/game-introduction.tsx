@@ -14,6 +14,9 @@ export const GameIntroduction = () => {
           <span class="pixel-cell">9</span> means <strong class="clair">9 clairs</strong>, while{' '}
           <span class="pixel-cell">0</span> means <strong class="obscur">9 obscurs</strong>
         </p>
+        <p>
+          <span class="pixel-cell cell-transparent"></span> Empty and colored pixels do not count at all
+        </p>
       </section>
     </>
   );
