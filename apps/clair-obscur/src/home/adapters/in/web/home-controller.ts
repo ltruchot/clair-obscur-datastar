@@ -106,10 +106,8 @@ export class HomeController {
 
             const pixelGridElement = `<pixel-grid
               id="${DSID.PIXEL_GRID}"
-              data-on:pixelclick="$pixelclick = event.detail; @post('/pixel-click', {requestCancellation: 'disabled'})"
-              data-attr:pixels="${pixelData}"
-              data-attr:last-change="$_lastChange"
-              data-attr:victory="$_victory.toString()"></pixel-grid>`;
+              data-preserve-attr="data-on:pixelclick data-attr:last-change data-attr:victory"
+              data-attr:pixels="${pixelData}"></pixel-grid>`;
 
             stream.patchElements(pixelGridElement);
 
