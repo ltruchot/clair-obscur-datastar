@@ -1,3 +1,4 @@
+import { LevelQueryService } from '@/home/adapters/out/level/level-query.service';
 import { PixelGridCommandService } from '@/home/adapters/out/pixelgrid/pixelgrid-command.service';
 import { PixelGridQueryService } from '@/home/adapters/out/pixelgrid/pixelgrid-query.service';
 import { SessionCommandService } from '@/home/adapters/out/session/session-command.service';
@@ -19,6 +20,7 @@ export class HomeController {
     private readonly pixelGridEventStore: PixelGridEventStore,
     private readonly pixelGridQueryService: PixelGridQueryService,
     private readonly pixelGridCommandService: PixelGridCommandService,
+    private readonly levelQueryService: LevelQueryService,
   ) {}
 
   /**
@@ -49,8 +51,11 @@ export class HomeController {
     const pixelData = { pixelGrid: this.pixelGridQueryService.getPixelGrid(), timestamp: new Date().getTime() };
     const victory = this.pixelGridQueryService.checkVictory();
     const isMobile = this.detectMobileDevice(c);
+    const currentLevel = this.levelQueryService.getCurrentLevel();
 
-    return c.html(getHomeHTMLPage(animalName, color, fontFamily, sessionItems, pixelData, victory, isMobile));
+    return c.html(
+      getHomeHTMLPage(animalName, color, fontFamily, sessionItems, pixelData, victory, isMobile, currentLevel),
+    );
   }
 
   broadcastEvents(c: Context): Response {

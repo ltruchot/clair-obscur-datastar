@@ -6,6 +6,8 @@ import type {
   PixelUpdate,
 } from './pixel-grid-event-store.types';
 
+export type OnLevelCompleteCallback = () => void;
+
 export class PixelGridEventStore {
   private state: PixelGridStoreState = {
     pixelGrid: {},
@@ -18,6 +20,8 @@ export class PixelGridEventStore {
   private lastChangeSubscribers = new Map<string, PixelLastChangeSubscriber>();
 
   private resetTimeoutId: NodeJS.Timeout | null = null;
+
+  private onLevelCompleteCallback: OnLevelCompleteCallback | null = null;
 
   initialize(basePixelData: PixelData): void {
     const pixelGrid: PixelGridData = {};
@@ -103,6 +107,10 @@ export class PixelGridEventStore {
     };
   }
 
+  setOnLevelCompleteCallback(callback: OnLevelCompleteCallback): void {
+    this.onLevelCompleteCallback = callback;
+  }
+
   private notifyLastChangeSubscribers(lastChange: Omit<PixelChange, 'timestamp'>): void {
     const victory = this._checkVictory();
     if (!victory) {
@@ -114,7 +122,13 @@ export class PixelGridEventStore {
     const currentState = this.read();
     this.subscribers.forEach((subscriber) => subscriber({ ...currentState, victory }));
     if (victory && this.resetTimeoutId === null) {
-      this.resetTimeoutId = setTimeout(() => this.reset(), 20_000);
+      this.resetTimeoutId = setTimeout(() => {
+        if (this.onLevelCompleteCallback) {
+          this.onLevelCompleteCallback();
+        } else {
+          this.reset();
+        }
+      }, 20_000);
     }
   }
 
@@ -123,7 +137,13 @@ export class PixelGridEventStore {
     const victory = this._checkVictory();
     this.subscribers.forEach((subscriber) => subscriber({ ...currentState, victory }));
     if (victory && this.resetTimeoutId === null) {
-      this.resetTimeoutId = setTimeout(() => this.reset(), 20_000);
+      this.resetTimeoutId = setTimeout(() => {
+        if (this.onLevelCompleteCallback) {
+          this.onLevelCompleteCallback();
+        } else {
+          this.reset();
+        }
+      }, 20_000);
     }
   }
 

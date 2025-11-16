@@ -146,9 +146,9 @@ async function main() {
     const svgContent = svgBuffer.toString('utf-8');
 
     let svgToLoad = svgContent;
-    const svgTagMatch = svgContent.match(/<svg[^>]*>/);
+    const svgTagMatch = /<svg[^>]*>/.exec(svgContent);
     if (svgTagMatch && (!svgTagMatch[0].includes('width=') || !svgTagMatch[0].includes('height='))) {
-      const viewBoxMatch = svgContent.match(/viewBox="[^"]*\s+[^"]*\s+(\d+)\s+(\d+)"/);
+      const viewBoxMatch = /viewBox="[^"]*\s+[^"]*\s+(\d+)\s+(\d+)"/.exec(svgContent);
       if (viewBoxMatch) {
         const [, width, height] = viewBoxMatch;
         svgToLoad = svgContent.replace('<svg', `<svg width="${width}" height="${height}"`);

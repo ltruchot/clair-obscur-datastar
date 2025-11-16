@@ -1,3 +1,4 @@
+import type { Level } from '@/home/domain/level';
 import type { PixelGridChange } from '@/home/domain/pixel-grid';
 import { BaseLayout } from '@/shared/infrastructure/web/base-layout';
 import type { FC } from 'hono/jsx';
@@ -19,6 +20,7 @@ interface HomePageProps {
   pixelData: PixelGridChange;
   victory: boolean;
   defaultDevice: 'mobile' | 'desktop';
+  currentLevel: Level;
 }
 
 const HomePage: FC<HomePageProps> = ({
@@ -29,6 +31,7 @@ const HomePage: FC<HomePageProps> = ({
   pixelData,
   victory,
   defaultDevice,
+  currentLevel,
 }) => {
   const pixelGridJSON = `'${JSON.stringify(pixelData)}'`;
   const victoryJSON = `'${victory.toString()}'`;
@@ -94,6 +97,9 @@ const HomePage: FC<HomePageProps> = ({
                       Proverbs
                     </a>
                   </h2>
+                  <div class="level-info">
+                    <strong>Level {currentLevel.index + 1}</strong> - {currentLevel.clue}
+                  </div>
                   <div class="header-content-wrapper">
                     <GameIntroduction />
                     <section aria-label="Game controls">
@@ -141,6 +147,7 @@ export const getHomeHTMLPage = (
   pixelData: PixelGridChange,
   victory: boolean,
   isMobile: boolean,
+  currentLevel: Level,
 ): string => {
   const defaultDevice: 'mobile' | 'desktop' = isMobile ? 'mobile' : 'desktop';
   return renderToString(
@@ -152,6 +159,7 @@ export const getHomeHTMLPage = (
       pixelData={pixelData}
       victory={victory}
       defaultDevice={defaultDevice}
+      currentLevel={currentLevel}
     />,
   );
 };

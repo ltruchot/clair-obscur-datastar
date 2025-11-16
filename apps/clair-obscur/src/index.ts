@@ -12,8 +12,9 @@ import { Hono } from 'hono';
 import { DefaultAnimalNameGenerator } from '@clair-obscur-workspace/funny-animals-generator';
 
 // local
-import orcaPixelGrid from '@/assets/pixel-grids/minesweeper-enriched.json';
 import { HomeController } from '@/home/adapters/in/web/home-controller';
+import { LevelCommandService } from '@/home/adapters/out/level/level-command.service';
+import { LevelQueryService } from '@/home/adapters/out/level/level-query.service';
 import { EventStorePixelGridAdapter } from '@/home/adapters/out/pixelgrid/event-store-pixel-grid-adapter';
 import { PixelGridCommandService } from '@/home/adapters/out/pixelgrid/pixelgrid-command.service';
 import { PixelGridQueryService } from '@/home/adapters/out/pixelgrid/pixelgrid-query.service';
@@ -21,8 +22,9 @@ import { EventStoreSessionAdapter } from '@/home/adapters/out/session/event-stor
 import { SessionCommandService } from '@/home/adapters/out/session/session-command.service';
 import { SessionQueryService } from '@/home/adapters/out/session/session-query.service';
 import { SessionService } from '@/home/adapters/out/session/session-service';
-import type { PixelData } from '@/home/domain/pixel-grid';
 
+import { getLevelConfiguration, getNextLevelIndex } from '@/home/infrastructure/level/level-configuration';
+import { LevelStoreService } from '@/home/infrastructure/level/level-store.service';
 import { PixelGridEventStore } from '@/home/infrastructure/pixelgrid/pixel-grid-event-store.service';
 import { SessionData } from '@/home/infrastructure/session';
 import { SessionEventStore } from '@/home/infrastructure/session/session-event-store.service';
@@ -71,8 +73,31 @@ const sessionCommandService = new SessionCommandService(sessionAdapter, sessionA
 const sessionQueryService = new SessionQueryService(sessionAdapter);
 const sessionService = new SessionService(sessionQueryService, sessionCommandService);
 
+const levelStoreService = new LevelStoreService();
+const levelQueryService = new LevelQueryService(levelStoreService);
+const levelCommandService = new LevelCommandService(levelStoreService);
+
+const initialLevel = levelStoreService.getCurrentLevel();
+
 const pixelGridEventStore = new PixelGridEventStore();
-pixelGridEventStore.initialize(orcaPixelGrid as PixelData);
+pixelGridEventStore.initialize(initialLevel.pixelData);
+levelStoreService.startLevel();
+
+pixelGridEventStore.setOnLevelCompleteCallback(() => {
+  const sessions = sessionEventStore.read().activeSessions;
+  if (sessions.length > 0) {
+    const firstSession = sessions[0];
+    const playerName = `${firstSession.animalName.adjective} ${firstSession.animalName.animal}`;
+    levelCommandService.addHighscore(playerName, firstSession.color, firstSession.fontFamily);
+  }
+
+  const currentLevelIndex = levelStoreService.getCurrentLevelIndex();
+  const nextLevelIndex = getNextLevelIndex(currentLevelIndex);
+  levelStoreService.setCurrentLevelIndex(nextLevelIndex);
+  const nextLevel = getLevelConfiguration(nextLevelIndex);
+  pixelGridEventStore.initialize(nextLevel.pixelData);
+});
+
 const pixelGridAdapter = new EventStorePixelGridAdapter(pixelGridEventStore);
 const pixelGridQueryService = new PixelGridQueryService(pixelGridAdapter);
 const pixelGridCommandService = new PixelGridCommandService(pixelGridAdapter);
@@ -84,6 +109,7 @@ const homeController = new HomeController(
   pixelGridEventStore,
   pixelGridQueryService,
   pixelGridCommandService,
+  levelQueryService,
 );
 
 // Use globalThis to survive HMR reloads in development
