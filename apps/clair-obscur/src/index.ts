@@ -83,9 +83,18 @@ pixelGridEventStore.initialize(initialLevel.pixelData);
 pixelGridEventStore.setOnLevelCompleteCallback(() => {
   const currentLevelIndex = levelStoreService.getCurrentLevelIndex();
   const nextLevelIndex = getNextLevelIndex(currentLevelIndex);
+  console.log('[LevelComplete] Callback triggered:', {
+    currentLevelIndex,
+    nextLevelIndex,
+  });
   levelStoreService.setCurrentLevelIndex(nextLevelIndex);
   const nextLevel = getLevelConfiguration(nextLevelIndex);
-  pixelGridEventStore.initialize(nextLevel.pixelData);
+  console.log('[LevelComplete] Next level loaded:', {
+    levelIndex: nextLevel.index,
+    levelClue: nextLevel.clue,
+    pixelDataKeys: Object.keys(nextLevel.pixelData).length,
+  });
+  pixelGridEventStore.initialize(nextLevel.pixelData, true);
 });
 
 const pixelGridAdapter = new EventStorePixelGridAdapter(pixelGridEventStore);
@@ -138,7 +147,9 @@ app.post('/reset-pixel-grid', sessionMiddleware, (c) => homeController.resetPixe
 
 app.post('/cheat-pixel-grid', sessionMiddleware, (c) => homeController.cheatPixelGrid(c));
 
-app.post('/win-pixel-grid', sessionMiddleware, (c) => homeController.winPixelGrid(c));
+app.post('/almost-win-level', sessionMiddleware, (c) => homeController.almostWinLevel(c));
+
+app.post('/next-level', sessionMiddleware, (c) => homeController.nextLevel(c));
 
 if (!isDevelopment) {
   const serverConfig = {

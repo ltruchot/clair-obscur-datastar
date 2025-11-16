@@ -15,7 +15,7 @@ export class PixelGridCommandService {
     this.adapter.cheat();
   }
 
-  winPixelGrid(): void {
-    this.adapter.win();
+  almostWinLevel(): void {
+    this.adapter.almostWinLevel();
   }
 }

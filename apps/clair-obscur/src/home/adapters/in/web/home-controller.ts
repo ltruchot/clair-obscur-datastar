@@ -99,9 +99,22 @@ export class HomeController {
           });
 
           unsubscribePixelGridStore = this.pixelGridEventStore.subscribe(currentSession.id.value, (state) => {
+            const pixelData = JSON.stringify({
+              pixelGrid: state.pixelGrid,
+              timestamp: new Date().getTime(),
+            }).replace(/"/g, '&quot;');
+
+            const pixelGridElement = `<pixel-grid
+              id="${DSID.PIXEL_GRID}"
+              data-on:pixelclick="$pixelclick = event.detail; @post('/pixel-click', {requestCancellation: 'disabled'})"
+              data-attr:pixels="${pixelData}"
+              data-attr:last-change="$_lastChange"
+              data-attr:victory="$_victory.toString()"></pixel-grid>`;
+
+            stream.patchElements(pixelGridElement);
+
             stream.patchSignals(
               JSON.stringify({
-                _pixelgrid: { pixelGrid: state.pixelGrid, timestamp: new Date().getTime() },
                 _lastChange: { x: -1, y: -1, guess: -1, timestamp: new Date().getTime() },
                 _victory: state.victory,
               }),
@@ -111,7 +124,8 @@ export class HomeController {
           unsubscribePixelGridStoreLastChange = this.pixelGridEventStore.subscribeLastChange(
             currentSession.id.value,
             (lastChange: PixelChange) => {
-              stream.patchSignals(JSON.stringify({ _lastChange: lastChange }));
+              const victory = this.pixelGridQueryService.checkVictory();
+              stream.patchSignals(JSON.stringify({ _lastChange: lastChange, _victory: victory }));
             },
           );
 
@@ -217,8 +231,26 @@ export class HomeController {
     return c.json({ success: true }, 202);
   }
 
-  winPixelGrid(c: Context): Response {
-    this.pixelGridCommandService.winPixelGrid();
+  almostWinLevel(c: Context): Response {
+    this.pixelGridCommandService.almostWinLevel();
     return c.json({ success: true }, 202);
+  }
+
+  async nextLevel(c: Context): Promise<Response> {
+    try {
+      const jsonBody: { level_index: number } = await c.req.json();
+      const levelIndex = jsonBody.level_index;
+
+      if (typeof levelIndex !== 'number' || levelIndex < 0) {
+        return c.json({ success: false, error: 'Invalid level index' }, 400);
+      }
+
+      const newLevel = this.levelQueryService.setAndGetLevel(levelIndex);
+      this.pixelGridEventStore.initialize(newLevel.pixelData, true);
+
+      return c.json({ success: true, currentLevel: newLevel }, 202);
+    } catch {
+      return c.json({ success: false, error: 'Invalid request' }, 400);
+    }
   }
 }

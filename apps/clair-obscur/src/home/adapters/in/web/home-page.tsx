@@ -1,5 +1,6 @@
 import type { Level } from '@/home/domain/level';
 import type { PixelGridChange } from '@/home/domain/pixel-grid';
+import { isDevelopment } from '@/shared/infrastructure/config';
 import { BaseLayout } from '@/shared/infrastructure/web/base-layout';
 import type { FC } from 'hono/jsx';
 import { renderToString } from 'hono/jsx/dom/server';
@@ -60,6 +61,30 @@ const HomePage: FC<HomePageProps> = ({
               <button aria-label="High scores" title="This will show the high scores" disabled={true}>
                 🏆
               </button>
+              {isDevelopment && (
+                <button
+                  aria-label="Almost win level"
+                  title="This will almost win the level"
+                  data-on:click="@post('/almost-win-level')"
+                  data-attr:disabled="JSON.parse($_victory)">
+                  🎉
+                </button>
+              )}
+              <select
+                id="level-selector"
+                aria-label="Select level"
+                title="Choose a level"
+                data-on:change="@post('/next-level', {body: {level_index: Number($event.target.value)}})"
+                data-attr:disabled="JSON.parse($_victory)">
+                <button type="button">
+                  <selectedcontent>
+                    🎮 {currentLevel.index}: {currentLevel.clue}
+                  </selectedcontent>
+                </button>
+                <option value="0">0: Boom!</option>
+                <option value="1">1: Invaders from space</option>
+                <option value="2">2: A famous queen</option>
+              </select>
             </summary>
             <div class="p-10">
               You are{' '}

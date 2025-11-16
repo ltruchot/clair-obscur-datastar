@@ -11,4 +11,9 @@ export class LevelQueryService {
   getCurrentLevelIndex(): number {
     return this.levelStore.getCurrentLevelIndex();
   }
+
+  setAndGetLevel(levelIndex: number): Level {
+    this.levelStore.setCurrentLevelIndex(levelIndex);
+    return this.levelStore.getCurrentLevel();
+  }
 }
