@@ -13,7 +13,6 @@ import { DefaultAnimalNameGenerator } from '@clair-obscur-workspace/funny-animal
 
 // local
 import { HomeController } from '@/home/adapters/in/web/home-controller';
-import { LevelCommandService } from '@/home/adapters/out/level/level-command.service';
 import { LevelQueryService } from '@/home/adapters/out/level/level-query.service';
 import { EventStorePixelGridAdapter } from '@/home/adapters/out/pixelgrid/event-store-pixel-grid-adapter';
 import { PixelGridCommandService } from '@/home/adapters/out/pixelgrid/pixelgrid-command.service';
@@ -75,22 +74,13 @@ const sessionService = new SessionService(sessionQueryService, sessionCommandSer
 
 const levelStoreService = new LevelStoreService();
 const levelQueryService = new LevelQueryService(levelStoreService);
-const levelCommandService = new LevelCommandService(levelStoreService);
 
 const initialLevel = levelStoreService.getCurrentLevel();
 
 const pixelGridEventStore = new PixelGridEventStore();
 pixelGridEventStore.initialize(initialLevel.pixelData);
-levelStoreService.startLevel();
 
 pixelGridEventStore.setOnLevelCompleteCallback(() => {
-  const sessions = sessionEventStore.read().activeSessions;
-  if (sessions.length > 0) {
-    const firstSession = sessions[0];
-    const playerName = `${firstSession.animalName.adjective} ${firstSession.animalName.animal}`;
-    levelCommandService.addHighscore(playerName, firstSession.color, firstSession.fontFamily);
-  }
-
   const currentLevelIndex = levelStoreService.getCurrentLevelIndex();
   const nextLevelIndex = getNextLevelIndex(currentLevelIndex);
   levelStoreService.setCurrentLevelIndex(nextLevelIndex);

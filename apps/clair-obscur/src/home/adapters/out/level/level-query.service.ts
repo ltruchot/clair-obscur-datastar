@@ -11,8 +11,4 @@ export class LevelQueryService {
   getCurrentLevelIndex(): number {
     return this.levelStore.getCurrentLevelIndex();
   }
-
-  getAllLevelsWithHighscores(): Level[] {
-    return this.levelStore.getAllLevelsWithHighscores();
-  }
 }

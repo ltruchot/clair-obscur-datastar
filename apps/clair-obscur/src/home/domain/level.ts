@@ -12,7 +12,4 @@ export interface Level {
   index: number;
   clue: string;
   pixelData: PixelData;
-  highscores: Highscore[];
 }
-
-export type LevelConfiguration = Omit<Level, 'highscores'>;

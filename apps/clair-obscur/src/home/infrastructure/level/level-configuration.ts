@@ -1,10 +1,10 @@
 import minesweeperPixelGrid from '@/assets/pixel-grids/minesweeper-enriched.json';
 import orcaPixelGrid from '@/assets/pixel-grids/orca-enriched.json';
 import spaceInvaderPixelGrid from '@/assets/pixel-grids/space-invader-enriched.json';
-import type { LevelConfiguration } from '@/home/domain/level';
+import type { Level } from '@/home/domain/level';
 import type { PixelData } from '@/home/domain/pixel-grid';
 
-export const LEVEL_CONFIGURATIONS: readonly LevelConfiguration[] = [
+export const LEVEL_CONFIGURATIONS: readonly Level[] = [
   {
     index: 0,
     clue: 'Boom!',
@@ -26,7 +26,7 @@ export function getLevelCount(): number {
   return LEVEL_CONFIGURATIONS.length;
 }
 
-export function getLevelConfiguration(index: number): LevelConfiguration {
+export function getLevelConfiguration(index: number): Level {
   const normalizedIndex = index % LEVEL_CONFIGURATIONS.length;
   return LEVEL_CONFIGURATIONS[normalizedIndex];
 }
