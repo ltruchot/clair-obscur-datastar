@@ -87,6 +87,12 @@ export class PixelGridEventStore {
     this.notifySubscribers();
   }
 
+  nextLevel(): void {
+    if (this.onLevelCompleteCallback) {
+      this.onLevelCompleteCallback();
+    }
+  }
+
   private findFirstIncorrectPixel(): `${number}-${number}` | null {
     const sortedKeys = Object.keys(this.state.pixelGrid).sort((a, b) => {
       const [x1, y1] = a.split('-').map(Number);
@@ -150,9 +156,7 @@ export class PixelGridEventStore {
   }
 
   private notifyLastChangeSubscribers(lastChange: Omit<PixelChange, 'timestamp'>): void {
-    this.lastChangeSubscribers.forEach((subscriber) =>
-      subscriber({ ...lastChange, timestamp: new Date().getTime() }),
-    );
+    this.lastChangeSubscribers.forEach((subscriber) => subscriber({ ...lastChange, timestamp: new Date().getTime() }));
 
     const victory = this._checkVictory();
     if (victory && this.resetTimeoutId === null) {

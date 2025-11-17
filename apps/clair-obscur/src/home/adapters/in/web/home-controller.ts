@@ -107,7 +107,10 @@ export class HomeController {
             const pixelGridElement = `<pixel-grid
               id="${DSID.PIXEL_GRID}"
               data-preserve-attr="data-on:pixelclick data-attr:last-change data-attr:victory"
-              data-attr:pixels="${pixelData}"></pixel-grid>`;
+              data-attr:pixels="${pixelData}"></pixel-grid>
+              <div id="level-info">
+                <strong>Level ${this.levelQueryService.getCurrentLevelIndex() + 1}</strong>: ${this.levelQueryService.getCurrentLevel().clue}
+              </div>`;
 
             stream.patchElements(pixelGridElement);
 
@@ -234,21 +237,8 @@ export class HomeController {
     return c.json({ success: true }, 202);
   }
 
-  async nextLevel(c: Context): Promise<Response> {
-    try {
-      const jsonBody: { level_index: number } = await c.req.json();
-      const levelIndex = jsonBody.level_index;
-
-      if (typeof levelIndex !== 'number' || levelIndex < 0) {
-        return c.json({ success: false, error: 'Invalid level index' }, 400);
-      }
-
-      const newLevel = this.levelQueryService.setAndGetLevel(levelIndex);
-      this.pixelGridEventStore.initialize(newLevel.pixelData, true);
-
-      return c.json({ success: true, currentLevel: newLevel }, 202);
-    } catch {
-      return c.json({ success: false, error: 'Invalid request' }, 400);
-    }
+  nextLevel(c: Context): Response {
+    this.pixelGridCommandService.nextLevel();
+    return c.json({ success: true }, 202);
   }
 }

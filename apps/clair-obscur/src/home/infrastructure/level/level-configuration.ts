@@ -12,12 +12,12 @@ export const LEVEL_CONFIGURATIONS: readonly Level[] = [
   },
   {
     index: 1,
-    clue: 'Invaders from space',
+    clue: 'From Space',
     pixelData: spaceInvaderPixelGrid as PixelData,
   },
   {
     index: 2,
-    clue: 'A famous queen',
+    clue: 'Seal Eater',
     pixelData: orcaPixelGrid as PixelData,
   },
 ] as const;

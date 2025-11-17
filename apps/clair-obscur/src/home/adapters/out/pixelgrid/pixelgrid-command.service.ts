@@ -18,4 +18,8 @@ export class PixelGridCommandService {
   almostWinLevel(): void {
     this.adapter.almostWinLevel();
   }
+
+  nextLevel(): void {
+    this.adapter.nextLevel();
+  }
 }

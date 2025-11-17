@@ -32,4 +32,8 @@ export class EventStorePixelGridAdapter {
   almostWinLevel(): void {
     this.eventStore.almostWinLevel();
   }
+
+  nextLevel(): void {
+    this.eventStore.nextLevel();
+  }
 }

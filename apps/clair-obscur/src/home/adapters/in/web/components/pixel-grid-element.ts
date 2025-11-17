@@ -49,7 +49,6 @@ export class PixelGridElement extends HTMLElement {
   attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void {
     if (name === 'pixels') {
       this.pixels = JSON.parse(newValue ?? '{"pixelGrid":{}}') as PixelGridElementState;
-      console.log('[PixelGridElement] pixels attribute changed:', this._pixels);
     } else if (name === 'last-change' && newValue) {
       const change = JSON.parse(newValue) as PixelChange;
       this._applyPixelChange(change);
@@ -68,37 +67,8 @@ export class PixelGridElement extends HTMLElement {
   }
 
   set pixels(value: PixelGridElementState) {
-    const hasTimestampChanged = value.timestamp !== this._pixels.timestamp;
-    const oldPixelKeys = Object.keys(this._pixels.pixelGrid);
-    const newPixelKeys = Object.keys(value.pixelGrid);
-    const keysChanged = !this._areKeysEqual(oldPixelKeys, newPixelKeys);
-    const shouldReinitialize = hasTimestampChanged && (keysChanged || this._victory);
-
     this._pixels = value;
 
-    if (shouldReinitialize) {
-      this._forceReinitialize();
-    } else {
-      this.render();
-    }
-  }
-
-  private _areKeysEqual(keys1: string[], keys2: string[]): boolean {
-    if (keys1.length !== keys2.length) return false;
-    const set1 = new Set(keys1);
-    const set2 = new Set(keys2);
-    if (set1.size !== set2.size) return false;
-    for (const key of set1) {
-      if (!set2.has(key)) return false;
-    }
-    return true;
-  }
-
-  private _forceReinitialize(): void {
-    this.replaceChildren();
-    this._container = null;
-    this._cellMap.clear();
-    this._lastDimensions = null;
     this.render();
   }
 
@@ -120,7 +90,7 @@ export class PixelGridElement extends HTMLElement {
     const dimensionsChanged =
       !this._lastDimensions || this._lastDimensions.columns !== columns || this._lastDimensions.rows !== rows;
 
-    if (dimensionsChanged || !this._container) {
+    if (dimensionsChanged) {
       this._lastDimensions = { columns, rows };
       this._initializeGrid(columns, rows);
     }

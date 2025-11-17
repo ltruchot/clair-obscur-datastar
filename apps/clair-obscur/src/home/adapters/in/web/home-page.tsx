@@ -62,29 +62,23 @@ const HomePage: FC<HomePageProps> = ({
                 🏆
               </button>
               {isDevelopment && (
-                <button
-                  aria-label="Almost win level"
-                  title="This will almost win the level"
-                  data-on:click="@post('/almost-win-level')"
-                  data-attr:disabled="JSON.parse($_victory)">
-                  🎉
-                </button>
+                <>
+                  <button
+                    aria-label="Next level"
+                    title="Skip to next level"
+                    data-on:click="confirm('Are you sure you want to lose all the progression of every contributor?') ? @post('/next-level') : null"
+                    data-attr:disabled="JSON.parse($_victory)">
+                    ⏭️
+                  </button>
+                  <button
+                    aria-label="Almost win level"
+                    title="This will almost win the level"
+                    data-on:click="@post('/almost-win-level')"
+                    data-attr:disabled="JSON.parse($_victory)">
+                    🎉
+                  </button>
+                </>
               )}
-              <select
-                id="level-selector"
-                aria-label="Select level"
-                title="Choose a level"
-                data-on:change="@post('/next-level', {body: {level_index: Number($event.target.value)}})"
-                data-attr:disabled="JSON.parse($_victory)">
-                <button type="button">
-                  <selectedcontent>
-                    🎮 {currentLevel.index}: {currentLevel.clue}
-                  </selectedcontent>
-                </button>
-                <option value="0">0: Boom!</option>
-                <option value="1">1: Invaders from space</option>
-                <option value="2">2: A famous queen</option>
-              </select>
             </summary>
             <div class="p-10">
               You are{' '}
@@ -122,9 +116,6 @@ const HomePage: FC<HomePageProps> = ({
                       Proverbs
                     </a>
                   </h2>
-                  <div class="level-info">
-                    <strong>Level {currentLevel.index + 1}</strong> - {currentLevel.clue}
-                  </div>
                   <div class="header-content-wrapper">
                     <GameIntroduction />
                     <section aria-label="Game controls">
@@ -151,6 +142,9 @@ const HomePage: FC<HomePageProps> = ({
             </details>
           </header>
           <section class="pixel-grid-container">
+            <div id="level-info">
+              <strong>Level {currentLevel.index + 1}</strong>: {currentLevel.clue}
+            </div>
             <pixel-grid
               id={DSID.PIXEL_GRID}
               data-on:pixelclick="$pixelclick = event.detail; @post('/pixel-click', {requestCancellation: 'disabled'})"

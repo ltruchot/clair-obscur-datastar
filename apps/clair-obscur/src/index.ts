@@ -147,9 +147,10 @@ app.post('/reset-pixel-grid', sessionMiddleware, (c) => homeController.resetPixe
 
 app.post('/cheat-pixel-grid', sessionMiddleware, (c) => homeController.cheatPixelGrid(c));
 
-app.post('/almost-win-level', sessionMiddleware, (c) => homeController.almostWinLevel(c));
-
-app.post('/next-level', sessionMiddleware, (c) => homeController.nextLevel(c));
+if (isDevelopment) {
+  app.post('/almost-win-level', sessionMiddleware, (c) => homeController.almostWinLevel(c));
+  app.post('/next-level', sessionMiddleware, (c) => homeController.nextLevel(c));
+}
 
 if (!isDevelopment) {
   const serverConfig = {
