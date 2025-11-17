@@ -1,4 +1,5 @@
 import js from '@eslint/js';
+import markdown from '@eslint/markdown';
 import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import { defineConfig } from 'eslint/config';
@@ -68,6 +69,17 @@ export default defineConfig([
           varsIgnorePattern: '^_',
         },
       ],
+    },
+  },
+  {
+    files: ['**/*.md'],
+    plugins: {
+      markdown,
+    },
+    extends: ['markdown/recommended'],
+    rules: {
+      'markdown/no-inline-html': 'off',
+      'markdown/no-multiple-h1': 'off',
     },
   },
 

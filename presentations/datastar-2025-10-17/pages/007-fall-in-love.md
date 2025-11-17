@@ -37,3 +37,5 @@ Ready to make big projects together?
     </div>
 </div>
 </v-click>
+
+<footer style="position: absolute; bottom:0; right:0;"><small><SlideCurrentNo/>/<SlidesTotal/></small></footer>

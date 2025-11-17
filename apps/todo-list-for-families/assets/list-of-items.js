@@ -5,7 +5,7 @@ class ListOfItems extends HTMLElement {
   }
 
   attributeChangedCallback(name, _oldValue, newValue) {
-    if (name === 'items') {
+    if (name === 'items' && newValue && newValue.length > 0) {
       this.items = JSON.parse(newValue);
       this.render();
     }

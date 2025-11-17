@@ -32,7 +32,4 @@ Bringing serendipity since 1989
   </v-click>
 </ul>
 
-
-
-
-
+<footer style="position: absolute; bottom:0; right:0;"><small><SlideCurrentNo/>/<SlidesTotal/></small></footer>
