@@ -6,6 +6,8 @@ import type {
   PixelUpdate,
 } from './pixel-grid-event-store.types';
 
+export type OnLevelCompleteCallback = () => void;
+
 export class PixelGridEventStore {
   private state: PixelGridStoreState = {
     pixelGrid: {},
@@ -19,7 +21,14 @@ export class PixelGridEventStore {
 
   private resetTimeoutId: NodeJS.Timeout | null = null;
 
-  initialize(basePixelData: PixelData): void {
+  private onLevelCompleteCallback: OnLevelCompleteCallback | null = null;
+
+  initialize(basePixelData: PixelData, notify = false): void {
+    if (this.resetTimeoutId !== null) {
+      clearTimeout(this.resetTimeoutId);
+      this.resetTimeoutId = null;
+    }
+
     const pixelGrid: PixelGridData = {};
 
     for (const [key, value] of Object.entries(basePixelData)) {
@@ -29,7 +38,13 @@ export class PixelGridEventStore {
       };
     }
     this.basePixelGrid = structuredClone(pixelGrid);
-    this.state.pixelGrid = pixelGrid;
+    this.state = {
+      pixelGrid: pixelGrid,
+    };
+
+    if (notify) {
+      this.notifySubscribers();
+    }
   }
 
   reset(): void {
@@ -53,17 +68,50 @@ export class PixelGridEventStore {
     this.notifySubscribers();
   }
 
-  win(): void {
-    const wonPixelGrid: PixelGridData = structuredClone(this.state.pixelGrid);
+  almostWinLevel(): void {
+    const almostWonPixelGrid: PixelGridData = structuredClone(this.state.pixelGrid);
+
     for (const [key, currentPixel] of Object.entries(this.state.pixelGrid)) {
-      wonPixelGrid[key as `${number}-${number}`] = {
+      almostWonPixelGrid[key as `${number}-${number}`] = {
         ...currentPixel,
         guess: currentPixel.v,
       };
     }
-    wonPixelGrid['30-1'].guess = 1;
-    this.state.pixelGrid = wonPixelGrid;
+
+    const firstIncorrectPixel = this.findFirstIncorrectPixel();
+    if (firstIncorrectPixel) {
+      almostWonPixelGrid[firstIncorrectPixel].guess = -1;
+    }
+
+    this.state.pixelGrid = almostWonPixelGrid;
     this.notifySubscribers();
+  }
+
+  nextLevel(): void {
+    if (this.onLevelCompleteCallback) {
+      this.onLevelCompleteCallback();
+    }
+  }
+
+  private findFirstIncorrectPixel(): `${number}-${number}` | null {
+    const sortedKeys = Object.keys(this.state.pixelGrid).sort((a, b) => {
+      const [x1, y1] = a.split('-').map(Number);
+      const [x2, y2] = b.split('-').map(Number);
+
+      if (y1 !== y2) {
+        return y1 - y2;
+      }
+      return x1 - x2;
+    });
+
+    for (const key of sortedKeys) {
+      const pixel = this.state.pixelGrid[key as `${number}-${number}`];
+      if (pixel.v !== pixel.guess) {
+        return key as `${number}-${number}`;
+      }
+    }
+
+    return null;
   }
 
   updatePixel(update: PixelUpdate): void {
@@ -103,18 +151,22 @@ export class PixelGridEventStore {
     };
   }
 
+  setOnLevelCompleteCallback(callback: OnLevelCompleteCallback): void {
+    this.onLevelCompleteCallback = callback;
+  }
+
   private notifyLastChangeSubscribers(lastChange: Omit<PixelChange, 'timestamp'>): void {
+    this.lastChangeSubscribers.forEach((subscriber) => subscriber({ ...lastChange, timestamp: new Date().getTime() }));
+
     const victory = this._checkVictory();
-    if (!victory) {
-      this.lastChangeSubscribers.forEach((subscriber) =>
-        subscriber({ ...lastChange, timestamp: new Date().getTime() }),
-      );
-      return;
-    }
-    const currentState = this.read();
-    this.subscribers.forEach((subscriber) => subscriber({ ...currentState, victory }));
     if (victory && this.resetTimeoutId === null) {
-      this.resetTimeoutId = setTimeout(() => this.reset(), 20_000);
+      this.resetTimeoutId = setTimeout(() => {
+        if (this.onLevelCompleteCallback) {
+          this.onLevelCompleteCallback();
+        } else {
+          this.reset();
+        }
+      }, 20_000);
     }
   }
 
@@ -123,7 +175,13 @@ export class PixelGridEventStore {
     const victory = this._checkVictory();
     this.subscribers.forEach((subscriber) => subscriber({ ...currentState, victory }));
     if (victory && this.resetTimeoutId === null) {
-      this.resetTimeoutId = setTimeout(() => this.reset(), 20_000);
+      this.resetTimeoutId = setTimeout(() => {
+        if (this.onLevelCompleteCallback) {
+          this.onLevelCompleteCallback();
+        } else {
+          this.reset();
+        }
+      }, 20_000);
     }
   }
 

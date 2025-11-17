@@ -29,7 +29,11 @@ export class EventStorePixelGridAdapter {
     this.eventStore.cheat();
   }
 
-  win(): void {
-    this.eventStore.win();
+  almostWinLevel(): void {
+    this.eventStore.almostWinLevel();
+  }
+
+  nextLevel(): void {
+    this.eventStore.nextLevel();
   }
 }

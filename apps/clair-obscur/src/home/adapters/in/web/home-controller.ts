@@ -1,3 +1,4 @@
+import { LevelQueryService } from '@/home/adapters/out/level/level-query.service';
 import { PixelGridCommandService } from '@/home/adapters/out/pixelgrid/pixelgrid-command.service';
 import { PixelGridQueryService } from '@/home/adapters/out/pixelgrid/pixelgrid-query.service';
 import { SessionCommandService } from '@/home/adapters/out/session/session-command.service';
@@ -19,6 +20,7 @@ export class HomeController {
     private readonly pixelGridEventStore: PixelGridEventStore,
     private readonly pixelGridQueryService: PixelGridQueryService,
     private readonly pixelGridCommandService: PixelGridCommandService,
+    private readonly levelQueryService: LevelQueryService,
   ) {}
 
   /**
@@ -49,8 +51,11 @@ export class HomeController {
     const pixelData = { pixelGrid: this.pixelGridQueryService.getPixelGrid(), timestamp: new Date().getTime() };
     const victory = this.pixelGridQueryService.checkVictory();
     const isMobile = this.detectMobileDevice(c);
+    const currentLevel = this.levelQueryService.getCurrentLevel();
 
-    return c.html(getHomeHTMLPage(animalName, color, fontFamily, sessionItems, pixelData, victory, isMobile));
+    return c.html(
+      getHomeHTMLPage(animalName, color, fontFamily, sessionItems, pixelData, victory, isMobile, currentLevel),
+    );
   }
 
   broadcastEvents(c: Context): Response {
@@ -94,9 +99,23 @@ export class HomeController {
           });
 
           unsubscribePixelGridStore = this.pixelGridEventStore.subscribe(currentSession.id.value, (state) => {
+            const pixelData = JSON.stringify({
+              pixelGrid: state.pixelGrid,
+              timestamp: new Date().getTime(),
+            }).replace(/"/g, '&quot;');
+
+            const pixelGridElement = `<pixel-grid
+              id="${DSID.PIXEL_GRID}"
+              data-preserve-attr="data-on:pixelclick data-attr:last-change data-attr:victory"
+              data-attr:pixels="${pixelData}"></pixel-grid>
+              <div id="level-info">
+                <strong>Level ${this.levelQueryService.getCurrentLevelIndex() + 1}</strong>: ${this.levelQueryService.getCurrentLevel().clue}
+              </div>`;
+
+            stream.patchElements(pixelGridElement);
+
             stream.patchSignals(
               JSON.stringify({
-                _pixelgrid: { pixelGrid: state.pixelGrid, timestamp: new Date().getTime() },
                 _lastChange: { x: -1, y: -1, guess: -1, timestamp: new Date().getTime() },
                 _victory: state.victory,
               }),
@@ -106,7 +125,8 @@ export class HomeController {
           unsubscribePixelGridStoreLastChange = this.pixelGridEventStore.subscribeLastChange(
             currentSession.id.value,
             (lastChange: PixelChange) => {
-              stream.patchSignals(JSON.stringify({ _lastChange: lastChange }));
+              const victory = this.pixelGridQueryService.checkVictory();
+              stream.patchSignals(JSON.stringify({ _lastChange: lastChange, _victory: victory }));
             },
           );
 
@@ -212,8 +232,13 @@ export class HomeController {
     return c.json({ success: true }, 202);
   }
 
-  winPixelGrid(c: Context): Response {
-    this.pixelGridCommandService.winPixelGrid();
+  almostWinLevel(c: Context): Response {
+    this.pixelGridCommandService.almostWinLevel();
+    return c.json({ success: true }, 202);
+  }
+
+  nextLevel(c: Context): Response {
+    this.pixelGridCommandService.nextLevel();
     return c.json({ success: true }, 202);
   }
 }

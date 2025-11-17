@@ -1,4 +1,6 @@
+import type { Level } from '@/home/domain/level';
 import type { PixelGridChange } from '@/home/domain/pixel-grid';
+import { isDevelopment } from '@/shared/infrastructure/config';
 import { BaseLayout } from '@/shared/infrastructure/web/base-layout';
 import type { FC } from 'hono/jsx';
 import { renderToString } from 'hono/jsx/dom/server';
@@ -19,6 +21,7 @@ interface HomePageProps {
   pixelData: PixelGridChange;
   victory: boolean;
   defaultDevice: 'mobile' | 'desktop';
+  currentLevel: Level;
 }
 
 const HomePage: FC<HomePageProps> = ({
@@ -29,6 +32,7 @@ const HomePage: FC<HomePageProps> = ({
   pixelData,
   victory,
   defaultDevice,
+  currentLevel,
 }) => {
   const pixelGridJSON = `'${JSON.stringify(pixelData)}'`;
   const victoryJSON = `'${victory.toString()}'`;
@@ -57,6 +61,24 @@ const HomePage: FC<HomePageProps> = ({
               <button aria-label="High scores" title="This will show the high scores" disabled={true}>
                 🏆
               </button>
+              {isDevelopment && (
+                <>
+                  <button
+                    aria-label="Next level"
+                    title="Skip to next level"
+                    data-on:click="confirm('Are you sure you want to lose all the progression of every contributor?') ? @post('/next-level') : null"
+                    data-attr:disabled="JSON.parse($_victory)">
+                    ⏭️
+                  </button>
+                  <button
+                    aria-label="Almost win level"
+                    title="This will almost win the level"
+                    data-on:click="@post('/almost-win-level')"
+                    data-attr:disabled="JSON.parse($_victory)">
+                    🎉
+                  </button>
+                </>
+              )}
             </summary>
             <div class="p-10">
               You are{' '}
@@ -120,6 +142,9 @@ const HomePage: FC<HomePageProps> = ({
             </details>
           </header>
           <section class="pixel-grid-container">
+            <div id="level-info">
+              <strong>Level {currentLevel.index + 1}</strong>: {currentLevel.clue}
+            </div>
             <pixel-grid
               id={DSID.PIXEL_GRID}
               data-on:pixelclick="$pixelclick = event.detail; @post('/pixel-click', {requestCancellation: 'disabled'})"
@@ -141,6 +166,7 @@ export const getHomeHTMLPage = (
   pixelData: PixelGridChange,
   victory: boolean,
   isMobile: boolean,
+  currentLevel: Level,
 ): string => {
   const defaultDevice: 'mobile' | 'desktop' = isMobile ? 'mobile' : 'desktop';
   return renderToString(
@@ -152,6 +178,7 @@ export const getHomeHTMLPage = (
       pixelData={pixelData}
       victory={victory}
       defaultDevice={defaultDevice}
+      currentLevel={currentLevel}
     />,
   );
 };
