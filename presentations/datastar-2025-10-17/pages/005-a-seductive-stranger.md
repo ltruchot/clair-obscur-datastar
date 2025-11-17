@@ -46,3 +46,5 @@ Forget your first framework love in minutes
 Check out <a style="color: blue;" href="https://github.com/ltruchot/clair-obscur-datastar/tree/main/apps/hello-world" target="_blank">my local hello world example</a>
 </v-click>
 </div>
+
+<footer style="position: absolute; bottom:0; right:0;"><small><SlideCurrentNo/>/<SlidesTotal/></small></footer>

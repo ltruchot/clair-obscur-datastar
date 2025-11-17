@@ -60,6 +60,26 @@ createServer(async (req, res) => {
         // Subscribe to events
         todoEventStore.subscribe((state) => {
           currentStream.patchSignals(`{ "todos": ${JSON.stringify(state.todos)} }`);
+          /*
+          const todos = JSON.stringify(state.todos).replace(/"/g, '&quot;');
+          const todosElement = `<list-of-items id="todos" data-preserve-attr="data-on:item-toggle" data-attr:items="${todos}"></list-of-items>`;
+          currentStream.patchElements(todosElement);
+          */
+          /*
+          const todosList = `<ul id="todos" data-preserve-attr="data-on:click">
+            ${state.todos
+              .map(
+                (todo) => `
+                <li id="${todo.id}" style="text-decoration: ${todo.checked ? 'line-through' : 'none'}">
+                  <input type="checkbox"${todo.checked ? ' checked' : ''} />
+                  ${todo.label}
+                </li>
+              `,
+              )
+              .join('')}
+          </ul>`;
+          currentStream.patchElements(todosList);
+          */
         });
       },
       {
@@ -90,7 +110,7 @@ createServer(async (req, res) => {
       checked: false,
     };
     todoEventStore.write('todos', [sanitizedTodoItem, ...todoEventStore.read().todos]);
-    res.writeHead(202);
+    res.writeHead(202); // Accepted
     res.end();
 
     // ONE SHOT UPDATE COMMAND, will trigger query update

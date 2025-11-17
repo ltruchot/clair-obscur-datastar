@@ -2,21 +2,12 @@ list-of-items {
   display: block;
 }
 
-list-of-items ul {
+ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-list-of-items li {
+li {
   list-style: none;
-}
-
-section {
-  padding: 0 10px;
-  border-right: 2px solid transparent;
-  border-image: linear-gradient(to bottom right, red 0%, orange 7%, yellow 14%, green 21%, blue 28%, indigo 35%, violet 42%, red 50%, orange 57%, yellow 64%, green 71%, blue 78%, indigo 85%, violet 92%, red 100%);
-  border-image-slice: 1;
-  margin-right: 10px;
-  min-height: 100vh;
 }

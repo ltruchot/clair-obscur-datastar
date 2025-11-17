@@ -16,8 +16,9 @@
     <input data-bind:msg />
 
     <p data-text="$msg"></p>
+    <p data-computed:_reversed_msg="$msg.split('').reverse().join('')" data-text="$_reversed_msg"></p>
 
-    <button data-on:click="@post('/send-message')">send</button>
+    <button data-attr:disabled="$msg.length === 0" data-on:click="@post('/send-message')">send</button>
 
     <p id="waiting-for-response"></p>
   </body>

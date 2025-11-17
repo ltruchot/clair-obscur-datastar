@@ -23,7 +23,6 @@
     "dev:apps:todo": "pnpm --filter @clair-obscur-workspace/todo-list dev",
     "dev:apps:todo2": "pnpm --filter @clair-obscur-workspace/todo-list-for-families dev",
    
-    "dev:tech-session": "pnpm --filter @clair-obscur-workspace/tech-session-intro-2025-10-10 dev",
     
     "dev:datastar": "pnpm --filter @clair-obscur-workspace/datastar-2025-10-17 dev",
     "build:datastar": "pnpm --filter @clair-obscur-workspace/datastar-2025-10-17 build",

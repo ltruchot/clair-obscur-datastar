@@ -29,7 +29,6 @@ layout: intro
 class: text-center
 ---
 
-
 # Datastar
 
 The hype-free fullstack hypermedia framework
@@ -124,6 +123,7 @@ Should I jump on the no-hype train?
 <div style="display: flex; flex-direction: column; align-items: center; width: auto; text-align: left;">
 <ol>
   <li>Most hated framework ever</li>
+  <li>What datastar is not?</li>
   <li>Thank you</li>
   <li>Sources</li>
 </ol>
@@ -138,18 +138,39 @@ src: ./pages/009-most-hated.md
 ---
 
 ---
+src: ./pages/010-what-datastar-is-not.md
+---
+
+---
 layout: cover
 ---
 
-# Thank you
+## Give it a shot.
 
 <v-click>
-<img src="./assets/declarative.gif" alt="Thank you" style="margin-left: auto; display: block;width: 30%;" />
+You deserve it. 
+</v-click>
+<br />
+<v-click>
+The web deserves it.  
+</v-click>
+
+<br />
+<br />
+
+<v-click>
+
+# Thank you
+
+</v-click>
+<v-click>
+<img src="./assets/declarative.gif" alt="Thank you" style="position: absolute; top: 50%; transform: translateY(-50%); right: 10%; display: block;width: 30%;" />
 </v-click>
 
 ---
 
 # Sources
+
 Thanks to the community who helped me to make this presentation better
 
 - **A ton of meme, coming from the community channel**: <a href="https://discord.gg/Npdvb6hB" style="color: blue;" target="_blank">Discord</a>
