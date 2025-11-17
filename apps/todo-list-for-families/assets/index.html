@@ -62,7 +62,7 @@
         <count-down data-attr:seconds-left="$secondsLeft"></count-down>
 
         <!-- List of todos -->
-        <!-- 
+        
         <list-of-items
           id="todos"
           data-attr:items="$todos || []"
@@ -70,8 +70,8 @@
             $updatedTodo = { id: event.detail.id,label: event.detail.label, checked: event.detail.checked };
             @post('/update-todo');">
         </list-of-items>
-        -->
-
+     
+<!-- 
         <ul
           id="todos"
           data-preserve-attr="data-on:click"
@@ -79,7 +79,7 @@
             $updatedTodo = { id: event.target.closest('li').id,label: event.target.closest('li').textContent, checked: event.target.closest('input[type=checkbox]').checked };
             @post('/update-todo');"></ul>
       </section>
-
+   -->
       <!-- Debug todos state as raw JSON on the right side -->
       <pre style="max-width: 50%">
 <code data-text="JSON.stringify($todos, null, 2)"></code>
