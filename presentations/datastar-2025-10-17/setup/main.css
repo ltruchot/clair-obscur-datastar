@@ -6,7 +6,7 @@
   transition: all 1.5s ease-out;
 
   &.animated {
-    animation: ignition 5s ease forwards 1s;
+    animation: ignition 5s ease-in forwards 1s;
   }
 }
 

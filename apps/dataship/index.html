@@ -8,6 +8,15 @@
       type="module"
       src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.6/bundles/datastar.js"></script>
 
+    <style>
+      button {
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+      }
+    </style>
+
     <title>Dataship</title>
   </head>
   <body data-signals:_fuel="0" data-signals:_ignition="false" data-init="@get('/subscribe-to-events')">
