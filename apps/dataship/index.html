@@ -13,7 +13,8 @@
   <body data-signals:_fuel="0" data-signals:_ignition="false" data-init="@get('/subscribe-to-events')">
     <h1>Dataship</h1>
 
-    <button data-on:click="@post('/inc-fuel')">Add Fuel</button> (<span data-text="$_fuel"></span>/100)
+    <button data-on:click="@post('/inc-fuel')" data-attr:disabled="$_ignition" disabled="'$_ignition'">Add Fuel</button>
+    (<span data-text="$_fuel"></span>/100)
 
     <p data-text="$_ignition ? 'Ignition !' : 'Dataship is still off...'"></p>
   </body>
