@@ -1,11 +1,12 @@
 {
-  "name": "@clair-obscur-workspace/hello-world",
+  "name": "@clair-obscur-workspace/dataship",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "node main.js"
+    "dev": "node main.js",
+    "serve": "node main.js"
   },
   "keywords": [],
   "author": "",
