@@ -22,3 +22,11 @@
 .hidden {
   display: none;
 }
+
+.slidev-layout.intro.toto {
+  background-color: white;
+  transition: background-color 3s ease 0.5s;
+  &.animated {
+    background-color: black;
+  }
+}

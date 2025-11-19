@@ -36,6 +36,7 @@ Ready to make big projects together?
        </ul>
     </div>
 </div>
+<img src="../assets/clair-obscur-qrcode.png" alt="Todo List QR Code" style="position:absolute; right: 10%; top: 72%;  width: 120px;" />
 </v-click>
 
 <footer style="position: absolute; bottom:0; right:0;"><small><SlideCurrentNo/>/<SlidesTotal/></small></footer>

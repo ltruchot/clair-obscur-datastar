@@ -17,6 +17,7 @@ Warm and comfy place to build confidence
     <li><a style="color: blue;" href="https://github.com/starfederation/datastar/" target="_blank"> 
        <output data-fetch:datastars__pluck.stargazers_count="https://api.github.com/repos/starfederation/datastar" data-text="$datastars || 'loading...'"></output> ⭐
        github repo </a>easy to explore
+       <img src="../assets/github-ds.png" alt="Todo List QR Code" style="position:absolute; right: 5%; top: 5%;  width: 120px;" />
     </li>
 </v-click>
 <v-click>
