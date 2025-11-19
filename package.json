@@ -36,10 +36,12 @@
    
     "serve": "pnpm --filter @clair-obscur-workspace/clair-obscur serve",
     "serve:todo-list-for-families": "pnpm --filter @clair-obscur-workspace/todo-list-for-families serve",
+    "serve:dataship": "pnpm --filter @clair-obscur-workspace/dataship serve",
   
     "lint": "eslint . --fix",
     "test": "pnpm --recursive test",
     "test:apps:clair-obscur": "pnpm --filter @clair-obscur-workspace/clair-obscur test",
+
     "test:packages:domain": "pnpm --filter @clair-obscur-workspace/domain test",
     "test:packages:utils": "pnpm --filter @clair-obscur-workspace/utils test",
     "test:packages:funny-animals-generator": "pnpm --filter @clair-obscur-workspace/funny-animals-generator test",

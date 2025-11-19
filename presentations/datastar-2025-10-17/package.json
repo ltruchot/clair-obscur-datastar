@@ -8,7 +8,7 @@
     "export": "slidev export"
   },
   "dependencies": {
-    "@slidev/cli": "^52.2.5",
-    "@slidev/theme-bricks": "^0.25.0"
+    "@slidev/cli": "catalog:",
+    "@slidev/theme-bricks": "catalog:"
   }
 }

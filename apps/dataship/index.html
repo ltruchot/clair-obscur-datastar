@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.6/bundles/datastar.js"></script>
+
+    <title>Dataship</title>
+  </head>
+  <body data-signals:_fuel="0" data-signals:_ignition="false" data-init="@get('/subscribe-to-events')">
+    <h1>Dataship</h1>
+
+    <button data-on:click="@post('/inc-fuel')">Add Fuel</button> (<span data-text="$_fuel"></span>/100)
+
+    <p data-text="$_ignition ? 'Ignition !' : 'Dataship is still off...'"></p>
+  </body>
+</html>
